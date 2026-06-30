@@ -19,8 +19,6 @@ from knack.log import get_logger
 from azure.cli.core.commands.parameters import get_one_of_subscription_locations
 from azure.cli.core.commands.arm import resource_exists
 
-from ._client_factory import _compute_client_factory
-
 from .generated.action import *  # noqa: F403, pylint: disable=unused-wildcard-import,wildcard-import
 try:
     from .manual.action import *  # noqa: F403, pylint: disable=unused-wildcard-import,wildcard-import
@@ -193,7 +191,12 @@ def load_images_from_aliases_doc(cli_ctx, publisher=None, offer=None, sku=None, 
         try:
             response = requests.get(target_url, verify=not should_disable_connection_verify())
             if response.status_code == 200:
-                dic = json.loads(response.content.decode())
+                try:
+                    dic = json.loads(response.content.decode())
+                except json.JSONDecodeError as ex:
+                    logger.warning("Failed to parse image alias doc '%s'. Error: '%s'. Use local copy instead.",
+                                   target_url, ex)
+                    dic = json.loads(alias_json)
             else:
                 logger.warning("Failed to retrieve image alias doc '%s'. Error: '%s'. Use local copy instead.",
                                target_url, response)
@@ -298,7 +301,10 @@ def load_extension_images_thru_services(cli_ctx, publisher, name, version, locat
 
 
 def get_vm_sizes(cli_ctx, location):
-    return list(_compute_client_factory(cli_ctx).virtual_machine_sizes.list(location))
+    from .operations.vm import VMListSizes
+    return VMListSizes(cli_ctx=cli_ctx)(command_args={
+        'location': location
+    })
 
 
 def _matched(pattern, string, partial_match=True):
