@@ -268,6 +268,13 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
             help='Server major version.'
         )
 
+        pg_version_upgrade_validate_arg_type = CLIArgumentType(
+            options_list=['--validate-only'],
+            action='store_true',
+            help='Run a pre-upgrade validation against the server without performing major version upgrade on resource. '
+                 'Returns the prevalidation check result.'
+        )
+
         private_dns_zone_arguments_arg_type = CLIArgumentType(
             options_list=['--private-dns-zone'],
             help='This parameter only applies for a server with private access and is required when using --vnet or --subnet. '
@@ -532,6 +539,7 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
 
         with self.argument_context('{} flexible-server upgrade'.format(command_group)) as c:
             c.argument('version', arg_type=pg_version_upgrade_arg_type)
+            c.argument('validate', arg_type=pg_version_upgrade_validate_arg_type)
             c.argument('yes', arg_type=yes_arg_type)
 
         with self.argument_context('{} flexible-server restart'.format(command_group)) as c:
@@ -677,6 +685,7 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements, too-many-
 
         with self.argument_context('{} flexible-server maintenance-event list'.format(command_group)) as c:
             c.argument('maintenance_status', arg_type=maintenance_status_arg_type)
+            c.argument('server_name', arg_type=server_name_resource_arg_type, id_part=None)
             c.ignore('ids')
 
         for scope in ['show', 'reschedule', 'apply-now']:
