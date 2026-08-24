@@ -63,7 +63,17 @@ setup() {
         if [[ ! $(curl -sL https://packages.microsoft.com/repos/azure-cli/dists/) =~ $CLI_REPO ]]; then
             DIST=$(lsb_release -is)
             if [[ $DIST =~ "Ubuntu" ]]; then
-                CLI_REPO="jammy"
+                # Try supported Ubuntu LTS codenames newest-first
+                for lts_codename in noble jammy focal; do
+                    if [[ $(curl -sL https://packages.microsoft.com/repos/azure-cli/dists/) =~ $lts_codename ]]; then
+                        CLI_REPO="$lts_codename"
+                        break
+                    fi
+                done
+                if [[ -z $CLI_REPO ]]; then
+                    echo "$ERROR_MSG"
+                    exit 1
+                fi
             elif [[ $DIST =~ "Debian" ]]; then
                 CLI_REPO="bookworm"
             elif [[ $DIST =~ "LinuxMint" ]]; then
