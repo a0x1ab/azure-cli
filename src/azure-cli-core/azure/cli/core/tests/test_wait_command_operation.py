@@ -42,17 +42,16 @@ class TestWaitCommandOperationTimeout(unittest.TestCase):
         """wait() should return None when the condition is satisfied."""
         cli_ctx = DummyCli()
 
-        instance = mock.MagicMock()
-        instance.provisioning_state = 'Succeeded'
-        getter = mock.MagicMock(return_value=instance)
+        # exists=True causes immediate return without inspecting provisioning_state
+        getter = mock.MagicMock(return_value=mock.MagicMock())
 
         command_args = {
             'timeout': 30,
             'interval': 1,
-            'created': True,
+            'created': False,
             'deleted': False,
             'updated': False,
-            'exists': False,
+            'exists': True,
             'custom': None,
         }
 
