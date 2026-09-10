@@ -712,10 +712,10 @@ class TestLogAnalyticsDataPlaneClient(unittest.TestCase):
 
     def test_cf_log_analytics_data_plane_missing_endpoint_raises_clear_error(self):
         from azure.cli.command_modules.vm._client_factory import cf_log_analytics_data_plane
-        cli_ctx = self._make_mock_cli_ctx(has_endpoint=False, cloud_name='AzureBleuCloud')
+        cli_ctx = self._make_mock_cli_ctx(has_endpoint=False, cloud_name='AzureCustomCloud')
         with self.assertRaises(CLIError) as cm:
             cf_log_analytics_data_plane(cli_ctx, None)
-        self.assertIn('AzureBleuCloud', str(cm.exception))
+        self.assertIn('AzureCustomCloud', str(cm.exception))
         self.assertIn('az cloud update', str(cm.exception))
 
 
