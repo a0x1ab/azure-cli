@@ -265,6 +265,9 @@ def empty_on_404(ex):
 def truncate_text(str_to_shorten, width=70, placeholder=' [...]'):
     if width <= 0:
         raise ValueError('width must be greater than 0.')
+    if len(str_to_shorten) <= width:
+        return str_to_shorten
+    placeholder = placeholder[:width]
     s_len = width - len(placeholder)
     return str_to_shorten[:s_len] + (str_to_shorten[s_len:] and placeholder)
 
