@@ -63,8 +63,36 @@ class TestUtils(unittest.TestCase):
 
     def test_truncate_text_not_needed(self):
         expected = 'string to shorten'
-        actual = truncate_text('string to shorten', width=100)
-        self.assertEqual(expected, actual)
+        for width in (len(expected), len(expected) + 1, 100):
+            with self.subTest(width=width):
+                actual = truncate_text(expected, width=width)
+                self.assertEqual(expected, actual)
+
+    def test_truncate_text_width_smaller_than_placeholder(self):
+        placeholder = ' [...]'
+        for width in range(1, len(placeholder) + 1):
+            for text in ('abcdefghij', 'abcdef', 'abc', 'ab', 'a', ''):
+                with self.subTest(width=width, text=text):
+                    actual = truncate_text(text, width=width)
+                    self.assertLessEqual(len(actual), width)
+                    expected = text if len(text) <= width else placeholder[:width]
+                    self.assertEqual(expected, actual)
+
+    def test_truncate_text_custom_placeholder(self):
+        cases = (
+            ('abcdefghij', '[cut]', 3, '[cu'),
+            ('abcdefghij', '[cut]', 5, '[cut]'),
+            ('abcdefghij', '[cut]', 7, 'ab[cut]'),
+            ('abcdefghij', '', 3, 'abc'),
+            ('ab', '[cut]', 3, 'ab'),
+            ('abc', '[cut]', 3, 'abc'),
+            ('abcdefg', '[cut]', 7, 'abcdefg'),
+        )
+        for text, placeholder, width, expected in cases:
+            with self.subTest(text=text, placeholder=placeholder, width=width):
+                actual = truncate_text(text, width=width, placeholder=placeholder)
+                self.assertLessEqual(len(actual), width)
+                self.assertEqual(expected, actual)
 
     def test_truncate_text_zero_width(self):
         with self.assertRaises(ValueError):
