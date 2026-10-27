@@ -1514,6 +1514,9 @@ examples:
   - name: Turn on ABAC-based Repository Permission on an existing registry.
     text: >
         az acr update -n myregistry --role-assignment-mode rbac-abac
+  - name: Update the endpoint protocol for an Azure Container Registry.
+    text: >
+        az acr update -n myregistry --endpoint-protocol IPv4AndIPv6
 """
 
 helps['acr webhook'] = """

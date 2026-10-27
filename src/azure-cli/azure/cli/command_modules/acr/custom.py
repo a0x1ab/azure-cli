@@ -151,7 +151,8 @@ def acr_update_custom(cmd,
                       allow_exports=None,
                       tags=None,
                       allow_metadata_search=None,
-                      role_assignment_mode=None):
+                      role_assignment_mode=None,
+                      endpoint_protocol=None):
     if sku is not None:
         Sku = cmd.get_models('Sku')
         instance.sku = Sku(name=sku)
@@ -179,6 +180,9 @@ def acr_update_custom(cmd,
 
     if role_assignment_mode is not None:
         _configure_role_assignment_mode(cmd, instance, role_assignment_mode)
+
+    if endpoint_protocol is not None:
+        instance.endpoint_protocol = endpoint_protocol
 
     _handle_network_bypass(cmd, instance, allow_trusted_services)
     _handle_export_policy(cmd, instance, allow_exports)
