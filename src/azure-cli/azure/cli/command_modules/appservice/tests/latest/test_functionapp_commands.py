@@ -6,6 +6,7 @@ import json
 import unittest
 from unittest import mock
 import os
+import re
 import time
 import tempfile
 import requests
@@ -2065,6 +2066,24 @@ class FunctionAppOnWindowsWithRuntime(ScenarioTest):
         self.cmd(
             'functionapp delete -g {} -n {}'.format(resource_group, functionapp_name))
 
+    @ResourceGroupPreparer(location=WINDOWS_ASP_LOCATION_FUNCTIONAPP)
+    @StorageAccountPreparer()
+    def test_functionapp_unique_domain_name(self, resource_group, storage_account):
+        functionapp_name = self.create_random_name(
+            'functionappudom', 24)
+
+        result = self.cmd('functionapp create -g {} -n {} -c {} -s {} --os-type Windows --functions-version 4 --runtime node --runtime-version 22 --domain-name-scope SubscriptionReuse'
+                 .format(resource_group, functionapp_name, WINDOWS_ASP_LOCATION_FUNCTIONAPP, storage_account)).get_output_in_json()
+        
+        default_hostname = result.get('defaultHostName')
+        pattern = r'^([a-zA-Z0-9\-]+)-([a-z0-9]{16})\.([a-z]+-\d{2})\.azurewebsites\.net$'
+        match = re.match(pattern, default_hostname)
+        self.assertIsNotNone(match, "defaultHostName '{}' does not match expected pattern".format(default_hostname))
+        app_name, hash_part, region = match.groups()
+        self.assertTrue(len(hash_part) == 16 and hash_part.islower(), "Hash is not 16 chars or not lowercase.")
+        self.assertIn('-', region, "Region part does not have '-' separator.")
+        self.assertEqual(app_name, functionapp_name, "App name and defaultHostName app name do not match.")
+
 
     @ResourceGroupPreparer(location=WINDOWS_ASP_LOCATION_FUNCTIONAPP)
     @StorageAccountPreparer()
@@ -3345,6 +3364,7 @@ class FunctionappNetworkConnectionTests(ScenarioTest):
             JMESPathCheck('length(@)', 0),
         ])
 
+    @unittest.skip("Skipping the test because of public network storage restriction.")
     @ResourceGroupPreparer(location=WINDOWS_ASP_LOCATION_FUNCTIONAPP)
     def test_functionapp_consumption_disabled_public_network_access_storage(self, resource_group):
         functionapp_name = self.create_random_name('functionapp', 24)
@@ -3356,6 +3376,7 @@ class FunctionappNetworkConnectionTests(ScenarioTest):
             self.cmd('functionapp create -g {} -n {} -s {} --consumption-plan-location {} --functions-version 4'.format(resource_group, functionapp_name, storage_account, WINDOWS_ASP_LOCATION_FUNCTIONAPP))
 
 
+    @unittest.skip("Skipping the test because of public network storage restriction.")
     @ResourceGroupPreparer(location=WINDOWS_ASP_LOCATION_FUNCTIONAPP)
     def test_functionapp_consumption_restricted_public_network_access_storage(self, resource_group):
         functionapp_name = self.create_random_name('functionapp', 24)
@@ -3367,6 +3388,7 @@ class FunctionappNetworkConnectionTests(ScenarioTest):
             self.cmd('functionapp create -g {} -n {} -s {} --consumption-plan-location {} --functions-version 4'.format(resource_group, functionapp_name, storage_account, WINDOWS_ASP_LOCATION_FUNCTIONAPP))
 
 
+    @unittest.skip("Skipping the test because of public network storage restriction.")
     @ResourceGroupPreparer(location=WINDOWS_ASP_LOCATION_FUNCTIONAPP)
     def test_functionapp_elastic_premium_restricted_public_network_access_storage_no_vnet(self, resource_group):
         functionapp_name = self.create_random_name('functionapp', 24)
@@ -3381,6 +3403,7 @@ class FunctionappNetworkConnectionTests(ScenarioTest):
             self.cmd('functionapp create -g {} -n {} -s {} -p {} --functions-version 4'.format(resource_group, functionapp_name, storage_account, ep_plan_name))
 
 
+    @unittest.skip("Skipping the test because of public network storage restriction.")
     @ResourceGroupPreparer(location=WINDOWS_ASP_LOCATION_FUNCTIONAPP)
     def test_functionapp_elastic_premium_restricted_public_network_access_storage_mutually_exclusive_flags(self, resource_group):
         functionapp_name = self.create_random_name('functionapp', 24)
