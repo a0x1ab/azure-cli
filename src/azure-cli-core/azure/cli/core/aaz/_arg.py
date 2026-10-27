@@ -96,7 +96,7 @@ class AAZBaseArg(AAZBaseType):
 
     def __init__(self, options=None, required=False, help=None, arg_group=None, is_preview=False, is_experimental=False,
                  id_part=None, default=AAZUndefined, blank=AAZUndefined, nullable=False, fmt=None, registered=True,
-                 configured_default=None):
+                 configured_default=None, completer=None):
         """
 
         :param options: argument optional names.
@@ -113,6 +113,7 @@ class AAZBaseArg(AAZBaseType):
         :param fmt: argument format
         :param registered: control whether register argument into command display
         :param configured_default: the key to retrieve the default value from cli configuration
+        :param completer: tab completion if completion is active
         """
         super().__init__(options=options, nullable=nullable)
         self._help = {}  # the key in self._help can be 'name', 'short-summary', 'long-summary', 'populator-commands'
@@ -134,6 +135,7 @@ class AAZBaseArg(AAZBaseType):
         self._fmt = fmt
         self._registered = registered
         self._configured_default = configured_default
+        self._completer = completer
 
     def to_cmd_arg(self, name, **kwargs):
         """ convert AAZArg to CLICommandArgument """
@@ -201,6 +203,11 @@ class AAZBaseArg(AAZBaseType):
 
         if self._configured_default:
             arg.configured_default = self._configured_default
+
+        if self._completer:
+            from azure.cli.core.decorators import Completer
+            assert isinstance(self._completer, Completer)
+            arg.completer = self._completer
 
         action = self._build_cmd_action()   # call sub class's implementation to build CLICommandArgument action
         if action:
@@ -498,7 +505,8 @@ class AAZResourceGroupNameArg(AAZStrArg):
         from azure.cli.core.commands.parameters import get_resource_group_completion_list
         from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction, ALL
         arg = super().to_cmd_arg(name, **kwargs)
-        arg.completer = get_resource_group_completion_list
+        if not arg.completer:
+            arg.completer = get_resource_group_completion_list
         arg.local_context_attribute = LocalContextAttribute(
             name='resource_group_name',
             actions=[LocalContextAction.SET, LocalContextAction.GET],
@@ -539,7 +547,8 @@ class AAZResourceLocationArg(AAZStrArg):
             short_summary += "When not specified, the location of the resource group will be used."
             arg.help = short_summary
 
-        arg.completer = get_location_completion_list
+        if not arg.completer:
+            arg.completer = get_location_completion_list
         arg.local_context_attribute = LocalContextAttribute(
             name='location',
             actions=[LocalContextAction.SET, LocalContextAction.GET],
@@ -573,7 +582,8 @@ class AAZSubscriptionIdArg(AAZStrArg):
     def to_cmd_arg(self, name, **kwargs):
         from azure.cli.core._completers import get_subscription_id_list
         arg = super().to_cmd_arg(name, **kwargs)
-        arg.completer = get_subscription_id_list
+        if not arg.completer:
+            arg.completer = get_subscription_id_list
         return arg
 
 
