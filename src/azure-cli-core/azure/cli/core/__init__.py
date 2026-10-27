@@ -42,6 +42,45 @@ MODULE_LOAD_TIMEOUT_SECONDS = 60
 # Maximum number of worker threads for parallel module loading.
 MAX_WORKER_THREAD_COUNT = 4
 
+# Shared Azure SDK trunks that many command modules import independently. Pre-warming
+# these on the main thread before parallel module loading prevents
+# importlib._DeadlockError on Python 3.14+ (which raises on concurrent imports of
+# the same module instead of blocking, as 3.13 and earlier did). Order matters:
+# import base packages before their subpackages so each lock is taken once.
+_SHARED_PREWARM_MODULES = (
+    'azure.core',
+    'azure.core.exceptions',
+    'azure.core.pipeline',
+    'azure.core.pipeline.policies',
+    'azure.mgmt.core',
+    'msrest',
+    'msrest.serialization',
+    'msrest.http_logger',
+    'msrestazure',
+    'msrestazure.azure_exceptions',
+)
+_prewarm_done = False
+
+
+def _prewarm_shared_imports():
+    """Import shared Azure SDK trunks once on the main thread.
+
+    See `_SHARED_PREWARM_MODULES` for rationale. Safe to call repeatedly; a flag
+    guards against repeated work. Missing optional modules are ignored so this
+    helper never blocks startup if an SDK package is uninstalled.
+    """
+    global _prewarm_done  # pylint: disable=global-statement
+    if _prewarm_done:
+        return
+    from importlib import import_module
+    for name in _SHARED_PREWARM_MODULES:
+        try:
+            import_module(name)
+        except ImportError:
+            # Optional/transitive SDK module not present in this install.
+            pass
+    _prewarm_done = True
+
 
 def _get_top_level_command(args):
     """Return normalized top-level command token or None when unavailable."""
@@ -668,6 +707,16 @@ class MainCommandsLoader(CLICommandsLoader):
         import concurrent.futures
         from concurrent.futures import ThreadPoolExecutor
         from azure.cli.core.commands import BLOCKED_MODS
+
+        # Pre-warm shared Azure SDK trunks on the main thread before fanning out to
+        # worker threads. On Python 3.14+, importlib raises _DeadlockError instead
+        # of blocking when two threads concurrently import the same module
+        # (https://docs.python.org/3.14/whatsnew/3.14.html). Many command modules
+        # independently `import azure.core` / `import msrest` etc., which races
+        # under the thread pool. By importing these once on the main thread first,
+        # worker threads see fully-initialized entries in sys.modules and never
+        # contend on the module lock.
+        _prewarm_shared_imports()
 
         results = []
         with ThreadPoolExecutor(max_workers=MAX_WORKER_THREAD_COUNT) as executor:
