@@ -1,0 +1,62 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
+
+def get_cognitiveservices_management_client(cli_ctx, *_):
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    from azure.mgmt.cognitiveservices import CognitiveServicesManagementClient
+    return get_mgmt_service_client(cli_ctx, CognitiveServicesManagementClient)
+
+
+def cf_accounts(cli_ctx, *_):
+    return get_cognitiveservices_management_client(cli_ctx).accounts
+
+
+def cf_deleted_accounts(cli_ctx, *_):
+    return get_cognitiveservices_management_client(cli_ctx).deleted_accounts
+
+
+def cf_deployments(cli_ctx, *_):
+    return get_cognitiveservices_management_client(cli_ctx).deployments
+
+
+def cf_commitment_tiers(cli_ctx, *_):
+    return get_cognitiveservices_management_client(cli_ctx).commitment_tiers
+
+
+def cf_commitment_plans(cli_ctx, *_):
+    return get_cognitiveservices_management_client(cli_ctx).commitment_plans
+
+
+def cf_resource_skus(cli_ctx, *_):
+    return get_cognitiveservices_management_client(cli_ctx).resource_skus
+
+
+def cf_models(cli_ctx, *_):
+    return get_cognitiveservices_management_client(cli_ctx).models
+
+
+def cf_usages(cli_ctx, *_):
+    return get_cognitiveservices_management_client(cli_ctx).usages
+
+
+def cf_projects(cli_ctx, *_):
+    return get_cognitiveservices_management_client(cli_ctx).projects
+
+
+def cf_account_connections(cli_ctx, *_):
+    return get_cognitiveservices_management_client(cli_ctx).account_connections
+
+
+def cf_account_capability_hosts(cli_ctx, *_):
+    return get_cognitiveservices_management_client(cli_ctx).account_capability_hosts
+
+
+def cf_project_capability_hosts(cli_ctx, *_):
+    return get_cognitiveservices_management_client(cli_ctx).project_capability_hosts
+
+
+def cf_project_connections(cli_ctx, *_):
+    return get_cognitiveservices_management_client(cli_ctx).project_connections
