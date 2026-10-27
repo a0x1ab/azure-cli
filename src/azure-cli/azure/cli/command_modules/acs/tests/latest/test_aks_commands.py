@@ -6,7 +6,6 @@
 import json
 import os
 import subprocess
-import sys
 import tempfile
 import time
 import unittest
@@ -15082,6 +15081,7 @@ spec:
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
+    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest',
                                     location='westus2', preserve_default_location=True)
@@ -15114,31 +15114,25 @@ spec:
         ])
 
         # wait for cluster to fully settle before issuing next update
-        # Use subprocess to bypass VCR — aks wait makes a non-deterministic number
-        # of GET requests that would break cassette playback ordering.
-        # In playback mode the cluster doesn't exist so the subprocess will fail;
-        # we suppress that error since no real wait is needed during playback.
-        try:
-            subprocess.check_call([
-                sys.executable, '-m', 'azure.cli',
-                'aks', 'wait',
-                '-g', resource_group,
-                '-n', aks_name,
-                '--updated',
-                '--interval', '30',
-                '--timeout', '600',
-            ])
-            time.sleep(60)
-        except subprocess.CalledProcessError:
-            pass
+        self.cmd('aks wait --resource-group={resource_group} --name={name} --updated --interval 30 --timeout 600')
 
-        # update to disable app monitoring
+        # disable app monitoring — retry on 409 since the background
+        # PutExtensionAddonHandler.PUT may still be running after the cluster
+        # reports provisioningState=Succeeded
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
                      '--disable-azure-monitor-app-monitoring'
-        self.cmd(update_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', False),
-        ])
+        for attempt in range(10):
+            try:
+                self.cmd(update_cmd, checks=[
+                    self.check('provisioningState', 'Succeeded'),
+                    self.check('azureMonitorProfile.appMonitoring.autoInstrumentation.enabled', False),
+                ])
+                break
+            except Exception as ex:
+                if attempt < 9 and 'ResourceExistsError' in type(ex).__name__:
+                    time.sleep(60)
+                    continue
+                raise
 
         # delete
         self.cmd(
