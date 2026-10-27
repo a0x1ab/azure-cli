@@ -33,7 +33,7 @@ class DummyCli(AzCli):
             self.env_patch.start()
 
             # Always copy command index to avoid initializing it again
-            files_to_copy = ['commandIndex.json']
+            files_to_copy = ['commandIndex.json', 'extensionIndex.json', 'helpIndex.json', 'extensionHelpIndex.json']
             # In recording mode, copy login credentials from global config dir to the dummy config dir
             if os.getenv(ENV_VAR_TEST_LIVE, '').lower() == 'true':
                 files_to_copy.extend([
