@@ -1,0 +1,21 @@
+# Set the default behavior (used when a rule below doesn't match)
+* text=auto
+
+*.sln -text
+*.ico -text
+*.bmp -text
+*.png -text
+*.snk -text
+*.mht -text
+*.pickle -text
+
+# Some Windows-specific files should always be CRLF
+*.bat eol=crlf
+# The az script for Git Bash/Cygwin should be LF
+build_scripts/windows/scripts/az eol=lf
+# sh scripts should be LF
+*.sh eol=lf
+
+# Generated latest index assets should always use LF to avoid cross-platform churn
+src/azure-cli-core/azure/cli/core/commandIndex.latest.json text eol=lf
+src/azure-cli-core/azure/cli/core/helpIndex.latest.json text eol=lf
