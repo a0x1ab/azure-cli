@@ -14,11 +14,12 @@ cd $BUILD_SOURCESDIRECTORY
 branch=$1
 echo "Branch $branch"
 
-echo "Search setup files from `pwd`."
+echo "Search pyproject.toml files from `pwd`."
 python --version
 
-# Cap setuptools<81: 81 removes setup.py --dry-run and changes distutils command signatures (82 removes pkg_resources); `python setup.py bdist_wheel` below relies on setup.py.
-pip install -U pip "setuptools<81" wheel
+# Provision the PEP 517 frontend and backend for --no-isolation builds,
+# keeping setuptools at or above the security floor.
+pip install -U pip "setuptools>=78.1.1" wheel build
 pip list
 
 script_dir=`cd $(dirname $BASH_SOURCE[0]); pwd`
@@ -27,9 +28,12 @@ if [[ ! $branch =~ ^release ]]; then
     . $script_dir/../../ci/version.sh post`date -u '+%Y%m%d%H%M%S'`
 fi
 
-for setup_file in $(find src -name 'setup.py' | grep -v azure-cli-testsdk); do
-    pushd `dirname $setup_file`
-    python setup.py bdist_wheel -d $BUILD_STAGINGDIRECTORY
-    python setup.py sdist -d $BUILD_STAGINGDIRECTORY
+python -c 'import tomllib' 2>/dev/null || python -m pip install --disable-pip-version-check -q 'tomli>=2.0.1'
+python "$script_dir/../../ci/check_package_versions.py"
+
+for pyproject_file in $(find src -name 'pyproject.toml' | grep -v azure-cli-testsdk); do
+    pushd `dirname $pyproject_file`
+    python -m build --wheel --no-isolation --outdir $BUILD_STAGINGDIRECTORY
+    python -m build --sdist --no-isolation --outdir $BUILD_STAGINGDIRECTORY
     popd
 done
