@@ -3443,6 +3443,7 @@ def list_resources(cmd, resource_group_name=None,
 
     expand = "createdTime,changedTime,provisioningState"
     resources = rcf.resources.list(filter=odata_filter, expand=expand)
+    resources = [r for r in resources if r.location == location]
     return list(resources)
 
 
