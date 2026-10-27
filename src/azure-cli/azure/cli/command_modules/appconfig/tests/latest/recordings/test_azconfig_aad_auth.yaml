@@ -1,0 +1,75 @@
+interactions:
+- request:
+    body: '{"location": "eastus", "sku": {"name": "Standard"}, "properties": {"softDeleteRetentionInDays":
+      1, "dataPlaneProxy": {}, "createMode": "Default"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      CommandName:
+      - appconfig create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '146'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g -l --sku --retention-days
+      User-Agent:
+      - AZURECLI/2.88.0 azsdk-python-core/1.39.0 Python/3.14.3 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppConfiguration/configurationStores/AADStore000002?api-version=2025-08-01-preview
+  response:
+    body:
+      string: '{"error": {"code": "RequestDisallowedByPolicy", "target": "AADStore000002",
+        "message": "Resource ''AADStore000002'' was disallowed by policy. Reasons:
+        ''Local authentication must be disabled on App Configuration stores. Use Microsoft
+        Entra ID for authentication instead.''. See error details for policy resource
+        IDs.", "additionalInfo": [{"type": "PolicyViolation", "info": {"evaluationDetails":
+        {"evaluatedExpressions": [{"result": "True", "expressionKind": "Value", "expression":
+        "all", "expressionValue": "all", "targetValue": ["all"], "operator": "In"},
+        {"result": "True", "expressionKind": "Field", "expression": "type", "path":
+        "type", "expressionValue": "Microsoft.AppConfiguration/configurationStores",
+        "targetValue": "Microsoft.AppConfiguration/configurationStores", "operator":
+        "Equals"}, {"result": "True", "expressionKind": "Field", "expression": "Microsoft.AppConfiguration/configurationStores/disableLocalAuth",
+        "path": "properties.disableLocalAuth", "targetValue": "False", "operator":
+        "Exists"}], "reason": "Local authentication must be disabled on App Configuration
+        stores. Use Microsoft Entra ID for authentication instead."}, "policyDefinitionId":
+        "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/policyDefinitions/628fedbf-e261-5d9d-9880-97d5b2a0226e",
+        "policyDefinitionName": "628fedbf-e261-5d9d-9880-97d5b2a0226e", "policyDefinitionDisplayName":
+        "[AppConfig] Disable local authentication on App Configuration stores", "policyDefinitionVersion":
+        "1.0.0", "policyDefinitionEffect": "deny", "policyAssignmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/policyAssignments/67dfe9ff-974c-5e6b-bbf3-2b683b13c936",
+        "policyAssignmentName": "67dfe9ff-974c-5e6b-bbf3-2b683b13c936", "policyAssignmentDisplayName":
+        "[AppConfig] Disable local authentication on App Configuration stores", "policyAssignmentScope":
+        "/subscriptions/00000000-0000-0000-0000-000000000000", "policyAssignmentParameters":
+        {"enforcedRegionsString": "all", "effect": "deny"}, "policyExemptionIds":
+        [], "policyEnrollmentIds": []}}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2095'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 02 Jul 2026 21:56:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: 1AB72E285866410287DAA5C2B368A291 Ref B: CO6AA3150220039 Ref C: 2026-07-02T21:56:42Z'
+    status:
+      code: 403
+      message: Forbidden
+version: 1
