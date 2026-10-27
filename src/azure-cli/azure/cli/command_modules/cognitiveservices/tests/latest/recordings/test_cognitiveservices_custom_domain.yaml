@@ -1,0 +1,840 @@
+interactions:
+- request:
+    body: '{"sku": {"name": "S0"}, "kind": "FormRecognizer", "location": "southcentralus",
+      "properties": {"customSubDomainName": "csclitest000003"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cognitiveservices account create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '137'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --kind --sku -l --yes --custom-domain
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.10.11 (Windows-10-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.CognitiveServices/accounts/cs_cli_test_000002?api-version=2026-09-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.CognitiveServices/accounts/cs_cli_test_000002","name":"cs_cli_test_000002","type":"Microsoft.CognitiveServices/accounts","etag":"\"0a009589-0000-0500-0000-6ad7419c0000\"","location":"southcentralus","sku":{"name":"S0"},"kind":"FormRecognizer","properties":{"endpoint":"https://csclitest000003.cognitiveservices.azure.com/","internalId":"fa1c68c7fe4c4b9594c3b7fe90af223a","dateCreated":"2026-10-20T10:25:29.9959711Z","callRateLimit":{"rules":[{"key":"container.billing","renewalPeriod":10,"count":500,"matchPatterns":[{"path":"billing/*","method":"*"}]},{"key":"formrecognizer.analyze","renewalPeriod":1,"count":15,"matchPatterns":[{"path":"formrecognizer/custom/models/{id}/analyze","method":"POST"},{"path":"formrecognizer/custom/models/{modelId}/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/businessCard/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/idDocument/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/invoice/analyze","method":"POST"},{"path":"formrecognizer/layout/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/receipt/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/receipt/asyncBatchAnalyze","method":"POST"},{"path":"formrecognizer/documentModels/{modelId}:analyze","method":"POST"},{"path":"formrecognizer/read","method":"POST"},{"path":"formrecognizer/documentClassifiers/{classifierId}:analyze","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:analyze","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:analyze?_overload=analyzeDocument","method":"POST"},{"path":"documentintelligence/documentClassifiers/{classifierId}:analyze","method":"POST"},{"path":"documentintelligence/documentClassifiers/{classifierId}:analyze?_overload=classifyDocument","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:analyzeBatch","method":"POST"}]},{"key":"formrecognizer.get.object","renewalPeriod":1,"count":50,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"formrecognizer/custom/models/{modelId}/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/businessCard/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/idDocument/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/invoice/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/receipt/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/receipt/operations/{operationId}","method":"GET"},{"path":"formrecognizer/documentModels/{modelId}/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/layout/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}/copyResults/{resultId}","method":"GET"},{"path":"formrecognizer/operations/{operationId}","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}","method":"GET"},{"path":"formrecognizer/custom/models/{id}","method":"GET"},{"path":"formrecognizer/documentModels/{modelId}","method":"GET"},{"path":"formrecognizer/documentClassifiers/{classifierId}","method":"GET"},{"path":"formrecognizer/documentClassifiers/{classifierId}/analyzeResults/{resultId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeResults/{resultId}","method":"GET"},{"path":"documentintelligence/operations/{operationId}","method":"GET"},{"path":"documentintelligence/operations/{operationId}?_overload={_overload}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}","method":"GET"},{"path":"documentintelligence/documentClassifiers/{classifierId}","method":"GET"},{"path":"documentintelligence/documentClassifiers/{classifierId}/analyzeResults/{resultId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeBatchResults/{resultId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeResults/{resultId}/figures/{figureId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeResults/{resultId}/pdf","method":"GET"}]},{"key":"formrecognizer.list.objects","renewalPeriod":1,"count":10,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"formrecognizer/operations","method":"GET"},{"path":"formrecognizer/info","method":"GET"},{"path":"formrecognizer/documentModels","method":"GET"},{"path":"formrecognizer/custom/models","method":"GET"},{"path":"formrecognizer/documentClassifiers","method":"GET"},{"path":"documentintelligence/documentModels","method":"GET"},{"path":"documentintelligence/operations","method":"GET"},{"path":"documentintelligence/info","method":"GET"},{"path":"documentintelligence/documentClassifiers","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeBatchResults","method":"GET"}]},{"key":"formrecognizer.model.management","renewalPeriod":1,"count":5,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"formrecognizer/custom/models","method":"POST"},{"path":"formrecognizer/custom/models/compose","method":"POST"},{"path":"formrecognizer/custom/models/copyAuthorization","method":"POST"},{"path":"formrecognizer/custom/models/{id}","method":"DELETE"},{"path":"formrecognizer/custom/models/{id}/keys","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}","method":"DELETE"},{"path":"formrecognizer/custom/models/{modelId}/copy","method":"POST"},{"path":"formrecognizer/documentModels/{modelId}:copyTo","method":"POST"},{"path":"formrecognizer/documentModels:authorizeCopy","method":"POST"},{"path":"formrecognizer/documentModels:build","method":"POST"},{"path":"formrecognizer/documentModels:compose","method":"POST"},{"path":"formrecognizer/custom/train","method":"POST"},{"path":"formrecognizer/custom/models/{modelId}","method":"DELETE"},{"path":"formrecognizer/documentModels/{modelId}","method":"DELETE"},{"path":"formrecognizer/documentClassifiers:build","method":"POST"},{"path":"formrecognizer/documentClassifiers/{classifierId}","method":"DELETE"},{"path":"documentintelligence/documentModels:authorizeCopy","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:copyTo","method":"POST"},{"path":"documentintelligence/documentModels:build","method":"POST"},{"path":"documentintelligence/documentModels:compose","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}","method":"DELETE"},{"path":"documentintelligence/documentClassifiers:build","method":"POST"},{"path":"documentintelligence/documentClassifiers/{classifierId}","method":"DELETE"},{"path":"documentintelligence/documentClassifiers/{classifierId}:copyTo","method":"POST"},{"path":"documentintelligence/documentClassifiers:authorizeCopy","method":"POST"}]},{"key":"formrecognizer.chat.build","renewalPeriod":1,"count":15,"matchPatterns":[{"path":"documentintelligence/chat:build","method":"POST"}]},{"key":"formrecognizer.chat.complete","renewalPeriod":60,"count":5,"matchPatterns":[{"path":"documentintelligence/chat/{chatId}:complete","method":"POST"}]},{"key":"formrecognizer.labeling","renewalPeriod":1,"count":100,"matchPatterns":[{"path":"documentintelligence/labelingProjects/*","method":"*"},{"path":"documentintelligence/classificationProjects/*","method":"*"},{"path":"documentintelligence/labelingProjects","method":"GET"},{"path":"documentintelligence/classificationProjects","method":"GET"}]},{"key":"default","renewalPeriod":1,"count":5,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"*","method":"*"}]}]},"isMigrated":false,"customSubDomainName":"csclitest000003","allowProjectManagement":false,"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","capabilities":[{"name":"DynamicThrottling"},{"name":"VirtualNetworks"},{"name":"EnabledApimVnet","value":"true"},{"name":"CustomerManagedKey"},{"name":"Container","value":"FormRecognizer.*,FormRecognizer.Forms,FormRecognizer.FormRecognizerCustomSupervised,FormRecognizer.FormRecognizerLayout,FormRecognizer.formrecognizerreadlayout,FormRecognizer.FormRecognizerId,FormRecognizer.FormRecognizerInvoice,FormRecognizer.FormRecognizerReceipt,FormRecognizer.FormRecognizerBusinessCard,FormRecognizer.FormRecognizerRead,FormRecognizer.FormRecognizerKvp"}],"endpoints":{"FormRecognizer":"https://csclitest000003.cognitiveservices.azure.com/","Container":"https://csclitest000003.cognitiveservices.azure.com/"},"a365LoggingEnabled":true,"a365Status":"Enabled","provisioningState":"Creating"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-20T10:25:28.4463389Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-20T10:25:28.4463389Z"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CognitiveServices/locations/southcentralus/operationResults/39cfaf05-cdd0-4e69-a16c-f2682086d753?api-version=2017-04-18&t=639280887328682391&c=MIIIJjCCBw6gAwIBAgIQb2qmfO_DC0moMTy1B-w-kzANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBXQ1VTIENBIDAxMB4XDTI2MDkxNzIxNDYzMVoXDTI2MTIxMzAzNDYzMVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDBToa7cnDwXvKUyj5e4vSBSlYGxyPkYA2aIAtIXrpzbSO4j8i97D18tY3qhWpmsdmSdv0rK-lBy37I6vz21WypgG8nNTtTxz1pmSSLun1twUt2ZfOkiAxyWczEitHE4mhRRJeo37BCaermYRNBTZNVQc0pSC0CJCZ9WuIl2OZWEw_gg49SMJ-drVqAROg4doBPHBP6YLpnZfgwScnRpd1ZG9eCaElgbbjQZXY891kEw79oDmUKYKlS9yot5WC9zkKtHQoT00u-GcsE4IBygmTJsRhTmIulTltnfa9tzDt1yn0C7fEkeLacVvdDaLOVGqNMl-N9lXz_WVa474Y68WfRAgMBAAGjggUkMIIFIDCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT_Ehdpc3aOyiA6AmwPCbk7jORu-zAfBgNVHSMEGDAWgBQU0jfg9tZ9ft2NurplqwSUJeCWHTCCAfsGA1UdHwSCAfIwggHuMHugeaB3hnVodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jcmxzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvOTIvY3VycmVudC5jcmwwfaB7oHmGd2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzkyL2N1cnJlbnQuY3JsMGygaqBohmZodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdGNlbnRyYWx1cy9jcmxzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvOTIvY3VycmVudC5jcmwwgYGgf6B9hntodHRwOi8vY2NtZXdlc3RjZW50cmFsdXNwa2kud2VzdGNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvOTIvY3VycmVudC5jcmwwggIABggrBgEFBQcBAQSCAfIwggHuMH4GCCsGAQUFBzAChnJodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jYWNlcnRzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvY2VydC5jZXIwgYAGCCsGAQUFBzAChnRodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0Y2VudHJhbHVzL2NhY2VydHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBvBggrBgEFBQcwAoZjaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3RjZW50cmFsdXMvY2FjZXJ0cy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMHgGCCsGAQUFBzAChmxodHRwOi8vY2NtZXdlc3RjZW50cmFsdXNwa2kud2VzdGNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEwDQYJKoZIhvcNAQELBQADggEBAD7NePzsP7SmVrhKzOCfNfqa0tTFTRPQefuLSDiZHSAxFTjDklSunq5PecGvEThEOQRiSjn90yZpqo2gvQrNGXifpPRqmOnNv8YoCPj8Af9rvfemNnWcQFYeOmzKPB4wWgDH4d9svbRdoP5GnuKxOZG8uzkD4IN2NtcKCqtNIFNnLQwJ8gLyv75npl7xesaYNYnZxi3j1dHls6w6bW1SiUha3xsEsFEmREYUVlpBT5WHX-CpXwdlce3L6NjDvaKO1d8m8LveljhPUKtYTNYK86U8ODPATKC3erEpogc5Vp1KtlHo6GcgJGK4rsRBjieBizNcUj_exEqhlNob9hZLSVI&s=jBSzk5ujX5mR5PVuIsvJUT7wW5qPtyViJ7yEfwmge2BNYaF4B9YHEYxZkvrSh1J32Ht40ehmzV8_FhtimHVgbGlAIfsDDRovVAP_EQL8ZGgQeDmL0MmRkCa4zU7ibD5legRpiFWa9ydPh5R5hKs1HEiXBZJG_c5ewjcD3ZWtL2Qjvayw0izHmi14YTu3qoOb6aSN1E-kluDGQk2ULLLNR2yX9o4MI2x32O2E2xLPGIVQF-UFNFLRDORjd-wpRvlfnn3yqzOBmDnC6Yy8nKPGIQcAc0tksTLBK_SV1L1EVGG2FmqDw7pOEO7HbEVBysGOu5xV78sEGThhwl5ClNzksw&h=VBpjv7C71rAan6NcmB6TLCNLmM9yQj2tmEq1oZUPpzw
+      cache-control:
+      - no-cache
+      content-length:
+      - '8772'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 10:25:32 GMT
+      etag:
+      - '"0a009589-0000-0500-0000-6ad7419c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '2563'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=87c1683e-b943-42a1-84c3-bb17c54886ae/centralindia/e605cfa9-63d2-4598-a44e-5c678c36f2cf
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 5EF43691153C4C40954368644E6C7E4C Ref B: PNQ241100405029 Ref C: 2026-10-20T10:25:25Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cognitiveservices account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind --sku -l --yes --custom-domain
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.10.11 (Windows-10-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CognitiveServices/locations/southcentralus/operationResults/39cfaf05-cdd0-4e69-a16c-f2682086d753?api-version=2017-04-18&t=639280887328682391&c=MIIIJjCCBw6gAwIBAgIQb2qmfO_DC0moMTy1B-w-kzANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBXQ1VTIENBIDAxMB4XDTI2MDkxNzIxNDYzMVoXDTI2MTIxMzAzNDYzMVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDBToa7cnDwXvKUyj5e4vSBSlYGxyPkYA2aIAtIXrpzbSO4j8i97D18tY3qhWpmsdmSdv0rK-lBy37I6vz21WypgG8nNTtTxz1pmSSLun1twUt2ZfOkiAxyWczEitHE4mhRRJeo37BCaermYRNBTZNVQc0pSC0CJCZ9WuIl2OZWEw_gg49SMJ-drVqAROg4doBPHBP6YLpnZfgwScnRpd1ZG9eCaElgbbjQZXY891kEw79oDmUKYKlS9yot5WC9zkKtHQoT00u-GcsE4IBygmTJsRhTmIulTltnfa9tzDt1yn0C7fEkeLacVvdDaLOVGqNMl-N9lXz_WVa474Y68WfRAgMBAAGjggUkMIIFIDCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT_Ehdpc3aOyiA6AmwPCbk7jORu-zAfBgNVHSMEGDAWgBQU0jfg9tZ9ft2NurplqwSUJeCWHTCCAfsGA1UdHwSCAfIwggHuMHugeaB3hnVodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jcmxzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvOTIvY3VycmVudC5jcmwwfaB7oHmGd2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzkyL2N1cnJlbnQuY3JsMGygaqBohmZodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdGNlbnRyYWx1cy9jcmxzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvOTIvY3VycmVudC5jcmwwgYGgf6B9hntodHRwOi8vY2NtZXdlc3RjZW50cmFsdXNwa2kud2VzdGNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvOTIvY3VycmVudC5jcmwwggIABggrBgEFBQcBAQSCAfIwggHuMH4GCCsGAQUFBzAChnJodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jYWNlcnRzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvY2VydC5jZXIwgYAGCCsGAQUFBzAChnRodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0Y2VudHJhbHVzL2NhY2VydHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBvBggrBgEFBQcwAoZjaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3RjZW50cmFsdXMvY2FjZXJ0cy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMHgGCCsGAQUFBzAChmxodHRwOi8vY2NtZXdlc3RjZW50cmFsdXNwa2kud2VzdGNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEwDQYJKoZIhvcNAQELBQADggEBAD7NePzsP7SmVrhKzOCfNfqa0tTFTRPQefuLSDiZHSAxFTjDklSunq5PecGvEThEOQRiSjn90yZpqo2gvQrNGXifpPRqmOnNv8YoCPj8Af9rvfemNnWcQFYeOmzKPB4wWgDH4d9svbRdoP5GnuKxOZG8uzkD4IN2NtcKCqtNIFNnLQwJ8gLyv75npl7xesaYNYnZxi3j1dHls6w6bW1SiUha3xsEsFEmREYUVlpBT5WHX-CpXwdlce3L6NjDvaKO1d8m8LveljhPUKtYTNYK86U8ODPATKC3erEpogc5Vp1KtlHo6GcgJGK4rsRBjieBizNcUj_exEqhlNob9hZLSVI&s=jBSzk5ujX5mR5PVuIsvJUT7wW5qPtyViJ7yEfwmge2BNYaF4B9YHEYxZkvrSh1J32Ht40ehmzV8_FhtimHVgbGlAIfsDDRovVAP_EQL8ZGgQeDmL0MmRkCa4zU7ibD5legRpiFWa9ydPh5R5hKs1HEiXBZJG_c5ewjcD3ZWtL2Qjvayw0izHmi14YTu3qoOb6aSN1E-kluDGQk2ULLLNR2yX9o4MI2x32O2E2xLPGIVQF-UFNFLRDORjd-wpRvlfnn3yqzOBmDnC6Yy8nKPGIQcAc0tksTLBK_SV1L1EVGG2FmqDw7pOEO7HbEVBysGOu5xV78sEGThhwl5ClNzksw&h=VBpjv7C71rAan6NcmB6TLCNLmM9yQj2tmEq1oZUPpzw
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CognitiveServices/locations/southcentralus/operationResults/39cfaf05-cdd0-4e69-a16c-f2682086d753","name":"39cfaf05-cdd0-4e69-a16c-f2682086d753","status":"Creating","startTime":"2026-10-20T10:25:32Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '278'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 10:25:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '33'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=87c1683e-b943-42a1-84c3-bb17c54886ae/centralindia/4124e361-e75e-439f-a9a2-5123e13ec264
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 77441AB2B4DD4558B663BB4DAE580157 Ref B: PNQ231110906040 Ref C: 2026-10-20T10:25:37Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cognitiveservices account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind --sku -l --yes --custom-domain
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.10.11 (Windows-10-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CognitiveServices/locations/southcentralus/operationResults/39cfaf05-cdd0-4e69-a16c-f2682086d753?api-version=2017-04-18&t=639280887328682391&c=MIIIJjCCBw6gAwIBAgIQb2qmfO_DC0moMTy1B-w-kzANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBXQ1VTIENBIDAxMB4XDTI2MDkxNzIxNDYzMVoXDTI2MTIxMzAzNDYzMVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDBToa7cnDwXvKUyj5e4vSBSlYGxyPkYA2aIAtIXrpzbSO4j8i97D18tY3qhWpmsdmSdv0rK-lBy37I6vz21WypgG8nNTtTxz1pmSSLun1twUt2ZfOkiAxyWczEitHE4mhRRJeo37BCaermYRNBTZNVQc0pSC0CJCZ9WuIl2OZWEw_gg49SMJ-drVqAROg4doBPHBP6YLpnZfgwScnRpd1ZG9eCaElgbbjQZXY891kEw79oDmUKYKlS9yot5WC9zkKtHQoT00u-GcsE4IBygmTJsRhTmIulTltnfa9tzDt1yn0C7fEkeLacVvdDaLOVGqNMl-N9lXz_WVa474Y68WfRAgMBAAGjggUkMIIFIDCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT_Ehdpc3aOyiA6AmwPCbk7jORu-zAfBgNVHSMEGDAWgBQU0jfg9tZ9ft2NurplqwSUJeCWHTCCAfsGA1UdHwSCAfIwggHuMHugeaB3hnVodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jcmxzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvOTIvY3VycmVudC5jcmwwfaB7oHmGd2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzkyL2N1cnJlbnQuY3JsMGygaqBohmZodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdGNlbnRyYWx1cy9jcmxzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvOTIvY3VycmVudC5jcmwwgYGgf6B9hntodHRwOi8vY2NtZXdlc3RjZW50cmFsdXNwa2kud2VzdGNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvOTIvY3VycmVudC5jcmwwggIABggrBgEFBQcBAQSCAfIwggHuMH4GCCsGAQUFBzAChnJodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jYWNlcnRzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvY2VydC5jZXIwgYAGCCsGAQUFBzAChnRodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0Y2VudHJhbHVzL2NhY2VydHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBvBggrBgEFBQcwAoZjaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3RjZW50cmFsdXMvY2FjZXJ0cy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMHgGCCsGAQUFBzAChmxodHRwOi8vY2NtZXdlc3RjZW50cmFsdXNwa2kud2VzdGNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEwDQYJKoZIhvcNAQELBQADggEBAD7NePzsP7SmVrhKzOCfNfqa0tTFTRPQefuLSDiZHSAxFTjDklSunq5PecGvEThEOQRiSjn90yZpqo2gvQrNGXifpPRqmOnNv8YoCPj8Af9rvfemNnWcQFYeOmzKPB4wWgDH4d9svbRdoP5GnuKxOZG8uzkD4IN2NtcKCqtNIFNnLQwJ8gLyv75npl7xesaYNYnZxi3j1dHls6w6bW1SiUha3xsEsFEmREYUVlpBT5WHX-CpXwdlce3L6NjDvaKO1d8m8LveljhPUKtYTNYK86U8ODPATKC3erEpogc5Vp1KtlHo6GcgJGK4rsRBjieBizNcUj_exEqhlNob9hZLSVI&s=jBSzk5ujX5mR5PVuIsvJUT7wW5qPtyViJ7yEfwmge2BNYaF4B9YHEYxZkvrSh1J32Ht40ehmzV8_FhtimHVgbGlAIfsDDRovVAP_EQL8ZGgQeDmL0MmRkCa4zU7ibD5legRpiFWa9ydPh5R5hKs1HEiXBZJG_c5ewjcD3ZWtL2Qjvayw0izHmi14YTu3qoOb6aSN1E-kluDGQk2ULLLNR2yX9o4MI2x32O2E2xLPGIVQF-UFNFLRDORjd-wpRvlfnn3yqzOBmDnC6Yy8nKPGIQcAc0tksTLBK_SV1L1EVGG2FmqDw7pOEO7HbEVBysGOu5xV78sEGThhwl5ClNzksw&h=VBpjv7C71rAan6NcmB6TLCNLmM9yQj2tmEq1oZUPpzw
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CognitiveServices/locations/southcentralus/operationResults/39cfaf05-cdd0-4e69-a16c-f2682086d753","name":"39cfaf05-cdd0-4e69-a16c-f2682086d753","status":"Succeeded","startTime":"2026-10-20T10:25:32Z","endTime":"2026-10-20T10:26:05Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '312'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 10:26:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '10'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=87c1683e-b943-42a1-84c3-bb17c54886ae/westindia/ce1c2793-1702-4e97-b76a-44f29892482c
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: A58A13FE55734C39BE6CD938086BBB99 Ref B: PNQ241100403052 Ref C: 2026-10-20T10:26:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cognitiveservices account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind --sku -l --yes --custom-domain
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.10.11 (Windows-10-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.CognitiveServices/accounts/cs_cli_test_000002?api-version=2026-09-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.CognitiveServices/accounts/cs_cli_test_000002","name":"cs_cli_test_000002","type":"Microsoft.CognitiveServices/accounts","etag":"\"0a00b48c-0000-0500-0000-6ad741bb0000\"","location":"southcentralus","sku":{"name":"S0"},"kind":"FormRecognizer","properties":{"endpoint":"https://csclitest000003.cognitiveservices.azure.com/","internalId":"fa1c68c7fe4c4b9594c3b7fe90af223a","dateCreated":"2026-10-20T10:25:29.9959711Z","callRateLimit":{"rules":[{"key":"container.billing","renewalPeriod":10,"count":500,"matchPatterns":[{"path":"billing/*","method":"*"}]},{"key":"formrecognizer.analyze","renewalPeriod":1,"count":15,"matchPatterns":[{"path":"formrecognizer/custom/models/{id}/analyze","method":"POST"},{"path":"formrecognizer/custom/models/{modelId}/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/businessCard/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/idDocument/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/invoice/analyze","method":"POST"},{"path":"formrecognizer/layout/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/receipt/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/receipt/asyncBatchAnalyze","method":"POST"},{"path":"formrecognizer/documentModels/{modelId}:analyze","method":"POST"},{"path":"formrecognizer/read","method":"POST"},{"path":"formrecognizer/documentClassifiers/{classifierId}:analyze","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:analyze","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:analyze?_overload=analyzeDocument","method":"POST"},{"path":"documentintelligence/documentClassifiers/{classifierId}:analyze","method":"POST"},{"path":"documentintelligence/documentClassifiers/{classifierId}:analyze?_overload=classifyDocument","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:analyzeBatch","method":"POST"}]},{"key":"formrecognizer.get.object","renewalPeriod":1,"count":50,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"formrecognizer/custom/models/{modelId}/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/businessCard/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/idDocument/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/invoice/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/receipt/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/receipt/operations/{operationId}","method":"GET"},{"path":"formrecognizer/documentModels/{modelId}/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/layout/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}/copyResults/{resultId}","method":"GET"},{"path":"formrecognizer/operations/{operationId}","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}","method":"GET"},{"path":"formrecognizer/custom/models/{id}","method":"GET"},{"path":"formrecognizer/documentModels/{modelId}","method":"GET"},{"path":"formrecognizer/documentClassifiers/{classifierId}","method":"GET"},{"path":"formrecognizer/documentClassifiers/{classifierId}/analyzeResults/{resultId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeResults/{resultId}","method":"GET"},{"path":"documentintelligence/operations/{operationId}","method":"GET"},{"path":"documentintelligence/operations/{operationId}?_overload={_overload}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}","method":"GET"},{"path":"documentintelligence/documentClassifiers/{classifierId}","method":"GET"},{"path":"documentintelligence/documentClassifiers/{classifierId}/analyzeResults/{resultId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeBatchResults/{resultId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeResults/{resultId}/figures/{figureId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeResults/{resultId}/pdf","method":"GET"}]},{"key":"formrecognizer.list.objects","renewalPeriod":1,"count":10,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"formrecognizer/operations","method":"GET"},{"path":"formrecognizer/info","method":"GET"},{"path":"formrecognizer/documentModels","method":"GET"},{"path":"formrecognizer/custom/models","method":"GET"},{"path":"formrecognizer/documentClassifiers","method":"GET"},{"path":"documentintelligence/documentModels","method":"GET"},{"path":"documentintelligence/operations","method":"GET"},{"path":"documentintelligence/info","method":"GET"},{"path":"documentintelligence/documentClassifiers","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeBatchResults","method":"GET"}]},{"key":"formrecognizer.model.management","renewalPeriod":1,"count":5,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"formrecognizer/custom/models","method":"POST"},{"path":"formrecognizer/custom/models/compose","method":"POST"},{"path":"formrecognizer/custom/models/copyAuthorization","method":"POST"},{"path":"formrecognizer/custom/models/{id}","method":"DELETE"},{"path":"formrecognizer/custom/models/{id}/keys","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}","method":"DELETE"},{"path":"formrecognizer/custom/models/{modelId}/copy","method":"POST"},{"path":"formrecognizer/documentModels/{modelId}:copyTo","method":"POST"},{"path":"formrecognizer/documentModels:authorizeCopy","method":"POST"},{"path":"formrecognizer/documentModels:build","method":"POST"},{"path":"formrecognizer/documentModels:compose","method":"POST"},{"path":"formrecognizer/custom/train","method":"POST"},{"path":"formrecognizer/custom/models/{modelId}","method":"DELETE"},{"path":"formrecognizer/documentModels/{modelId}","method":"DELETE"},{"path":"formrecognizer/documentClassifiers:build","method":"POST"},{"path":"formrecognizer/documentClassifiers/{classifierId}","method":"DELETE"},{"path":"documentintelligence/documentModels:authorizeCopy","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:copyTo","method":"POST"},{"path":"documentintelligence/documentModels:build","method":"POST"},{"path":"documentintelligence/documentModels:compose","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}","method":"DELETE"},{"path":"documentintelligence/documentClassifiers:build","method":"POST"},{"path":"documentintelligence/documentClassifiers/{classifierId}","method":"DELETE"},{"path":"documentintelligence/documentClassifiers/{classifierId}:copyTo","method":"POST"},{"path":"documentintelligence/documentClassifiers:authorizeCopy","method":"POST"}]},{"key":"formrecognizer.chat.build","renewalPeriod":1,"count":15,"matchPatterns":[{"path":"documentintelligence/chat:build","method":"POST"}]},{"key":"formrecognizer.chat.complete","renewalPeriod":60,"count":5,"matchPatterns":[{"path":"documentintelligence/chat/{chatId}:complete","method":"POST"}]},{"key":"formrecognizer.labeling","renewalPeriod":1,"count":100,"matchPatterns":[{"path":"documentintelligence/labelingProjects/*","method":"*"},{"path":"documentintelligence/classificationProjects/*","method":"*"},{"path":"documentintelligence/labelingProjects","method":"GET"},{"path":"documentintelligence/classificationProjects","method":"GET"}]},{"key":"default","renewalPeriod":1,"count":5,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"*","method":"*"}]}]},"isMigrated":false,"customSubDomainName":"csclitest000003","allowProjectManagement":false,"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","capabilities":[{"name":"DynamicThrottling"},{"name":"VirtualNetworks"},{"name":"EnabledApimVnet","value":"true"},{"name":"CustomerManagedKey"},{"name":"Container","value":"FormRecognizer.*,FormRecognizer.Forms,FormRecognizer.FormRecognizerCustomSupervised,FormRecognizer.FormRecognizerLayout,FormRecognizer.formrecognizerreadlayout,FormRecognizer.FormRecognizerId,FormRecognizer.FormRecognizerInvoice,FormRecognizer.FormRecognizerReceipt,FormRecognizer.FormRecognizerBusinessCard,FormRecognizer.FormRecognizerRead,FormRecognizer.FormRecognizerKvp"}],"endpoints":{"FormRecognizer":"https://csclitest000003.cognitiveservices.azure.com/","Container":"https://csclitest000003.cognitiveservices.azure.com/"},"a365LoggingEnabled":true,"a365Status":"Enabled","provisioningState":"Succeeded"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-20T10:25:28.4463389Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-20T10:25:28.4463389Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '8773'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 10:26:10 GMT
+      etag:
+      - '"0a00b48c-0000-0500-0000-6ad741bb0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '14'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 7987CEF61B814DA1AC3BE85818C361F7 Ref B: PNQ241100405034 Ref C: 2026-10-20T10:26:10Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cognitiveservices account delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.10.11 (Windows-10-10.0.26300-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.CognitiveServices/accounts/cs_cli_test_000002?api-version=2026-09-15-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 20 Oct 2026 10:26:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '122'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=87c1683e-b943-42a1-84c3-bb17c54886ae/southindia/84b3f8ed-e67d-4d7f-9a2b-e43e9dc2244d
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '800'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '12000'
+      x-msedge-ref:
+      - 'Ref A: 3D3FAA270473424BBDE6C08ACB8B3C42 Ref B: PNQ241100403052 Ref C: 2026-10-20T10:26:11Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"sku": {"name": "S0"}, "kind": "FormRecognizer", "location": "southcentralus",
+      "properties": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cognitiveservices account create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '97'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --kind --sku -l --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.10.11 (Windows-10-10.0.26300-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.CognitiveServices/accounts/cs_cli_test_000004?api-version=2026-09-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.CognitiveServices/accounts/cs_cli_test_000004","name":"cs_cli_test_000004","type":"Microsoft.CognitiveServices/accounts","etag":"\"0a00dc8e-0000-0500-0000-6ad741cf0000\"","location":"southcentralus","sku":{"name":"S0"},"kind":"FormRecognizer","properties":{"endpoint":"https://southcentralus.api.cognitive.microsoft.com/","internalId":"d04376c57ba448af8103f472c60de3f0","dateCreated":"2026-10-20T10:26:23.23509Z","callRateLimit":{"rules":[{"key":"container.billing","renewalPeriod":10,"count":500,"matchPatterns":[{"path":"billing/*","method":"*"}]},{"key":"formrecognizer.analyze","renewalPeriod":1,"count":15,"matchPatterns":[{"path":"formrecognizer/custom/models/{id}/analyze","method":"POST"},{"path":"formrecognizer/custom/models/{modelId}/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/businessCard/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/idDocument/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/invoice/analyze","method":"POST"},{"path":"formrecognizer/layout/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/receipt/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/receipt/asyncBatchAnalyze","method":"POST"},{"path":"formrecognizer/documentModels/{modelId}:analyze","method":"POST"},{"path":"formrecognizer/read","method":"POST"},{"path":"formrecognizer/documentClassifiers/{classifierId}:analyze","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:analyze","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:analyze?_overload=analyzeDocument","method":"POST"},{"path":"documentintelligence/documentClassifiers/{classifierId}:analyze","method":"POST"},{"path":"documentintelligence/documentClassifiers/{classifierId}:analyze?_overload=classifyDocument","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:analyzeBatch","method":"POST"}]},{"key":"formrecognizer.get.object","renewalPeriod":1,"count":50,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"formrecognizer/custom/models/{modelId}/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/businessCard/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/idDocument/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/invoice/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/receipt/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/receipt/operations/{operationId}","method":"GET"},{"path":"formrecognizer/documentModels/{modelId}/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/layout/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}/copyResults/{resultId}","method":"GET"},{"path":"formrecognizer/operations/{operationId}","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}","method":"GET"},{"path":"formrecognizer/custom/models/{id}","method":"GET"},{"path":"formrecognizer/documentModels/{modelId}","method":"GET"},{"path":"formrecognizer/documentClassifiers/{classifierId}","method":"GET"},{"path":"formrecognizer/documentClassifiers/{classifierId}/analyzeResults/{resultId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeResults/{resultId}","method":"GET"},{"path":"documentintelligence/operations/{operationId}","method":"GET"},{"path":"documentintelligence/operations/{operationId}?_overload={_overload}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}","method":"GET"},{"path":"documentintelligence/documentClassifiers/{classifierId}","method":"GET"},{"path":"documentintelligence/documentClassifiers/{classifierId}/analyzeResults/{resultId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeBatchResults/{resultId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeResults/{resultId}/figures/{figureId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeResults/{resultId}/pdf","method":"GET"}]},{"key":"formrecognizer.list.objects","renewalPeriod":1,"count":10,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"formrecognizer/operations","method":"GET"},{"path":"formrecognizer/info","method":"GET"},{"path":"formrecognizer/documentModels","method":"GET"},{"path":"formrecognizer/custom/models","method":"GET"},{"path":"formrecognizer/documentClassifiers","method":"GET"},{"path":"documentintelligence/documentModels","method":"GET"},{"path":"documentintelligence/operations","method":"GET"},{"path":"documentintelligence/info","method":"GET"},{"path":"documentintelligence/documentClassifiers","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeBatchResults","method":"GET"}]},{"key":"formrecognizer.model.management","renewalPeriod":1,"count":5,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"formrecognizer/custom/models","method":"POST"},{"path":"formrecognizer/custom/models/compose","method":"POST"},{"path":"formrecognizer/custom/models/copyAuthorization","method":"POST"},{"path":"formrecognizer/custom/models/{id}","method":"DELETE"},{"path":"formrecognizer/custom/models/{id}/keys","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}","method":"DELETE"},{"path":"formrecognizer/custom/models/{modelId}/copy","method":"POST"},{"path":"formrecognizer/documentModels/{modelId}:copyTo","method":"POST"},{"path":"formrecognizer/documentModels:authorizeCopy","method":"POST"},{"path":"formrecognizer/documentModels:build","method":"POST"},{"path":"formrecognizer/documentModels:compose","method":"POST"},{"path":"formrecognizer/custom/train","method":"POST"},{"path":"formrecognizer/custom/models/{modelId}","method":"DELETE"},{"path":"formrecognizer/documentModels/{modelId}","method":"DELETE"},{"path":"formrecognizer/documentClassifiers:build","method":"POST"},{"path":"formrecognizer/documentClassifiers/{classifierId}","method":"DELETE"},{"path":"documentintelligence/documentModels:authorizeCopy","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:copyTo","method":"POST"},{"path":"documentintelligence/documentModels:build","method":"POST"},{"path":"documentintelligence/documentModels:compose","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}","method":"DELETE"},{"path":"documentintelligence/documentClassifiers:build","method":"POST"},{"path":"documentintelligence/documentClassifiers/{classifierId}","method":"DELETE"},{"path":"documentintelligence/documentClassifiers/{classifierId}:copyTo","method":"POST"},{"path":"documentintelligence/documentClassifiers:authorizeCopy","method":"POST"}]},{"key":"formrecognizer.chat.build","renewalPeriod":1,"count":15,"matchPatterns":[{"path":"documentintelligence/chat:build","method":"POST"}]},{"key":"formrecognizer.chat.complete","renewalPeriod":60,"count":5,"matchPatterns":[{"path":"documentintelligence/chat/{chatId}:complete","method":"POST"}]},{"key":"formrecognizer.labeling","renewalPeriod":1,"count":100,"matchPatterns":[{"path":"documentintelligence/labelingProjects/*","method":"*"},{"path":"documentintelligence/classificationProjects/*","method":"*"},{"path":"documentintelligence/labelingProjects","method":"GET"},{"path":"documentintelligence/classificationProjects","method":"GET"}]},{"key":"default","renewalPeriod":1,"count":5,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"*","method":"*"}]}]},"isMigrated":false,"allowProjectManagement":false,"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","capabilities":[{"name":"DynamicThrottling"},{"name":"VirtualNetworks"},{"name":"EnabledApimVnet","value":"true"},{"name":"CustomerManagedKey"},{"name":"Container","value":"FormRecognizer.*,FormRecognizer.Forms,FormRecognizer.FormRecognizerCustomSupervised,FormRecognizer.FormRecognizerLayout,FormRecognizer.formrecognizerreadlayout,FormRecognizer.FormRecognizerId,FormRecognizer.FormRecognizerInvoice,FormRecognizer.FormRecognizerReceipt,FormRecognizer.FormRecognizerBusinessCard,FormRecognizer.FormRecognizerRead,FormRecognizer.FormRecognizerKvp"}],"endpoints":{"FormRecognizer":"https://southcentralus.api.cognitive.microsoft.com/","Container":"https://southcentralus.api.cognitive.microsoft.com/"},"a365LoggingEnabled":true,"a365Status":"Enabled","provisioningState":"Creating"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-20T10:26:21.9001833Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-20T10:26:21.9001833Z"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CognitiveServices/locations/southcentralus/operationResults/f80c2ae7-1847-481d-ad06-8946fdb4192f?api-version=2017-04-18&t=639280887844470806&c=MIIIJjCCBw6gAwIBAgIQb2qmfO_DC0moMTy1B-w-kzANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBXQ1VTIENBIDAxMB4XDTI2MDkxNzIxNDYzMVoXDTI2MTIxMzAzNDYzMVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDBToa7cnDwXvKUyj5e4vSBSlYGxyPkYA2aIAtIXrpzbSO4j8i97D18tY3qhWpmsdmSdv0rK-lBy37I6vz21WypgG8nNTtTxz1pmSSLun1twUt2ZfOkiAxyWczEitHE4mhRRJeo37BCaermYRNBTZNVQc0pSC0CJCZ9WuIl2OZWEw_gg49SMJ-drVqAROg4doBPHBP6YLpnZfgwScnRpd1ZG9eCaElgbbjQZXY891kEw79oDmUKYKlS9yot5WC9zkKtHQoT00u-GcsE4IBygmTJsRhTmIulTltnfa9tzDt1yn0C7fEkeLacVvdDaLOVGqNMl-N9lXz_WVa474Y68WfRAgMBAAGjggUkMIIFIDCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT_Ehdpc3aOyiA6AmwPCbk7jORu-zAfBgNVHSMEGDAWgBQU0jfg9tZ9ft2NurplqwSUJeCWHTCCAfsGA1UdHwSCAfIwggHuMHugeaB3hnVodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jcmxzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvOTIvY3VycmVudC5jcmwwfaB7oHmGd2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzkyL2N1cnJlbnQuY3JsMGygaqBohmZodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdGNlbnRyYWx1cy9jcmxzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvOTIvY3VycmVudC5jcmwwgYGgf6B9hntodHRwOi8vY2NtZXdlc3RjZW50cmFsdXNwa2kud2VzdGNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvOTIvY3VycmVudC5jcmwwggIABggrBgEFBQcBAQSCAfIwggHuMH4GCCsGAQUFBzAChnJodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jYWNlcnRzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvY2VydC5jZXIwgYAGCCsGAQUFBzAChnRodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0Y2VudHJhbHVzL2NhY2VydHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBvBggrBgEFBQcwAoZjaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3RjZW50cmFsdXMvY2FjZXJ0cy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMHgGCCsGAQUFBzAChmxodHRwOi8vY2NtZXdlc3RjZW50cmFsdXNwa2kud2VzdGNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEwDQYJKoZIhvcNAQELBQADggEBAD7NePzsP7SmVrhKzOCfNfqa0tTFTRPQefuLSDiZHSAxFTjDklSunq5PecGvEThEOQRiSjn90yZpqo2gvQrNGXifpPRqmOnNv8YoCPj8Af9rvfemNnWcQFYeOmzKPB4wWgDH4d9svbRdoP5GnuKxOZG8uzkD4IN2NtcKCqtNIFNnLQwJ8gLyv75npl7xesaYNYnZxi3j1dHls6w6bW1SiUha3xsEsFEmREYUVlpBT5WHX-CpXwdlce3L6NjDvaKO1d8m8LveljhPUKtYTNYK86U8ODPATKC3erEpogc5Vp1KtlHo6GcgJGK4rsRBjieBizNcUj_exEqhlNob9hZLSVI&s=ZVCWmsK2lv4Q2POPBeME9clq_M2PjI2qm4UPcY1Mf10KM3I2lC-XnB8qCKaMf-nS9bPxv_Q8jcsZV3BJlQaMob8ns7P9yylCpgczhbwmyqCrdjtnDqfzZ9NuQWtiNq5iP2vvsXjAw2kVkI3e7uzUkhj9rr2pt1vh6TuqgvwC2ZF6acI85kbtVNtCJf8BvI8jq9xIFTtqmQGZTGuURsKq5BROWY0ygykJGeLSxCGB1Cbb1vHjRvPfYVaCbaSimsFOhWdbnRiugAVk8LByGmag3Cj7fNGIW9xR0kgP0Yy9pzxk9qQXMsACeuKkvlSfxmoL9qypXlnOKBtoepH6gI_VbQ&h=wdq1pP0zymz8F09tXr32Bl5yg41jucYwYtuxB6Q4Cwg
+      cache-control:
+      - no-cache
+      content-length:
+      - '8727'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 10:26:23 GMT
+      etag:
+      - '"0a00dc8e-0000-0500-0000-6ad741cf0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '638'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=87c1683e-b943-42a1-84c3-bb17c54886ae/centralindia/38e1f8c7-f392-4c91-8a40-76d092a7d7e8
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: C39DC4A44B2446388E2BF79F0113A242 Ref B: PNQ231110907025 Ref C: 2026-10-20T10:26:19Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cognitiveservices account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind --sku -l --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.10.11 (Windows-10-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CognitiveServices/locations/southcentralus/operationResults/f80c2ae7-1847-481d-ad06-8946fdb4192f?api-version=2017-04-18&t=639280887844470806&c=MIIIJjCCBw6gAwIBAgIQb2qmfO_DC0moMTy1B-w-kzANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBXQ1VTIENBIDAxMB4XDTI2MDkxNzIxNDYzMVoXDTI2MTIxMzAzNDYzMVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDBToa7cnDwXvKUyj5e4vSBSlYGxyPkYA2aIAtIXrpzbSO4j8i97D18tY3qhWpmsdmSdv0rK-lBy37I6vz21WypgG8nNTtTxz1pmSSLun1twUt2ZfOkiAxyWczEitHE4mhRRJeo37BCaermYRNBTZNVQc0pSC0CJCZ9WuIl2OZWEw_gg49SMJ-drVqAROg4doBPHBP6YLpnZfgwScnRpd1ZG9eCaElgbbjQZXY891kEw79oDmUKYKlS9yot5WC9zkKtHQoT00u-GcsE4IBygmTJsRhTmIulTltnfa9tzDt1yn0C7fEkeLacVvdDaLOVGqNMl-N9lXz_WVa474Y68WfRAgMBAAGjggUkMIIFIDCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT_Ehdpc3aOyiA6AmwPCbk7jORu-zAfBgNVHSMEGDAWgBQU0jfg9tZ9ft2NurplqwSUJeCWHTCCAfsGA1UdHwSCAfIwggHuMHugeaB3hnVodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jcmxzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvOTIvY3VycmVudC5jcmwwfaB7oHmGd2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzkyL2N1cnJlbnQuY3JsMGygaqBohmZodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdGNlbnRyYWx1cy9jcmxzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvOTIvY3VycmVudC5jcmwwgYGgf6B9hntodHRwOi8vY2NtZXdlc3RjZW50cmFsdXNwa2kud2VzdGNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvOTIvY3VycmVudC5jcmwwggIABggrBgEFBQcBAQSCAfIwggHuMH4GCCsGAQUFBzAChnJodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jYWNlcnRzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvY2VydC5jZXIwgYAGCCsGAQUFBzAChnRodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0Y2VudHJhbHVzL2NhY2VydHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBvBggrBgEFBQcwAoZjaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3RjZW50cmFsdXMvY2FjZXJ0cy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMHgGCCsGAQUFBzAChmxodHRwOi8vY2NtZXdlc3RjZW50cmFsdXNwa2kud2VzdGNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEwDQYJKoZIhvcNAQELBQADggEBAD7NePzsP7SmVrhKzOCfNfqa0tTFTRPQefuLSDiZHSAxFTjDklSunq5PecGvEThEOQRiSjn90yZpqo2gvQrNGXifpPRqmOnNv8YoCPj8Af9rvfemNnWcQFYeOmzKPB4wWgDH4d9svbRdoP5GnuKxOZG8uzkD4IN2NtcKCqtNIFNnLQwJ8gLyv75npl7xesaYNYnZxi3j1dHls6w6bW1SiUha3xsEsFEmREYUVlpBT5WHX-CpXwdlce3L6NjDvaKO1d8m8LveljhPUKtYTNYK86U8ODPATKC3erEpogc5Vp1KtlHo6GcgJGK4rsRBjieBizNcUj_exEqhlNob9hZLSVI&s=ZVCWmsK2lv4Q2POPBeME9clq_M2PjI2qm4UPcY1Mf10KM3I2lC-XnB8qCKaMf-nS9bPxv_Q8jcsZV3BJlQaMob8ns7P9yylCpgczhbwmyqCrdjtnDqfzZ9NuQWtiNq5iP2vvsXjAw2kVkI3e7uzUkhj9rr2pt1vh6TuqgvwC2ZF6acI85kbtVNtCJf8BvI8jq9xIFTtqmQGZTGuURsKq5BROWY0ygykJGeLSxCGB1Cbb1vHjRvPfYVaCbaSimsFOhWdbnRiugAVk8LByGmag3Cj7fNGIW9xR0kgP0Yy9pzxk9qQXMsACeuKkvlSfxmoL9qypXlnOKBtoepH6gI_VbQ&h=wdq1pP0zymz8F09tXr32Bl5yg41jucYwYtuxB6Q4Cwg
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CognitiveServices/locations/southcentralus/operationResults/f80c2ae7-1847-481d-ad06-8946fdb4192f","name":"f80c2ae7-1847-481d-ad06-8946fdb4192f","status":"Creating","startTime":"2026-10-20T10:26:23Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '278'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 10:26:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '7'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=87c1683e-b943-42a1-84c3-bb17c54886ae/westindia/98aaf24a-424a-451e-ac9a-20c7ba569ad4
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 45FAF0501B55457CBE48B64BE067AB60 Ref B: PNQ231110909036 Ref C: 2026-10-20T10:26:25Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cognitiveservices account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind --sku -l --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.10.11 (Windows-10-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CognitiveServices/locations/southcentralus/operationResults/f80c2ae7-1847-481d-ad06-8946fdb4192f?api-version=2017-04-18&t=639280887844470806&c=MIIIJjCCBw6gAwIBAgIQb2qmfO_DC0moMTy1B-w-kzANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBXQ1VTIENBIDAxMB4XDTI2MDkxNzIxNDYzMVoXDTI2MTIxMzAzNDYzMVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDBToa7cnDwXvKUyj5e4vSBSlYGxyPkYA2aIAtIXrpzbSO4j8i97D18tY3qhWpmsdmSdv0rK-lBy37I6vz21WypgG8nNTtTxz1pmSSLun1twUt2ZfOkiAxyWczEitHE4mhRRJeo37BCaermYRNBTZNVQc0pSC0CJCZ9WuIl2OZWEw_gg49SMJ-drVqAROg4doBPHBP6YLpnZfgwScnRpd1ZG9eCaElgbbjQZXY891kEw79oDmUKYKlS9yot5WC9zkKtHQoT00u-GcsE4IBygmTJsRhTmIulTltnfa9tzDt1yn0C7fEkeLacVvdDaLOVGqNMl-N9lXz_WVa474Y68WfRAgMBAAGjggUkMIIFIDCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT_Ehdpc3aOyiA6AmwPCbk7jORu-zAfBgNVHSMEGDAWgBQU0jfg9tZ9ft2NurplqwSUJeCWHTCCAfsGA1UdHwSCAfIwggHuMHugeaB3hnVodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jcmxzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvOTIvY3VycmVudC5jcmwwfaB7oHmGd2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzkyL2N1cnJlbnQuY3JsMGygaqBohmZodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdGNlbnRyYWx1cy9jcmxzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvOTIvY3VycmVudC5jcmwwgYGgf6B9hntodHRwOi8vY2NtZXdlc3RjZW50cmFsdXNwa2kud2VzdGNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvOTIvY3VycmVudC5jcmwwggIABggrBgEFBQcBAQSCAfIwggHuMH4GCCsGAQUFBzAChnJodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jYWNlcnRzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvY2VydC5jZXIwgYAGCCsGAQUFBzAChnRodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0Y2VudHJhbHVzL2NhY2VydHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBvBggrBgEFBQcwAoZjaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3RjZW50cmFsdXMvY2FjZXJ0cy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMHgGCCsGAQUFBzAChmxodHRwOi8vY2NtZXdlc3RjZW50cmFsdXNwa2kud2VzdGNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEwDQYJKoZIhvcNAQELBQADggEBAD7NePzsP7SmVrhKzOCfNfqa0tTFTRPQefuLSDiZHSAxFTjDklSunq5PecGvEThEOQRiSjn90yZpqo2gvQrNGXifpPRqmOnNv8YoCPj8Af9rvfemNnWcQFYeOmzKPB4wWgDH4d9svbRdoP5GnuKxOZG8uzkD4IN2NtcKCqtNIFNnLQwJ8gLyv75npl7xesaYNYnZxi3j1dHls6w6bW1SiUha3xsEsFEmREYUVlpBT5WHX-CpXwdlce3L6NjDvaKO1d8m8LveljhPUKtYTNYK86U8ODPATKC3erEpogc5Vp1KtlHo6GcgJGK4rsRBjieBizNcUj_exEqhlNob9hZLSVI&s=ZVCWmsK2lv4Q2POPBeME9clq_M2PjI2qm4UPcY1Mf10KM3I2lC-XnB8qCKaMf-nS9bPxv_Q8jcsZV3BJlQaMob8ns7P9yylCpgczhbwmyqCrdjtnDqfzZ9NuQWtiNq5iP2vvsXjAw2kVkI3e7uzUkhj9rr2pt1vh6TuqgvwC2ZF6acI85kbtVNtCJf8BvI8jq9xIFTtqmQGZTGuURsKq5BROWY0ygykJGeLSxCGB1Cbb1vHjRvPfYVaCbaSimsFOhWdbnRiugAVk8LByGmag3Cj7fNGIW9xR0kgP0Yy9pzxk9qQXMsACeuKkvlSfxmoL9qypXlnOKBtoepH6gI_VbQ&h=wdq1pP0zymz8F09tXr32Bl5yg41jucYwYtuxB6Q4Cwg
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CognitiveServices/locations/southcentralus/operationResults/f80c2ae7-1847-481d-ad06-8946fdb4192f","name":"f80c2ae7-1847-481d-ad06-8946fdb4192f","status":"Creating","startTime":"2026-10-20T10:26:23Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '278'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 10:26:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '9'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=87c1683e-b943-42a1-84c3-bb17c54886ae/centralindia/cf48d25c-486c-4bef-a426-e3d73a96f151
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 80FA18E78C4A4E0DA6A1232C01F2F871 Ref B: PNQ241100406025 Ref C: 2026-10-20T10:26:57Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cognitiveservices account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind --sku -l --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.10.11 (Windows-10-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CognitiveServices/locations/southcentralus/operationResults/f80c2ae7-1847-481d-ad06-8946fdb4192f?api-version=2017-04-18&t=639280887844470806&c=MIIIJjCCBw6gAwIBAgIQb2qmfO_DC0moMTy1B-w-kzANBgkqhkiG9w0BAQsFADA2MTQwMgYDVQQDEytDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBXQ1VTIENBIDAxMB4XDTI2MDkxNzIxNDYzMVoXDTI2MTIxMzAzNDYzMVowQDE-MDwGA1UEAxM1YXN5bmNvcGVyYXRpb25zaWduaW5nY2VydGlmaWNhdGUubWFuYWdlbWVudC5henVyZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDBToa7cnDwXvKUyj5e4vSBSlYGxyPkYA2aIAtIXrpzbSO4j8i97D18tY3qhWpmsdmSdv0rK-lBy37I6vz21WypgG8nNTtTxz1pmSSLun1twUt2ZfOkiAxyWczEitHE4mhRRJeo37BCaermYRNBTZNVQc0pSC0CJCZ9WuIl2OZWEw_gg49SMJ-drVqAROg4doBPHBP6YLpnZfgwScnRpd1ZG9eCaElgbbjQZXY891kEw79oDmUKYKlS9yot5WC9zkKtHQoT00u-GcsE4IBygmTJsRhTmIulTltnfa9tzDt1yn0C7fEkeLacVvdDaLOVGqNMl-N9lXz_WVa474Y68WfRAgMBAAGjggUkMIIFIDCBnQYDVR0gBIGVMIGSMAwGCisGAQQBgjd7AQEwZgYKKwYBBAGCN3sCAjBYMFYGCCsGAQUFBwICMEoeSAAzADMAZQAwADEAOQAyADEALQA0AGQANgA0AC0ANABmADgAYwAtAGEAMAA1ADUALQA1AGIAZABhAGYAZgBkADUAZQAzADMAZDAMBgorBgEEAYI3ewMCMAwGCisGAQQBgjd7BAIwDAYDVR0TAQH_BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDgYDVR0PAQH_BAQDAgWgMB0GA1UdDgQWBBT_Ehdpc3aOyiA6AmwPCbk7jORu-zAfBgNVHSMEGDAWgBQU0jfg9tZ9ft2NurplqwSUJeCWHTCCAfsGA1UdHwSCAfIwggHuMHugeaB3hnVodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jcmxzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvOTIvY3VycmVudC5jcmwwfaB7oHmGd2h0dHA6Ly9zZWNvbmRhcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L3dlc3RjZW50cmFsdXMvY3Jscy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxLzkyL2N1cnJlbnQuY3JsMGygaqBohmZodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vd2VzdGNlbnRyYWx1cy9jcmxzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvOTIvY3VycmVudC5jcmwwgYGgf6B9hntodHRwOi8vY2NtZXdlc3RjZW50cmFsdXNwa2kud2VzdGNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvOTIvY3VycmVudC5jcmwwggIABggrBgEFBQcBAQSCAfIwggHuMH4GCCsGAQUFBzAChnJodHRwOi8vcHJpbWFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvd2VzdGNlbnRyYWx1cy9jYWNlcnRzL2NjbWV3ZXN0Y2VudHJhbHVzcGtpL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEvY2VydC5jZXIwgYAGCCsGAQUFBzAChnRodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC93ZXN0Y2VudHJhbHVzL2NhY2VydHMvY2NtZXdlc3RjZW50cmFsdXNwa2kvY2NtZXdlc3RjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBvBggrBgEFBQcwAoZjaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3dlc3RjZW50cmFsdXMvY2FjZXJ0cy9jY21ld2VzdGNlbnRyYWx1c3BraS9jY21ld2VzdGNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMHgGCCsGAQUFBzAChmxodHRwOi8vY2NtZXdlc3RjZW50cmFsdXNwa2kud2VzdGNlbnRyYWx1cy5wa2kuY29yZS53aW5kb3dzLm5ldC9jZXJ0aWZpY2F0ZUF1dGhvcml0aWVzL2NjbWV3ZXN0Y2VudHJhbHVzaWNhMDEwDQYJKoZIhvcNAQELBQADggEBAD7NePzsP7SmVrhKzOCfNfqa0tTFTRPQefuLSDiZHSAxFTjDklSunq5PecGvEThEOQRiSjn90yZpqo2gvQrNGXifpPRqmOnNv8YoCPj8Af9rvfemNnWcQFYeOmzKPB4wWgDH4d9svbRdoP5GnuKxOZG8uzkD4IN2NtcKCqtNIFNnLQwJ8gLyv75npl7xesaYNYnZxi3j1dHls6w6bW1SiUha3xsEsFEmREYUVlpBT5WHX-CpXwdlce3L6NjDvaKO1d8m8LveljhPUKtYTNYK86U8ODPATKC3erEpogc5Vp1KtlHo6GcgJGK4rsRBjieBizNcUj_exEqhlNob9hZLSVI&s=ZVCWmsK2lv4Q2POPBeME9clq_M2PjI2qm4UPcY1Mf10KM3I2lC-XnB8qCKaMf-nS9bPxv_Q8jcsZV3BJlQaMob8ns7P9yylCpgczhbwmyqCrdjtnDqfzZ9NuQWtiNq5iP2vvsXjAw2kVkI3e7uzUkhj9rr2pt1vh6TuqgvwC2ZF6acI85kbtVNtCJf8BvI8jq9xIFTtqmQGZTGuURsKq5BROWY0ygykJGeLSxCGB1Cbb1vHjRvPfYVaCbaSimsFOhWdbnRiugAVk8LByGmag3Cj7fNGIW9xR0kgP0Yy9pzxk9qQXMsACeuKkvlSfxmoL9qypXlnOKBtoepH6gI_VbQ&h=wdq1pP0zymz8F09tXr32Bl5yg41jucYwYtuxB6Q4Cwg
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CognitiveServices/locations/southcentralus/operationResults/f80c2ae7-1847-481d-ad06-8946fdb4192f","name":"f80c2ae7-1847-481d-ad06-8946fdb4192f","status":"Succeeded","startTime":"2026-10-20T10:26:23Z","endTime":"2026-10-20T10:26:59Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '312'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 10:27:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '9'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=87c1683e-b943-42a1-84c3-bb17c54886ae/centralindia/dd9ae9cd-792f-48c6-8f58-18d150484b73
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: E0B7C637F8604AFE94EEB5F5F1DDE21D Ref B: PNQ241100406025 Ref C: 2026-10-20T10:27:29Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cognitiveservices account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind --sku -l --yes
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.10.11 (Windows-10-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.CognitiveServices/accounts/cs_cli_test_000004?api-version=2026-09-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.CognitiveServices/accounts/cs_cli_test_000004","name":"cs_cli_test_000004","type":"Microsoft.CognitiveServices/accounts","etag":"\"0a002892-0000-0500-0000-6ad741f00000\"","location":"southcentralus","sku":{"name":"S0"},"kind":"FormRecognizer","properties":{"endpoint":"https://southcentralus.api.cognitive.microsoft.com/","internalId":"d04376c57ba448af8103f472c60de3f0","dateCreated":"2026-10-20T10:26:23.23509Z","callRateLimit":{"rules":[{"key":"container.billing","renewalPeriod":10,"count":500,"matchPatterns":[{"path":"billing/*","method":"*"}]},{"key":"formrecognizer.analyze","renewalPeriod":1,"count":15,"matchPatterns":[{"path":"formrecognizer/custom/models/{id}/analyze","method":"POST"},{"path":"formrecognizer/custom/models/{modelId}/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/businessCard/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/idDocument/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/invoice/analyze","method":"POST"},{"path":"formrecognizer/layout/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/receipt/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/receipt/asyncBatchAnalyze","method":"POST"},{"path":"formrecognizer/documentModels/{modelId}:analyze","method":"POST"},{"path":"formrecognizer/read","method":"POST"},{"path":"formrecognizer/documentClassifiers/{classifierId}:analyze","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:analyze","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:analyze?_overload=analyzeDocument","method":"POST"},{"path":"documentintelligence/documentClassifiers/{classifierId}:analyze","method":"POST"},{"path":"documentintelligence/documentClassifiers/{classifierId}:analyze?_overload=classifyDocument","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:analyzeBatch","method":"POST"}]},{"key":"formrecognizer.get.object","renewalPeriod":1,"count":50,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"formrecognizer/custom/models/{modelId}/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/businessCard/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/idDocument/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/invoice/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/receipt/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/receipt/operations/{operationId}","method":"GET"},{"path":"formrecognizer/documentModels/{modelId}/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/layout/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}/copyResults/{resultId}","method":"GET"},{"path":"formrecognizer/operations/{operationId}","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}","method":"GET"},{"path":"formrecognizer/custom/models/{id}","method":"GET"},{"path":"formrecognizer/documentModels/{modelId}","method":"GET"},{"path":"formrecognizer/documentClassifiers/{classifierId}","method":"GET"},{"path":"formrecognizer/documentClassifiers/{classifierId}/analyzeResults/{resultId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeResults/{resultId}","method":"GET"},{"path":"documentintelligence/operations/{operationId}","method":"GET"},{"path":"documentintelligence/operations/{operationId}?_overload={_overload}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}","method":"GET"},{"path":"documentintelligence/documentClassifiers/{classifierId}","method":"GET"},{"path":"documentintelligence/documentClassifiers/{classifierId}/analyzeResults/{resultId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeBatchResults/{resultId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeResults/{resultId}/figures/{figureId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeResults/{resultId}/pdf","method":"GET"}]},{"key":"formrecognizer.list.objects","renewalPeriod":1,"count":10,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"formrecognizer/operations","method":"GET"},{"path":"formrecognizer/info","method":"GET"},{"path":"formrecognizer/documentModels","method":"GET"},{"path":"formrecognizer/custom/models","method":"GET"},{"path":"formrecognizer/documentClassifiers","method":"GET"},{"path":"documentintelligence/documentModels","method":"GET"},{"path":"documentintelligence/operations","method":"GET"},{"path":"documentintelligence/info","method":"GET"},{"path":"documentintelligence/documentClassifiers","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeBatchResults","method":"GET"}]},{"key":"formrecognizer.model.management","renewalPeriod":1,"count":5,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"formrecognizer/custom/models","method":"POST"},{"path":"formrecognizer/custom/models/compose","method":"POST"},{"path":"formrecognizer/custom/models/copyAuthorization","method":"POST"},{"path":"formrecognizer/custom/models/{id}","method":"DELETE"},{"path":"formrecognizer/custom/models/{id}/keys","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}","method":"DELETE"},{"path":"formrecognizer/custom/models/{modelId}/copy","method":"POST"},{"path":"formrecognizer/documentModels/{modelId}:copyTo","method":"POST"},{"path":"formrecognizer/documentModels:authorizeCopy","method":"POST"},{"path":"formrecognizer/documentModels:build","method":"POST"},{"path":"formrecognizer/documentModels:compose","method":"POST"},{"path":"formrecognizer/custom/train","method":"POST"},{"path":"formrecognizer/custom/models/{modelId}","method":"DELETE"},{"path":"formrecognizer/documentModels/{modelId}","method":"DELETE"},{"path":"formrecognizer/documentClassifiers:build","method":"POST"},{"path":"formrecognizer/documentClassifiers/{classifierId}","method":"DELETE"},{"path":"documentintelligence/documentModels:authorizeCopy","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:copyTo","method":"POST"},{"path":"documentintelligence/documentModels:build","method":"POST"},{"path":"documentintelligence/documentModels:compose","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}","method":"DELETE"},{"path":"documentintelligence/documentClassifiers:build","method":"POST"},{"path":"documentintelligence/documentClassifiers/{classifierId}","method":"DELETE"},{"path":"documentintelligence/documentClassifiers/{classifierId}:copyTo","method":"POST"},{"path":"documentintelligence/documentClassifiers:authorizeCopy","method":"POST"}]},{"key":"formrecognizer.chat.build","renewalPeriod":1,"count":15,"matchPatterns":[{"path":"documentintelligence/chat:build","method":"POST"}]},{"key":"formrecognizer.chat.complete","renewalPeriod":60,"count":5,"matchPatterns":[{"path":"documentintelligence/chat/{chatId}:complete","method":"POST"}]},{"key":"formrecognizer.labeling","renewalPeriod":1,"count":100,"matchPatterns":[{"path":"documentintelligence/labelingProjects/*","method":"*"},{"path":"documentintelligence/classificationProjects/*","method":"*"},{"path":"documentintelligence/labelingProjects","method":"GET"},{"path":"documentintelligence/classificationProjects","method":"GET"}]},{"key":"default","renewalPeriod":1,"count":5,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"*","method":"*"}]}]},"isMigrated":false,"allowProjectManagement":false,"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","capabilities":[{"name":"DynamicThrottling"},{"name":"VirtualNetworks"},{"name":"EnabledApimVnet","value":"true"},{"name":"CustomerManagedKey"},{"name":"Container","value":"FormRecognizer.*,FormRecognizer.Forms,FormRecognizer.FormRecognizerCustomSupervised,FormRecognizer.FormRecognizerLayout,FormRecognizer.formrecognizerreadlayout,FormRecognizer.FormRecognizerId,FormRecognizer.FormRecognizerInvoice,FormRecognizer.FormRecognizerReceipt,FormRecognizer.FormRecognizerBusinessCard,FormRecognizer.FormRecognizerRead,FormRecognizer.FormRecognizerKvp"}],"endpoints":{"FormRecognizer":"https://southcentralus.api.cognitive.microsoft.com/","Container":"https://southcentralus.api.cognitive.microsoft.com/"},"a365LoggingEnabled":true,"a365Status":"Enabled","provisioningState":"Succeeded"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-20T10:26:21.9001833Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-20T10:26:21.9001833Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '8728'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 10:27:30 GMT
+      etag:
+      - '"0a002892-0000-0500-0000-6ad741f00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '12'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: B6CCE348087644B1BABDAAB957B533B8 Ref B: PNQ231110907042 Ref C: 2026-10-20T10:27:31Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cognitiveservices account update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --custom-domain
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.10.11 (Windows-10-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.CognitiveServices/accounts/cs_cli_test_000004?api-version=2026-09-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.CognitiveServices/accounts/cs_cli_test_000004","name":"cs_cli_test_000004","type":"Microsoft.CognitiveServices/accounts","etag":"\"0a002892-0000-0500-0000-6ad741f00000\"","location":"southcentralus","sku":{"name":"S0"},"kind":"FormRecognizer","properties":{"endpoint":"https://southcentralus.api.cognitive.microsoft.com/","internalId":"d04376c57ba448af8103f472c60de3f0","dateCreated":"2026-10-20T10:26:23.23509Z","callRateLimit":{"rules":[{"key":"container.billing","renewalPeriod":10,"count":500,"matchPatterns":[{"path":"billing/*","method":"*"}]},{"key":"formrecognizer.analyze","renewalPeriod":1,"count":15,"matchPatterns":[{"path":"formrecognizer/custom/models/{id}/analyze","method":"POST"},{"path":"formrecognizer/custom/models/{modelId}/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/businessCard/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/idDocument/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/invoice/analyze","method":"POST"},{"path":"formrecognizer/layout/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/receipt/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/receipt/asyncBatchAnalyze","method":"POST"},{"path":"formrecognizer/documentModels/{modelId}:analyze","method":"POST"},{"path":"formrecognizer/read","method":"POST"},{"path":"formrecognizer/documentClassifiers/{classifierId}:analyze","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:analyze","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:analyze?_overload=analyzeDocument","method":"POST"},{"path":"documentintelligence/documentClassifiers/{classifierId}:analyze","method":"POST"},{"path":"documentintelligence/documentClassifiers/{classifierId}:analyze?_overload=classifyDocument","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:analyzeBatch","method":"POST"}]},{"key":"formrecognizer.get.object","renewalPeriod":1,"count":50,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"formrecognizer/custom/models/{modelId}/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/businessCard/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/idDocument/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/invoice/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/receipt/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/receipt/operations/{operationId}","method":"GET"},{"path":"formrecognizer/documentModels/{modelId}/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/layout/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}/copyResults/{resultId}","method":"GET"},{"path":"formrecognizer/operations/{operationId}","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}","method":"GET"},{"path":"formrecognizer/custom/models/{id}","method":"GET"},{"path":"formrecognizer/documentModels/{modelId}","method":"GET"},{"path":"formrecognizer/documentClassifiers/{classifierId}","method":"GET"},{"path":"formrecognizer/documentClassifiers/{classifierId}/analyzeResults/{resultId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeResults/{resultId}","method":"GET"},{"path":"documentintelligence/operations/{operationId}","method":"GET"},{"path":"documentintelligence/operations/{operationId}?_overload={_overload}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}","method":"GET"},{"path":"documentintelligence/documentClassifiers/{classifierId}","method":"GET"},{"path":"documentintelligence/documentClassifiers/{classifierId}/analyzeResults/{resultId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeBatchResults/{resultId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeResults/{resultId}/figures/{figureId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeResults/{resultId}/pdf","method":"GET"}]},{"key":"formrecognizer.list.objects","renewalPeriod":1,"count":10,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"formrecognizer/operations","method":"GET"},{"path":"formrecognizer/info","method":"GET"},{"path":"formrecognizer/documentModels","method":"GET"},{"path":"formrecognizer/custom/models","method":"GET"},{"path":"formrecognizer/documentClassifiers","method":"GET"},{"path":"documentintelligence/documentModels","method":"GET"},{"path":"documentintelligence/operations","method":"GET"},{"path":"documentintelligence/info","method":"GET"},{"path":"documentintelligence/documentClassifiers","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeBatchResults","method":"GET"}]},{"key":"formrecognizer.model.management","renewalPeriod":1,"count":5,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"formrecognizer/custom/models","method":"POST"},{"path":"formrecognizer/custom/models/compose","method":"POST"},{"path":"formrecognizer/custom/models/copyAuthorization","method":"POST"},{"path":"formrecognizer/custom/models/{id}","method":"DELETE"},{"path":"formrecognizer/custom/models/{id}/keys","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}","method":"DELETE"},{"path":"formrecognizer/custom/models/{modelId}/copy","method":"POST"},{"path":"formrecognizer/documentModels/{modelId}:copyTo","method":"POST"},{"path":"formrecognizer/documentModels:authorizeCopy","method":"POST"},{"path":"formrecognizer/documentModels:build","method":"POST"},{"path":"formrecognizer/documentModels:compose","method":"POST"},{"path":"formrecognizer/custom/train","method":"POST"},{"path":"formrecognizer/custom/models/{modelId}","method":"DELETE"},{"path":"formrecognizer/documentModels/{modelId}","method":"DELETE"},{"path":"formrecognizer/documentClassifiers:build","method":"POST"},{"path":"formrecognizer/documentClassifiers/{classifierId}","method":"DELETE"},{"path":"documentintelligence/documentModels:authorizeCopy","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:copyTo","method":"POST"},{"path":"documentintelligence/documentModels:build","method":"POST"},{"path":"documentintelligence/documentModels:compose","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}","method":"DELETE"},{"path":"documentintelligence/documentClassifiers:build","method":"POST"},{"path":"documentintelligence/documentClassifiers/{classifierId}","method":"DELETE"},{"path":"documentintelligence/documentClassifiers/{classifierId}:copyTo","method":"POST"},{"path":"documentintelligence/documentClassifiers:authorizeCopy","method":"POST"}]},{"key":"formrecognizer.chat.build","renewalPeriod":1,"count":15,"matchPatterns":[{"path":"documentintelligence/chat:build","method":"POST"}]},{"key":"formrecognizer.chat.complete","renewalPeriod":60,"count":5,"matchPatterns":[{"path":"documentintelligence/chat/{chatId}:complete","method":"POST"}]},{"key":"formrecognizer.labeling","renewalPeriod":1,"count":100,"matchPatterns":[{"path":"documentintelligence/labelingProjects/*","method":"*"},{"path":"documentintelligence/classificationProjects/*","method":"*"},{"path":"documentintelligence/labelingProjects","method":"GET"},{"path":"documentintelligence/classificationProjects","method":"GET"}]},{"key":"default","renewalPeriod":1,"count":5,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"*","method":"*"}]}]},"isMigrated":false,"allowProjectManagement":false,"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","capabilities":[{"name":"DynamicThrottling"},{"name":"VirtualNetworks"},{"name":"EnabledApimVnet","value":"true"},{"name":"CustomerManagedKey"},{"name":"Container","value":"FormRecognizer.*,FormRecognizer.Forms,FormRecognizer.FormRecognizerCustomSupervised,FormRecognizer.FormRecognizerLayout,FormRecognizer.formrecognizerreadlayout,FormRecognizer.FormRecognizerId,FormRecognizer.FormRecognizerInvoice,FormRecognizer.FormRecognizerReceipt,FormRecognizer.FormRecognizerBusinessCard,FormRecognizer.FormRecognizerRead,FormRecognizer.FormRecognizerKvp"}],"endpoints":{"FormRecognizer":"https://southcentralus.api.cognitive.microsoft.com/","Container":"https://southcentralus.api.cognitive.microsoft.com/"},"a365LoggingEnabled":true,"a365Status":"Enabled","provisioningState":"Succeeded"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-20T10:26:21.9001833Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-20T10:26:21.9001833Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '8728'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 10:27:32 GMT
+      etag:
+      - '"0a002892-0000-0500-0000-6ad741f00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '15'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 28C2A478B00D4F8DA563CEA219F1DDEC Ref B: PNQ231110909054 Ref C: 2026-10-20T10:27:32Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"sku": {"name": "S0"}, "properties": {"customSubDomainName": "csclitest000005"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cognitiveservices account update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '81'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --custom-domain
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.10.11 (Windows-10-10.0.26300-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.CognitiveServices/accounts/cs_cli_test_000004?api-version=2026-09-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.CognitiveServices/accounts/cs_cli_test_000004","name":"cs_cli_test_000004","type":"Microsoft.CognitiveServices/accounts","etag":"\"0a00ce95-0000-0500-0000-6ad742150000\"","location":"southcentralus","sku":{"name":"S0"},"kind":"FormRecognizer","properties":{"endpoint":"https://csclitest000005.cognitiveservices.azure.com/","provisioningState":"Accepted","internalId":"d04376c57ba448af8103f472c60de3f0","dateCreated":"2026-10-20T10:26:23.23509Z","callRateLimit":{"rules":[{"key":"container.billing","renewalPeriod":10,"count":500,"matchPatterns":[{"path":"billing/*","method":"*"}]},{"key":"formrecognizer.analyze","renewalPeriod":1,"count":15,"matchPatterns":[{"path":"formrecognizer/custom/models/{id}/analyze","method":"POST"},{"path":"formrecognizer/custom/models/{modelId}/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/businessCard/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/idDocument/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/invoice/analyze","method":"POST"},{"path":"formrecognizer/layout/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/receipt/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/receipt/asyncBatchAnalyze","method":"POST"},{"path":"formrecognizer/documentModels/{modelId}:analyze","method":"POST"},{"path":"formrecognizer/read","method":"POST"},{"path":"formrecognizer/documentClassifiers/{classifierId}:analyze","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:analyze","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:analyze?_overload=analyzeDocument","method":"POST"},{"path":"documentintelligence/documentClassifiers/{classifierId}:analyze","method":"POST"},{"path":"documentintelligence/documentClassifiers/{classifierId}:analyze?_overload=classifyDocument","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:analyzeBatch","method":"POST"}]},{"key":"formrecognizer.get.object","renewalPeriod":1,"count":50,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"formrecognizer/custom/models/{modelId}/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/businessCard/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/idDocument/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/invoice/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/receipt/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/receipt/operations/{operationId}","method":"GET"},{"path":"formrecognizer/documentModels/{modelId}/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/layout/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}/copyResults/{resultId}","method":"GET"},{"path":"formrecognizer/operations/{operationId}","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}","method":"GET"},{"path":"formrecognizer/custom/models/{id}","method":"GET"},{"path":"formrecognizer/documentModels/{modelId}","method":"GET"},{"path":"formrecognizer/documentClassifiers/{classifierId}","method":"GET"},{"path":"formrecognizer/documentClassifiers/{classifierId}/analyzeResults/{resultId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeResults/{resultId}","method":"GET"},{"path":"documentintelligence/operations/{operationId}","method":"GET"},{"path":"documentintelligence/operations/{operationId}?_overload={_overload}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}","method":"GET"},{"path":"documentintelligence/documentClassifiers/{classifierId}","method":"GET"},{"path":"documentintelligence/documentClassifiers/{classifierId}/analyzeResults/{resultId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeBatchResults/{resultId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeResults/{resultId}/figures/{figureId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeResults/{resultId}/pdf","method":"GET"}]},{"key":"formrecognizer.list.objects","renewalPeriod":1,"count":10,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"formrecognizer/operations","method":"GET"},{"path":"formrecognizer/info","method":"GET"},{"path":"formrecognizer/documentModels","method":"GET"},{"path":"formrecognizer/custom/models","method":"GET"},{"path":"formrecognizer/documentClassifiers","method":"GET"},{"path":"documentintelligence/documentModels","method":"GET"},{"path":"documentintelligence/operations","method":"GET"},{"path":"documentintelligence/info","method":"GET"},{"path":"documentintelligence/documentClassifiers","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeBatchResults","method":"GET"}]},{"key":"formrecognizer.model.management","renewalPeriod":1,"count":5,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"formrecognizer/custom/models","method":"POST"},{"path":"formrecognizer/custom/models/compose","method":"POST"},{"path":"formrecognizer/custom/models/copyAuthorization","method":"POST"},{"path":"formrecognizer/custom/models/{id}","method":"DELETE"},{"path":"formrecognizer/custom/models/{id}/keys","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}","method":"DELETE"},{"path":"formrecognizer/custom/models/{modelId}/copy","method":"POST"},{"path":"formrecognizer/documentModels/{modelId}:copyTo","method":"POST"},{"path":"formrecognizer/documentModels:authorizeCopy","method":"POST"},{"path":"formrecognizer/documentModels:build","method":"POST"},{"path":"formrecognizer/documentModels:compose","method":"POST"},{"path":"formrecognizer/custom/train","method":"POST"},{"path":"formrecognizer/custom/models/{modelId}","method":"DELETE"},{"path":"formrecognizer/documentModels/{modelId}","method":"DELETE"},{"path":"formrecognizer/documentClassifiers:build","method":"POST"},{"path":"formrecognizer/documentClassifiers/{classifierId}","method":"DELETE"},{"path":"documentintelligence/documentModels:authorizeCopy","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:copyTo","method":"POST"},{"path":"documentintelligence/documentModels:build","method":"POST"},{"path":"documentintelligence/documentModels:compose","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}","method":"DELETE"},{"path":"documentintelligence/documentClassifiers:build","method":"POST"},{"path":"documentintelligence/documentClassifiers/{classifierId}","method":"DELETE"},{"path":"documentintelligence/documentClassifiers/{classifierId}:copyTo","method":"POST"},{"path":"documentintelligence/documentClassifiers:authorizeCopy","method":"POST"}]},{"key":"formrecognizer.chat.build","renewalPeriod":1,"count":15,"matchPatterns":[{"path":"documentintelligence/chat:build","method":"POST"}]},{"key":"formrecognizer.chat.complete","renewalPeriod":60,"count":5,"matchPatterns":[{"path":"documentintelligence/chat/{chatId}:complete","method":"POST"}]},{"key":"formrecognizer.labeling","renewalPeriod":1,"count":100,"matchPatterns":[{"path":"documentintelligence/labelingProjects/*","method":"*"},{"path":"documentintelligence/classificationProjects/*","method":"*"},{"path":"documentintelligence/labelingProjects","method":"GET"},{"path":"documentintelligence/classificationProjects","method":"GET"}]},{"key":"default","renewalPeriod":1,"count":5,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"*","method":"*"}]}]},"isMigrated":false,"customSubDomainName":"csclitest000005","allowProjectManagement":false,"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","capabilities":[{"name":"DynamicThrottling"},{"name":"VirtualNetworks"},{"name":"EnabledApimVnet","value":"true"},{"name":"CustomerManagedKey"},{"name":"Container","value":"FormRecognizer.*,FormRecognizer.Forms,FormRecognizer.FormRecognizerCustomSupervised,FormRecognizer.FormRecognizerLayout,FormRecognizer.formrecognizerreadlayout,FormRecognizer.FormRecognizerId,FormRecognizer.FormRecognizerInvoice,FormRecognizer.FormRecognizerReceipt,FormRecognizer.FormRecognizerBusinessCard,FormRecognizer.FormRecognizerRead,FormRecognizer.FormRecognizerKvp"}],"endpoints":{"FormRecognizer":"https://csclitest000005.cognitiveservices.azure.com/","Container":"https://csclitest000005.cognitiveservices.azure.com/"},"armFeatures":["Microsoft.CognitiveServices/OpenAI.FoundryDirect","Microsoft.CognitiveServices/allowProvisionedWithoutCommitment","Microsoft.CognitiveServices/AllowAIFoundryUpgrade","Microsoft.CognitiveServices/OpenAI.Provisioned.BypassQuotaCheck","Microsoft.CognitiveServices/OpenAI.1PGatingTier","Microsoft.CognitiveServices/TiP","Microsoft.CognitiveServices/openAIPreview","Microsoft.CognitiveServices/openAINewModel","Microsoft.CognitiveServices/OpenAIFinetune","Microsoft.CognitiveServices/OpenAIFinetune.Ada","Microsoft.CognitiveServices/OpenAIFinetune.Curie","Microsoft.CognitiveServices/OpenAIFinetune.Davinci","Microsoft.CognitiveServices/openAI1PRegions","Microsoft.CognitiveServices/openAITest","microsoft.cognitiveservices/OpenAIDedicated","microsoft.cognitiveservices/OpenAIDedicated.code-davinci-002","microsoft.cognitiveservices/OpenAIDedicated.text-davinci-002","microsoft.cognitiveservices/OpenAIDedicated.code-cushman-001","Microsoft.CognitiveServices/OpenAI.Allow.RetiredModels","Microsoft.CognitiveServices/LegalTerms.ComputerVision.SpatialAnaysisRAITermsAccepted","Microsoft.CognitiveServices/LegalTerms.TextAnalytics.TAForPIIRAITermsAccepted","Microsoft.CognitiveServices/LegalTerms.TextAnalytics.TAForHealthRAITermsAccepted","Microsoft.CognitiveServices/LegalTerms.Face.PoliceTermsAccepted","Microsoft.CognitiveServices/OpenAIFinetune.text-davinci-fine-tune-002","Microsoft.CognitiveServices/OpenAIFinetune.code-davinci-fine-tune-002","Microsoft.CognitiveServices/OpenAIFinetune.EastUS","Microsoft.CognitiveServices/OpenAI.EnableStoredCompletion","Microsoft.CognitiveServices/GSOv2","Microsoft.CognitiveServices/OpenAI.Finetuning.GlobalTraining","Microsoft.CognitiveServices/OpenAI.Preview.202409","Microsoft.CognitiveServices/OpenAI.gpt-45-preview","Microsoft.CognitiveServices/OpenAI.GlobalTraining","Microsoft.CognitiveServices/OpenAI.DeveloperTier","Microsoft.CognitiveServices/FoundryComputePreview","Microsoft.CognitiveServices/HLS-MI2-Premium.EnableDeploy","Microsoft.CognitiveServices/Fireworks.EnableDeploy","Microsoft.CognitiveServices/MAI.MAICodeFinetune","Microsoft.CognitiveServices/HLS-CXR-Premium.EnableDeploy","Microsoft.CognitiveServices/AIServices.mai-code","Microsoft.Resources/EUAPParticipation"],"a365LoggingEnabled":true,"a365Status":"Enabled"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-20T10:26:21.9001833Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-20T10:27:33.4145108Z"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CognitiveServices/locations/southcentralus/operationResults/7efa8822-dc9e-417d-9ca7-ac1aa9c1e341?api-version=2017-04-18&t=639280888548989173&c=MIIHwzCCBqugAwIBAgIQO9vjerLJyzCAZGOG8qnuujANBgkqhkiG9w0BAQsFADA1MTMwMQYDVQQDEypDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBDVVMgQ0EgMDEwHhcNMjYwOTE3MTkyNzU0WhcNMjYxMjEzMDEyNzU0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOH7XcOFB9oBlttbwx8AirjT-trX0XvGg-qTsZnfCNKSBKRmEGUNPWfYKFgDpx0AZwfOinDzB58zssD8uZb2jeDqfJuiR1vqsOBWntnOkwx0IgWzw_pbET-L7lO_ZYW2-ec3c5ZewHiy0Jr51TL2zNtCadpjfB2g2RkKJY_5Zgyqgccwx0LvPgj81bdByhSFWtd49llL8NuFYWjo3Fk7HmsitrM-T8Z3xgac37X6nC2PTsQFiO6h917Etzgh-KBeYYfZiOTF9hHnetiX5px_9XecvBma56vHFyzqoF4VpkESo5tWkT_beymCu5gy2ngynn3SNDYyVgZXGrEn4V_OKM0CAwEAAaOCBMIwggS-MIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0OBBYEFLXKU9erjRhgRqjwHfGKduIH8QgZMB8GA1UdIwQYMBaAFPzkWgovhQ7nRLkHc3jg1EQHohkRMIIBygYDVR0fBIIBwTCCAb0wb6BtoGuGaWh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS84MS9jdXJyZW50LmNybDBxoG-gbYZraHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvODEvY3VycmVudC5jcmwwYKBeoFyGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS84MS9jdXJyZW50LmNybDB1oHOgcYZvaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxLzgxL2N1cnJlbnQuY3JsMIIBzwYIKwYBBQUHAQEEggHBMIIBvTByBggrBgEFBQcwAoZmaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMHQGCCsGAQUFBzAChmhodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMGwGCCsGAQUFBzAChmBodHRwOi8vY2NtZWNlbnRyYWx1c3BraS5jZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lY2VudHJhbHVzaWNhMDEwDQYJKoZIhvcNAQELBQADggEBAEdUznjVdYbUtxHD93flzOpv9itmdLU-P-i-amvvUBn1ESE_kJadN1MNgEM7wepiASPBur_kdjFJFZ5QdmL9EfoQmFlXLFS-v1qgMBh2uK-7Kx5nCPVe7MfrPZyaDtWWZoKQ1ku_7opeRh0t5mG0O3vQdmu-gxm9jX2bOhHTHW_uA9yYnskYrIv0kyqah1mv5zf85_XKMRSd592hVfIL4O9kUoKFjYKYWROv0MDSHRzOr2h9LjtoXGtDVpaGhgXaw6SQLRfR9piqIFxVYxpsgwP30Cdlvv9Vz-bZEpoPLRZc4_cpvPp6ZaWJSQgQNnoHo1QDfwAPoEEjmUxvRB06lrI&s=Cff76fOh6Gq_1iTYMUb326D2zRcGUrykP26J1ewI8w4vBMlCme8d6bg4htuEaHkEwzQvjbPFSJQ4aLjy4KlSOAkRM8iJx0isBNW3tGtsRPDYn9dy56wE0T784ZPpLAafh2TK19hUS-6iMyt3_-Qj3QcZLjobQDXTOTLxZfiv73odhYse0nV2EcAaqSpzIHeHSlbsThuGaakiqOg-ON_p3c1lANfh7BtxIUt_ZiDH4y7OdJrRCQm1nrQyHrR5jjYnCk4vsWxYuDQmuasOI_aHTTt1iQhnXAaebnv1b1gpz9rBLQnA3G-LpgboTgiIu_o7bH6VDHKwBmHn7v2BGmnWQQ&h=1rSBIKgTFwoKbFBLqljsB9N2-QOqS_NZcUaGL7dgn3E
+      cache-control:
+      - no-cache
+      content-length:
+      - '11010'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 10:27:35 GMT
+      etag:
+      - '"0a00ce95-0000-0500-0000-6ad742150000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CognitiveServices/locations/southcentralus/operationResults/7efa8822-dc9e-417d-9ca7-ac1aa9c1e341?api-version=2017-04-18&operationResultResponseType=Location&t=639280888549145421&c=MIIHwzCCBqugAwIBAgIQO9vjerLJyzCAZGOG8qnuujANBgkqhkiG9w0BAQsFADA1MTMwMQYDVQQDEypDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBDVVMgQ0EgMDEwHhcNMjYwOTE3MTkyNzU0WhcNMjYxMjEzMDEyNzU0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOH7XcOFB9oBlttbwx8AirjT-trX0XvGg-qTsZnfCNKSBKRmEGUNPWfYKFgDpx0AZwfOinDzB58zssD8uZb2jeDqfJuiR1vqsOBWntnOkwx0IgWzw_pbET-L7lO_ZYW2-ec3c5ZewHiy0Jr51TL2zNtCadpjfB2g2RkKJY_5Zgyqgccwx0LvPgj81bdByhSFWtd49llL8NuFYWjo3Fk7HmsitrM-T8Z3xgac37X6nC2PTsQFiO6h917Etzgh-KBeYYfZiOTF9hHnetiX5px_9XecvBma56vHFyzqoF4VpkESo5tWkT_beymCu5gy2ngynn3SNDYyVgZXGrEn4V_OKM0CAwEAAaOCBMIwggS-MIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0OBBYEFLXKU9erjRhgRqjwHfGKduIH8QgZMB8GA1UdIwQYMBaAFPzkWgovhQ7nRLkHc3jg1EQHohkRMIIBygYDVR0fBIIBwTCCAb0wb6BtoGuGaWh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS84MS9jdXJyZW50LmNybDBxoG-gbYZraHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvODEvY3VycmVudC5jcmwwYKBeoFyGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS84MS9jdXJyZW50LmNybDB1oHOgcYZvaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxLzgxL2N1cnJlbnQuY3JsMIIBzwYIKwYBBQUHAQEEggHBMIIBvTByBggrBgEFBQcwAoZmaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMHQGCCsGAQUFBzAChmhodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMGwGCCsGAQUFBzAChmBodHRwOi8vY2NtZWNlbnRyYWx1c3BraS5jZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lY2VudHJhbHVzaWNhMDEwDQYJKoZIhvcNAQELBQADggEBAEdUznjVdYbUtxHD93flzOpv9itmdLU-P-i-amvvUBn1ESE_kJadN1MNgEM7wepiASPBur_kdjFJFZ5QdmL9EfoQmFlXLFS-v1qgMBh2uK-7Kx5nCPVe7MfrPZyaDtWWZoKQ1ku_7opeRh0t5mG0O3vQdmu-gxm9jX2bOhHTHW_uA9yYnskYrIv0kyqah1mv5zf85_XKMRSd592hVfIL4O9kUoKFjYKYWROv0MDSHRzOr2h9LjtoXGtDVpaGhgXaw6SQLRfR9piqIFxVYxpsgwP30Cdlvv9Vz-bZEpoPLRZc4_cpvPp6ZaWJSQgQNnoHo1QDfwAPoEEjmUxvRB06lrI&s=3dVl0-Sgwjozx2CCippbAMawoGLmAfKwpYey4KvuSIfCN2UKPy0ZgRtK6IFIka-lYSQl9dxI_us3qtv9jy6hOAtb8cdKnBRcVLWK1y3QZGhgJw_yN-JDzgIqFvyGV6btc4MgLUnKnKCcl_nxtwuElSlMGrsC0S8XxWSXmTNRBk3BgM9oF9IyCaWxA0Q94DwKZEmOrifxBfgAFsl8RfSKrzntxMStnwf8lGP8vl2eVohoByodRCQpiiK9lvcK-gyTL1RLGCdvUq3D9-wI20S1O0hfZZ9JGqX6lQov-sqibmlkP-2005KtttuzOzzNCvoDFdOZtChDY22WvYfdmB9AXA&h=Pup-O5DQ8z1kZTQ-ZljL-3p03zQB-KrE9DXiQtFKb78
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '1420'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=87c1683e-b943-42a1-84c3-bb17c54886ae/westus/fc74e258-8c2b-445d-b588-8cdc23d5d8b8
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 94FA072DCB4E4A45BD75C2A6796C88A8 Ref B: PNQ241100402054 Ref C: 2026-10-20T10:27:32Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cognitiveservices account update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --custom-domain
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.10.11 (Windows-10-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CognitiveServices/locations/southcentralus/operationResults/7efa8822-dc9e-417d-9ca7-ac1aa9c1e341?api-version=2017-04-18&t=639280888548989173&c=MIIHwzCCBqugAwIBAgIQO9vjerLJyzCAZGOG8qnuujANBgkqhkiG9w0BAQsFADA1MTMwMQYDVQQDEypDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBDVVMgQ0EgMDEwHhcNMjYwOTE3MTkyNzU0WhcNMjYxMjEzMDEyNzU0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOH7XcOFB9oBlttbwx8AirjT-trX0XvGg-qTsZnfCNKSBKRmEGUNPWfYKFgDpx0AZwfOinDzB58zssD8uZb2jeDqfJuiR1vqsOBWntnOkwx0IgWzw_pbET-L7lO_ZYW2-ec3c5ZewHiy0Jr51TL2zNtCadpjfB2g2RkKJY_5Zgyqgccwx0LvPgj81bdByhSFWtd49llL8NuFYWjo3Fk7HmsitrM-T8Z3xgac37X6nC2PTsQFiO6h917Etzgh-KBeYYfZiOTF9hHnetiX5px_9XecvBma56vHFyzqoF4VpkESo5tWkT_beymCu5gy2ngynn3SNDYyVgZXGrEn4V_OKM0CAwEAAaOCBMIwggS-MIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0OBBYEFLXKU9erjRhgRqjwHfGKduIH8QgZMB8GA1UdIwQYMBaAFPzkWgovhQ7nRLkHc3jg1EQHohkRMIIBygYDVR0fBIIBwTCCAb0wb6BtoGuGaWh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS84MS9jdXJyZW50LmNybDBxoG-gbYZraHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvODEvY3VycmVudC5jcmwwYKBeoFyGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS84MS9jdXJyZW50LmNybDB1oHOgcYZvaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxLzgxL2N1cnJlbnQuY3JsMIIBzwYIKwYBBQUHAQEEggHBMIIBvTByBggrBgEFBQcwAoZmaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMHQGCCsGAQUFBzAChmhodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMGwGCCsGAQUFBzAChmBodHRwOi8vY2NtZWNlbnRyYWx1c3BraS5jZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lY2VudHJhbHVzaWNhMDEwDQYJKoZIhvcNAQELBQADggEBAEdUznjVdYbUtxHD93flzOpv9itmdLU-P-i-amvvUBn1ESE_kJadN1MNgEM7wepiASPBur_kdjFJFZ5QdmL9EfoQmFlXLFS-v1qgMBh2uK-7Kx5nCPVe7MfrPZyaDtWWZoKQ1ku_7opeRh0t5mG0O3vQdmu-gxm9jX2bOhHTHW_uA9yYnskYrIv0kyqah1mv5zf85_XKMRSd592hVfIL4O9kUoKFjYKYWROv0MDSHRzOr2h9LjtoXGtDVpaGhgXaw6SQLRfR9piqIFxVYxpsgwP30Cdlvv9Vz-bZEpoPLRZc4_cpvPp6ZaWJSQgQNnoHo1QDfwAPoEEjmUxvRB06lrI&s=Cff76fOh6Gq_1iTYMUb326D2zRcGUrykP26J1ewI8w4vBMlCme8d6bg4htuEaHkEwzQvjbPFSJQ4aLjy4KlSOAkRM8iJx0isBNW3tGtsRPDYn9dy56wE0T784ZPpLAafh2TK19hUS-6iMyt3_-Qj3QcZLjobQDXTOTLxZfiv73odhYse0nV2EcAaqSpzIHeHSlbsThuGaakiqOg-ON_p3c1lANfh7BtxIUt_ZiDH4y7OdJrRCQm1nrQyHrR5jjYnCk4vsWxYuDQmuasOI_aHTTt1iQhnXAaebnv1b1gpz9rBLQnA3G-LpgboTgiIu_o7bH6VDHKwBmHn7v2BGmnWQQ&h=1rSBIKgTFwoKbFBLqljsB9N2-QOqS_NZcUaGL7dgn3E
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CognitiveServices/locations/southcentralus/operationResults/7efa8822-dc9e-417d-9ca7-ac1aa9c1e341","name":"7efa8822-dc9e-417d-9ca7-ac1aa9c1e341","status":"Updating","startTime":"2026-10-20T10:27:34Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '278'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 10:27:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '9'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=87c1683e-b943-42a1-84c3-bb17c54886ae/jioindiacentral/45166a44-f0f8-466c-a849-aabfc9be7438
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 3F2782DD69A0404B9B0B888E11537A85 Ref B: PNQ241100401036 Ref C: 2026-10-20T10:27:35Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cognitiveservices account update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --custom-domain
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.10.11 (Windows-10-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CognitiveServices/locations/southcentralus/operationResults/7efa8822-dc9e-417d-9ca7-ac1aa9c1e341?api-version=2017-04-18&t=639280888548989173&c=MIIHwzCCBqugAwIBAgIQO9vjerLJyzCAZGOG8qnuujANBgkqhkiG9w0BAQsFADA1MTMwMQYDVQQDEypDQ01FIEcxIFRMUyBSU0EgMjA0OCBTSEEyNTYgMjA0OSBDVVMgQ0EgMDEwHhcNMjYwOTE3MTkyNzU0WhcNMjYxMjEzMDEyNzU0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOH7XcOFB9oBlttbwx8AirjT-trX0XvGg-qTsZnfCNKSBKRmEGUNPWfYKFgDpx0AZwfOinDzB58zssD8uZb2jeDqfJuiR1vqsOBWntnOkwx0IgWzw_pbET-L7lO_ZYW2-ec3c5ZewHiy0Jr51TL2zNtCadpjfB2g2RkKJY_5Zgyqgccwx0LvPgj81bdByhSFWtd49llL8NuFYWjo3Fk7HmsitrM-T8Z3xgac37X6nC2PTsQFiO6h917Etzgh-KBeYYfZiOTF9hHnetiX5px_9XecvBma56vHFyzqoF4VpkESo5tWkT_beymCu5gy2ngynn3SNDYyVgZXGrEn4V_OKM0CAwEAAaOCBMIwggS-MIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwIwDAYKKwYBBAGCN3sEAjAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0OBBYEFLXKU9erjRhgRqjwHfGKduIH8QgZMB8GA1UdIwQYMBaAFPzkWgovhQ7nRLkHc3jg1EQHohkRMIIBygYDVR0fBIIBwTCCAb0wb6BtoGuGaWh0dHA6Ly9wcmltYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS84MS9jdXJyZW50LmNybDBxoG-gbYZraHR0cDovL3NlY29uZGFyeS1jZG4ucGtpLmNvcmUud2luZG93cy5uZXQvY2VudHJhbHVzL2NybHMvY2NtZWNlbnRyYWx1c3BraS9jY21lY2VudHJhbHVzaWNhMDEvODEvY3VycmVudC5jcmwwYKBeoFyGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9jZW50cmFsdXMvY3Jscy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS84MS9jdXJyZW50LmNybDB1oHOgcYZvaHR0cDovL2NjbWVjZW50cmFsdXNwa2kuY2VudHJhbHVzLnBraS5jb3JlLndpbmRvd3MubmV0L2NlcnRpZmljYXRlQXV0aG9yaXRpZXMvY2NtZWNlbnRyYWx1c2ljYTAxLzgxL2N1cnJlbnQuY3JsMIIBzwYIKwYBBQUHAQEEggHBMIIBvTByBggrBgEFBQcwAoZmaHR0cDovL3ByaW1hcnktY2RuLnBraS5jb3JlLndpbmRvd3MubmV0L2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMHQGCCsGAQUFBzAChmhodHRwOi8vc2Vjb25kYXJ5LWNkbi5wa2kuY29yZS53aW5kb3dzLm5ldC9jZW50cmFsdXMvY2FjZXJ0cy9jY21lY2VudHJhbHVzcGtpL2NjbWVjZW50cmFsdXNpY2EwMS9jZXJ0LmNlcjBjBggrBgEFBQcwAoZXaHR0cDovL2NybC5taWNyb3NvZnQuY29tL2NlbnRyYWx1cy9jYWNlcnRzL2NjbWVjZW50cmFsdXNwa2kvY2NtZWNlbnRyYWx1c2ljYTAxL2NlcnQuY2VyMGwGCCsGAQUFBzAChmBodHRwOi8vY2NtZWNlbnRyYWx1c3BraS5jZW50cmFsdXMucGtpLmNvcmUud2luZG93cy5uZXQvY2VydGlmaWNhdGVBdXRob3JpdGllcy9jY21lY2VudHJhbHVzaWNhMDEwDQYJKoZIhvcNAQELBQADggEBAEdUznjVdYbUtxHD93flzOpv9itmdLU-P-i-amvvUBn1ESE_kJadN1MNgEM7wepiASPBur_kdjFJFZ5QdmL9EfoQmFlXLFS-v1qgMBh2uK-7Kx5nCPVe7MfrPZyaDtWWZoKQ1ku_7opeRh0t5mG0O3vQdmu-gxm9jX2bOhHTHW_uA9yYnskYrIv0kyqah1mv5zf85_XKMRSd592hVfIL4O9kUoKFjYKYWROv0MDSHRzOr2h9LjtoXGtDVpaGhgXaw6SQLRfR9piqIFxVYxpsgwP30Cdlvv9Vz-bZEpoPLRZc4_cpvPp6ZaWJSQgQNnoHo1QDfwAPoEEjmUxvRB06lrI&s=Cff76fOh6Gq_1iTYMUb326D2zRcGUrykP26J1ewI8w4vBMlCme8d6bg4htuEaHkEwzQvjbPFSJQ4aLjy4KlSOAkRM8iJx0isBNW3tGtsRPDYn9dy56wE0T784ZPpLAafh2TK19hUS-6iMyt3_-Qj3QcZLjobQDXTOTLxZfiv73odhYse0nV2EcAaqSpzIHeHSlbsThuGaakiqOg-ON_p3c1lANfh7BtxIUt_ZiDH4y7OdJrRCQm1nrQyHrR5jjYnCk4vsWxYuDQmuasOI_aHTTt1iQhnXAaebnv1b1gpz9rBLQnA3G-LpgboTgiIu_o7bH6VDHKwBmHn7v2BGmnWQQ&h=1rSBIKgTFwoKbFBLqljsB9N2-QOqS_NZcUaGL7dgn3E
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CognitiveServices/locations/southcentralus/operationResults/7efa8822-dc9e-417d-9ca7-ac1aa9c1e341","name":"7efa8822-dc9e-417d-9ca7-ac1aa9c1e341","status":"Succeeded","startTime":"2026-10-20T10:27:34Z","endTime":"2026-10-20T10:28:06Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '312'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 10:28:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '7'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=87c1683e-b943-42a1-84c3-bb17c54886ae/westindia/ad1b2820-3743-4b6d-9af9-4397f1a2c5c1
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 49D4B2F48BA24A56A9F017B12025FE0E Ref B: PNQ241100401034 Ref C: 2026-10-20T10:28:07Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cognitiveservices account update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --custom-domain
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.10.11 (Windows-10-10.0.26300-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.CognitiveServices/accounts/cs_cli_test_000004?api-version=2026-09-15-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.CognitiveServices/accounts/cs_cli_test_000004","name":"cs_cli_test_000004","type":"Microsoft.CognitiveServices/accounts","etag":"\"0a000299-0000-0500-0000-6ad742360000\"","location":"southcentralus","sku":{"name":"S0"},"kind":"FormRecognizer","properties":{"endpoint":"https://csclitest000005.cognitiveservices.azure.com/","provisioningState":"Succeeded","internalId":"d04376c57ba448af8103f472c60de3f0","dateCreated":"2026-10-20T10:26:23.23509Z","callRateLimit":{"rules":[{"key":"container.billing","renewalPeriod":10,"count":500,"matchPatterns":[{"path":"billing/*","method":"*"}]},{"key":"formrecognizer.analyze","renewalPeriod":1,"count":15,"matchPatterns":[{"path":"formrecognizer/custom/models/{id}/analyze","method":"POST"},{"path":"formrecognizer/custom/models/{modelId}/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/businessCard/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/idDocument/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/invoice/analyze","method":"POST"},{"path":"formrecognizer/layout/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/receipt/analyze","method":"POST"},{"path":"formrecognizer/prebuilt/receipt/asyncBatchAnalyze","method":"POST"},{"path":"formrecognizer/documentModels/{modelId}:analyze","method":"POST"},{"path":"formrecognizer/read","method":"POST"},{"path":"formrecognizer/documentClassifiers/{classifierId}:analyze","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:analyze","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:analyze?_overload=analyzeDocument","method":"POST"},{"path":"documentintelligence/documentClassifiers/{classifierId}:analyze","method":"POST"},{"path":"documentintelligence/documentClassifiers/{classifierId}:analyze?_overload=classifyDocument","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:analyzeBatch","method":"POST"}]},{"key":"formrecognizer.get.object","renewalPeriod":1,"count":50,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"formrecognizer/custom/models/{modelId}/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/businessCard/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/idDocument/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/invoice/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/receipt/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/prebuilt/receipt/operations/{operationId}","method":"GET"},{"path":"formrecognizer/documentModels/{modelId}/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/layout/analyzeResults/{resultId}","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}/copyResults/{resultId}","method":"GET"},{"path":"formrecognizer/operations/{operationId}","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}","method":"GET"},{"path":"formrecognizer/custom/models/{id}","method":"GET"},{"path":"formrecognizer/documentModels/{modelId}","method":"GET"},{"path":"formrecognizer/documentClassifiers/{classifierId}","method":"GET"},{"path":"formrecognizer/documentClassifiers/{classifierId}/analyzeResults/{resultId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeResults/{resultId}","method":"GET"},{"path":"documentintelligence/operations/{operationId}","method":"GET"},{"path":"documentintelligence/operations/{operationId}?_overload={_overload}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}","method":"GET"},{"path":"documentintelligence/documentClassifiers/{classifierId}","method":"GET"},{"path":"documentintelligence/documentClassifiers/{classifierId}/analyzeResults/{resultId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeBatchResults/{resultId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeResults/{resultId}/figures/{figureId}","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeResults/{resultId}/pdf","method":"GET"}]},{"key":"formrecognizer.list.objects","renewalPeriod":1,"count":10,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"formrecognizer/operations","method":"GET"},{"path":"formrecognizer/info","method":"GET"},{"path":"formrecognizer/documentModels","method":"GET"},{"path":"formrecognizer/custom/models","method":"GET"},{"path":"formrecognizer/documentClassifiers","method":"GET"},{"path":"documentintelligence/documentModels","method":"GET"},{"path":"documentintelligence/operations","method":"GET"},{"path":"documentintelligence/info","method":"GET"},{"path":"documentintelligence/documentClassifiers","method":"GET"},{"path":"documentintelligence/documentModels/{modelId}/analyzeBatchResults","method":"GET"}]},{"key":"formrecognizer.model.management","renewalPeriod":1,"count":5,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"formrecognizer/custom/models","method":"POST"},{"path":"formrecognizer/custom/models/compose","method":"POST"},{"path":"formrecognizer/custom/models/copyAuthorization","method":"POST"},{"path":"formrecognizer/custom/models/{id}","method":"DELETE"},{"path":"formrecognizer/custom/models/{id}/keys","method":"GET"},{"path":"formrecognizer/custom/models/{modelId}","method":"DELETE"},{"path":"formrecognizer/custom/models/{modelId}/copy","method":"POST"},{"path":"formrecognizer/documentModels/{modelId}:copyTo","method":"POST"},{"path":"formrecognizer/documentModels:authorizeCopy","method":"POST"},{"path":"formrecognizer/documentModels:build","method":"POST"},{"path":"formrecognizer/documentModels:compose","method":"POST"},{"path":"formrecognizer/custom/train","method":"POST"},{"path":"formrecognizer/custom/models/{modelId}","method":"DELETE"},{"path":"formrecognizer/documentModels/{modelId}","method":"DELETE"},{"path":"formrecognizer/documentClassifiers:build","method":"POST"},{"path":"formrecognizer/documentClassifiers/{classifierId}","method":"DELETE"},{"path":"documentintelligence/documentModels:authorizeCopy","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}:copyTo","method":"POST"},{"path":"documentintelligence/documentModels:build","method":"POST"},{"path":"documentintelligence/documentModels:compose","method":"POST"},{"path":"documentintelligence/documentModels/{modelId}","method":"DELETE"},{"path":"documentintelligence/documentClassifiers:build","method":"POST"},{"path":"documentintelligence/documentClassifiers/{classifierId}","method":"DELETE"},{"path":"documentintelligence/documentClassifiers/{classifierId}:copyTo","method":"POST"},{"path":"documentintelligence/documentClassifiers:authorizeCopy","method":"POST"}]},{"key":"formrecognizer.chat.build","renewalPeriod":1,"count":15,"matchPatterns":[{"path":"documentintelligence/chat:build","method":"POST"}]},{"key":"formrecognizer.chat.complete","renewalPeriod":60,"count":5,"matchPatterns":[{"path":"documentintelligence/chat/{chatId}:complete","method":"POST"}]},{"key":"formrecognizer.labeling","renewalPeriod":1,"count":100,"matchPatterns":[{"path":"documentintelligence/labelingProjects/*","method":"*"},{"path":"documentintelligence/classificationProjects/*","method":"*"},{"path":"documentintelligence/labelingProjects","method":"GET"},{"path":"documentintelligence/classificationProjects","method":"GET"}]},{"key":"default","renewalPeriod":1,"count":5,"dynamicThrottlingEnabled":true,"matchPatterns":[{"path":"*","method":"*"}]}]},"isMigrated":false,"customSubDomainName":"csclitest000005","allowProjectManagement":false,"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","capabilities":[{"name":"DynamicThrottling"},{"name":"VirtualNetworks"},{"name":"EnabledApimVnet","value":"true"},{"name":"CustomerManagedKey"},{"name":"Container","value":"FormRecognizer.*,FormRecognizer.Forms,FormRecognizer.FormRecognizerCustomSupervised,FormRecognizer.FormRecognizerLayout,FormRecognizer.formrecognizerreadlayout,FormRecognizer.FormRecognizerId,FormRecognizer.FormRecognizerInvoice,FormRecognizer.FormRecognizerReceipt,FormRecognizer.FormRecognizerBusinessCard,FormRecognizer.FormRecognizerRead,FormRecognizer.FormRecognizerKvp"}],"endpoints":{"FormRecognizer":"https://csclitest000005.cognitiveservices.azure.com/","Container":"https://csclitest000005.cognitiveservices.azure.com/"},"armFeatures":["Microsoft.CognitiveServices/OpenAI.FoundryDirect","Microsoft.CognitiveServices/allowProvisionedWithoutCommitment","Microsoft.CognitiveServices/AllowAIFoundryUpgrade","Microsoft.CognitiveServices/OpenAI.Provisioned.BypassQuotaCheck","Microsoft.CognitiveServices/OpenAI.1PGatingTier","Microsoft.CognitiveServices/TiP","Microsoft.CognitiveServices/openAIPreview","Microsoft.CognitiveServices/openAINewModel","Microsoft.CognitiveServices/OpenAIFinetune","Microsoft.CognitiveServices/OpenAIFinetune.Ada","Microsoft.CognitiveServices/OpenAIFinetune.Curie","Microsoft.CognitiveServices/OpenAIFinetune.Davinci","Microsoft.CognitiveServices/openAI1PRegions","Microsoft.CognitiveServices/openAITest","microsoft.cognitiveservices/OpenAIDedicated","microsoft.cognitiveservices/OpenAIDedicated.code-davinci-002","microsoft.cognitiveservices/OpenAIDedicated.text-davinci-002","microsoft.cognitiveservices/OpenAIDedicated.code-cushman-001","Microsoft.CognitiveServices/OpenAI.Allow.RetiredModels","Microsoft.CognitiveServices/LegalTerms.ComputerVision.SpatialAnaysisRAITermsAccepted","Microsoft.CognitiveServices/LegalTerms.TextAnalytics.TAForPIIRAITermsAccepted","Microsoft.CognitiveServices/LegalTerms.TextAnalytics.TAForHealthRAITermsAccepted","Microsoft.CognitiveServices/LegalTerms.Face.PoliceTermsAccepted","Microsoft.CognitiveServices/OpenAIFinetune.text-davinci-fine-tune-002","Microsoft.CognitiveServices/OpenAIFinetune.code-davinci-fine-tune-002","Microsoft.CognitiveServices/OpenAIFinetune.EastUS","Microsoft.CognitiveServices/OpenAI.EnableStoredCompletion","Microsoft.CognitiveServices/GSOv2","Microsoft.CognitiveServices/OpenAI.Finetuning.GlobalTraining","Microsoft.CognitiveServices/OpenAI.Preview.202409","Microsoft.CognitiveServices/OpenAI.gpt-45-preview","Microsoft.CognitiveServices/OpenAI.GlobalTraining","Microsoft.CognitiveServices/OpenAI.DeveloperTier","Microsoft.CognitiveServices/FoundryComputePreview","Microsoft.CognitiveServices/HLS-MI2-Premium.EnableDeploy","Microsoft.CognitiveServices/Fireworks.EnableDeploy","Microsoft.CognitiveServices/MAI.MAICodeFinetune","Microsoft.CognitiveServices/HLS-CXR-Premium.EnableDeploy","Microsoft.CognitiveServices/AIServices.mai-code","Microsoft.Resources/EUAPParticipation"],"a365LoggingEnabled":true,"a365Status":"Enabled"},"systemData":{"createdBy":"test@example.com","createdByType":"User","createdAt":"2026-10-20T10:26:21.9001833Z","lastModifiedBy":"test@example.com","lastModifiedByType":"User","lastModifiedAt":"2026-10-20T10:27:33.4145108Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '11011'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 20 Oct 2026 10:28:09 GMT
+      etag:
+      - '"0a000299-0000-0500-0000-6ad742360000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '13'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 0BF9780CC19A4F49B30FBA2586AB98F1 Ref B: PNQ241100406031 Ref C: 2026-10-20T10:28:09Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cognitiveservices account delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.91.0 azsdk-python-core/1.39.0 Python/3.10.11 (Windows-10-10.0.26300-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.CognitiveServices/accounts/cs_cli_test_000004?api-version=2026-09-15-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 20 Oct 2026 10:28:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '222'
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=87c1683e-b943-42a1-84c3-bb17c54886ae/westus/b6f036ac-9c2c-4424-a145-ef3bde69ad83
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: 23B1F101B96A4C6CAF3D09CE4EFA97BA Ref B: PNQ241100405031 Ref C: 2026-10-20T10:28:10Z'
+    status:
+      code: 200
+      message: OK
+version: 1
