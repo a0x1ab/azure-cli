@@ -5072,5 +5072,23 @@ class VMSSHKeyScenarioTest(ScenarioTest):
         self.cmd('sshkey show -g {rg} -n k3')
 
 
+class VMTrustedLaunchScenarioTest(ScenarioTest):
+    @unittest.skip('image not found')
+    @ResourceGroupPreparer(name_prefix='cli_test_vm_trusted_launch_')
+    def test_vm_trusted_launch(self, resource_group):
+        self.cmd('vm create -g {rg} -n vm --image MicrosoftWindowsServer:windowsserver-gen2preview-preview:windows10-tvm:18363.592.2001092016 --security-type TrustedLaunch --enable-secure-boot true --enable-vtpm true --admin-username AzureUser --admin-password testPassword0 --nsg-rule None')
+        self.cmd('vm show -g {rg} -n vm', checks=[
+            self.check('securityProfile.securityType', 'TrustedLaunch'),
+            self.check('securityProfile.UefiSettings.secureBootEnabled', True),
+            self.check('securityProfile.UefiSettings.vTpmEnabled', True)
+        ])
+
+    @unittest.skip('image not found')
+    @ResourceGroupPreparer(name_prefix='cli_test_vm_trusted_launch_update_')
+    def test_vm_trusted_launch_update(self, resource_group):
+        self.cmd('vm create -g {rg} -n vm --image Win2019Datacenter --security-type TrustedLaunch --admin-username AzureUser --admin-password testPassword0 --nsg-rule None')
+        self.cmd('vm update -g {rg} -n vm --enable-secure-boot true --enable-vtpm true')
+
+
 if __name__ == '__main__':
     unittest.main()
