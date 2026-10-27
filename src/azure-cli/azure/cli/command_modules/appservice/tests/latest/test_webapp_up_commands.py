@@ -1,0 +1,1429 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
+# pylint: disable=line-too-long
+# pylint: disable=too-few-public-methods
+
+import unittest
+import os
+import re
+from pytest import skip
+import requests
+from knack.util import CLIError
+
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk import (
+    ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
+
+TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+WINDOWS_ASP_LOCATION_WEBAPP = 'japanwest'
+LINUX_ASP_LOCATION_WEBAPP = 'eastus2'
+
+
+class WebAppUpE2ETests(ScenarioTest):
+    @live_only()
+    @ResourceGroupPreparer(random_name_length=24, name_prefix='clitest', location=LINUX_ASP_LOCATION_WEBAPP)
+    def test_webapp_up_no_plan_e2e(self, resource_group):
+        webapp_name = self.create_random_name('up-nodeapp', 24)
+        zip_file_name = os.path.join(TEST_DIR, 'node-Express-up.zip')
+
+        # create a temp directory and unzip the code to this folder
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        # change the working dir to the dir where the code has been extracted to
+        up_working_dir = os.path.join(temp_dir, 'myExpressApp')
+        os.chdir(up_working_dir)
+
+        # test the full E2E operation works
+        self.cmd('webapp up -n {} -g {}'.format(webapp_name, resource_group)).get_output_in_json()
+
+        # Verify app is created
+        # since we set local context, -n and -g are no longer required
+        self.cmd('webapp show', checks=[
+            JMESPathCheck('name', webapp_name),
+            JMESPathCheck('httpsOnly', True),
+            JMESPathCheck('kind', 'app,linux'),
+            JMESPathCheck('resourceGroup', resource_group)
+        ])
+
+        config = self.cmd('webapp config show', checks=[
+            JMESPathCheck('tags.cli', 'None'),
+        ]).get_output_in_json()
+
+        self.assertIn("node", config.get("linuxFxVersion", "").lower())
+
+        self.cmd('webapp config appsettings list', checks=[
+            JMESPathCheck('[0].name', 'SCM_DO_BUILD_DURING_DEPLOYMENT'),
+            JMESPathCheck('[0].value', 'True')
+        ])
+
+        # cleanup
+        # switch back the working dir
+        os.chdir(current_working_dir)
+        # delete temp_dir
+        import shutil
+        shutil.rmtree(temp_dir)
+
+
+    @live_only()
+    @unittest.skip("Flaky test skipping")
+    @ResourceGroupPreparer(random_name_length=24, name_prefix='clitest', location=LINUX_ASP_LOCATION_WEBAPP)
+    def test_webapp_up_no_plan_different_os_e2e(self, resource_group):
+        webapp_name = self.create_random_name('up-nodeapp', 24)
+        zip_file_name = os.path.join(TEST_DIR, 'node-Express-up.zip')
+
+        # create a temp directory and unzip the code to this folder
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        # change the working dir to the dir where the code has been extracted to
+        up_working_dir = os.path.join(temp_dir, 'myExpressApp')
+        os.chdir(up_working_dir)
+
+        # test the full E2E operation works
+        self.cmd('webapp up -n {} -g {} --os-type windows'.format(webapp_name, resource_group))
+
+        # Verify app is created
+        # since we set local context, -n and -g are no longer required
+        self.cmd('webapp show', checks=[
+            JMESPathCheck('name', webapp_name),
+            JMESPathCheck('httpsOnly', True),
+            JMESPathCheck('kind', 'app'),
+            JMESPathCheck('resourceGroup', resource_group)
+        ])
+
+        webapp_name = self.create_random_name('up-nodeapp', 24)
+        self.cmd('webapp up -n {} -g {} --os-type linux'.format(webapp_name, resource_group), expect_failure=True)
+
+        # cleanup
+        # switch back the working dir
+        os.chdir(current_working_dir)
+        # delete temp_dir
+        import shutil
+        shutil.rmtree(temp_dir)
+
+
+    @live_only()
+    @ResourceGroupPreparer(random_name_length=24, name_prefix='clitest', location=LINUX_ASP_LOCATION_WEBAPP)
+    def test_webapp_up_node_e2e(self, resource_group):
+        plan = self.create_random_name('up-nodeplan', 24)
+        webapp_name = self.create_random_name('up-nodeapp', 24)
+        zip_file_name = os.path.join(TEST_DIR, 'node-Express-up.zip')
+
+        # create a temp directory and unzip the code to this folder
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        # change the working dir to the dir where the code has been extracted to
+        up_working_dir = os.path.join(temp_dir, 'myExpressApp')
+        os.chdir(up_working_dir)
+
+        # test dryrun operation
+        result = self.cmd(
+            'webapp up -n {} --dryrun'.format(webapp_name)).get_output_in_json()
+        self.assertEqual(result['sku'].lower(), 'premiumv2')
+        self.assertTrue(result['name'].startswith(webapp_name))
+        self.assertTrue(result['src_path'].replace(
+            os.sep + os.sep, os.sep), up_working_dir)
+        self.assertIn("node|", result['runtime_version'].lower())
+        self.assertEqual(result['os'].lower(), 'linux')
+
+        # test the full E2E operation works
+        full_result = self.cmd(
+            'webapp up -n {} -g {} --plan {}'.format(webapp_name, resource_group, plan)).get_output_in_json()
+        self.assertEqual(result['name'], full_result['name'])
+
+        # Verify app is created
+        # since we set local context, -n and -g are no longer required
+        self.cmd('webapp show', checks=[
+            JMESPathCheck('name', webapp_name),
+            JMESPathCheck('httpsOnly', True),
+            JMESPathCheck('kind', 'app,linux'),
+            JMESPathCheck('resourceGroup', resource_group)
+        ])
+
+        config = self.cmd('webapp config show', checks=[
+            JMESPathCheck('tags.cli', 'None'),
+        ]).get_output_in_json()
+        self.assertIn("node", config.get("linuxFxVersion", "").lower())
+
+        self.cmd('webapp config appsettings list', checks=[
+            JMESPathCheck('[0].name', 'SCM_DO_BUILD_DURING_DEPLOYMENT'),
+            JMESPathCheck('[0].value', 'True')
+        ])
+
+        self.cmd('appservice plan show', checks=[
+            JMESPathCheck('properties.reserved', True),
+            JMESPathCheck('name', plan),
+            JMESPathCheck('sku.tier', 'PremiumV2'),
+            JMESPathCheck('sku.name', 'P1v2')
+        ])
+
+        # cleanup
+        # switch back the working dir
+        os.chdir(current_working_dir)
+        # delete temp_dir
+        import shutil
+        shutil.rmtree(temp_dir)
+
+    @live_only()
+    @ResourceGroupPreparer(random_name_length=24, name_prefix='clitest', location=LINUX_ASP_LOCATION_WEBAPP)
+    def test_webapp_up_python_e2e(self, resource_group):
+        plan = self.create_random_name('up-pythonplan', 24)
+        webapp_name = self.create_random_name('up-pythonapp', 24)
+        zip_file_name = os.path.join(TEST_DIR, 'python-hello-world-up.zip')
+
+        # create a temp directory and unzip the code to this folder
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        # change the working dir to the dir where the code has been extracted to
+        up_working_dir = os.path.join(temp_dir, 'python-docs-hello-world')
+        os.chdir(up_working_dir)
+
+        # test dryrun operation
+        result = self.cmd('webapp up -n {} --sku  S1 --dryrun'
+                          .format(webapp_name)).get_output_in_json()
+        self.assertEqual(result['sku'].lower(), 'standard')
+        self.assertTrue(result['name'].startswith(webapp_name))
+        self.assertTrue(result['src_path'].replace(
+            os.sep + os.sep, os.sep), up_working_dir)
+        self.assertEqual(result['runtime_version'].lower(), 'python|3.7')
+        self.assertEqual(result['os'].lower(), 'linux')
+
+        # test the full E2E operation works
+        full_result = self.cmd(
+            'webapp up -n {} --sku  S1 -g {} --plan {}'.format(webapp_name, resource_group, plan)).get_output_in_json()
+        self.assertEqual(result['name'], full_result['name'])
+
+        # Verify app is created
+        # since we set local context, -n and -g are no longer required
+        self.cmd('webapp show', checks=[
+            JMESPathCheck('name', webapp_name),
+            JMESPathCheck('httpsOnly', True),
+            JMESPathCheck('kind', 'app,linux'),
+            JMESPathCheck('resourceGroup', resource_group)
+        ])
+
+        self.cmd('webapp config show', checks=[
+            JMESPathCheck('linuxFxVersion', 'PYTHON|3.7'),
+            JMESPathCheck('tags.cli', 'None'),
+        ])
+
+        self.cmd('webapp config appsettings list', checks=[
+            JMESPathCheck('[0].name', 'SCM_DO_BUILD_DURING_DEPLOYMENT'),
+            JMESPathCheck('[0].value', 'True')
+        ])
+
+        # verify SKU and kind of ASP created
+        self.cmd('appservice plan show', checks=[
+            JMESPathCheck('properties.reserved', True),
+            JMESPathCheck('name', plan),
+            JMESPathCheck('sku.tier', 'Standard'),
+            JMESPathCheck('sku.name', 'S1')
+        ])
+
+        # cleanup
+        # switch back the working dir
+        os.chdir(current_working_dir)
+        # delete temp_dir
+        import shutil
+        shutil.rmtree(temp_dir)
+
+    @live_only()
+    @ResourceGroupPreparer(random_name_length=24, name_prefix='clitest', location=WINDOWS_ASP_LOCATION_WEBAPP)
+    def test_webapp_up_dotnetcore_e2e(self, resource_group):
+        plan = self.create_random_name('up-dotnetcoreplan', 24)
+        webapp_name = self.create_random_name('up-dotnetcoreapp', 24)
+        zip_file_name = os.path.join(TEST_DIR, 'dotnetcore-hello-up.zip')
+
+        # create a temp directory and unzip the code to this folder
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        # change the working dir to the dir where the code has been extracted to
+        up_working_dir = os.path.join(temp_dir, 'hellodotnetcore')
+        os.chdir(up_working_dir)
+
+        # test dryrun operation
+        result = self.cmd('webapp up -n {} --dryrun'
+                          .format(webapp_name)).get_output_in_json()
+        self.assertEqual(result['sku'].lower(), 'free')
+        self.assertTrue(result['name'].startswith(webapp_name))
+        self.assertTrue(result['src_path'].replace(
+            os.sep + os.sep, os.sep), up_working_dir)
+        self.assertEqual(result['runtime_version'].lower(), 'dotnetcore|3.1')
+        self.assertEqual(result['os'].lower(), 'windows')
+        self.assertNotEqual(result['location'], 'None')
+
+        # test the full E2E operation works
+        full_result = self.cmd(
+            'webapp up -n {} -g {} --plan {}'.format(webapp_name, resource_group, plan)).get_output_in_json()
+        self.assertEqual(result['name'], full_result['name'])
+        self.assertEqual(result['location'], full_result['location'])
+
+        # Verify app is created
+        # since we set local context, -n and -g are no longer required
+        self.cmd('webapp show', checks=[
+            JMESPathCheck('name', webapp_name),
+            JMESPathCheck('httpsOnly', True),
+            JMESPathCheck('kind', 'app'),
+            JMESPathCheck('resourceGroup', resource_group)
+        ])
+
+        self.cmd('webapp config show', checks=[
+            JMESPathCheck('tags.cli', 'None'),
+            JMESPathCheck('windowsFxVersion', None)
+        ])
+
+        self.cmd('webapp config appsettings list', checks=[
+            JMESPathCheck('[0].name', 'SCM_DO_BUILD_DURING_DEPLOYMENT'),
+            JMESPathCheck('[0].value', 'True')
+        ])
+
+        # verify SKU and kind of ASP created
+        self.cmd('appservice plan show', checks=[
+            JMESPathCheck('properties.reserved', False),
+            JMESPathCheck('name', plan),
+            JMESPathCheck('sku.tier', 'Free'),
+            JMESPathCheck('sku.name', 'F1')
+        ])
+
+        # cleanup
+        # switch back the working dir
+        os.chdir(current_working_dir)
+        # delete temp_dir
+        import shutil
+        shutil.rmtree(temp_dir)
+
+    @live_only()
+    @ResourceGroupPreparer(random_name_length=24, name_prefix='clitest', location=WINDOWS_ASP_LOCATION_WEBAPP)
+    def test_webapp_up_dotnet6_e2e(self, resource_group):
+        plan = self.create_random_name('up-dotnetplan', 24)
+        webapp_name = self.create_random_name('up-dotnetapp', 24)
+        zip_file_name = os.path.join(TEST_DIR, 'dotnet6-hello-up.zip')
+
+        # create a temp directory and unzip the code to this folder
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        # change the working dir to the dir where the code has been extracted to
+        up_working_dir = temp_dir
+        os.chdir(up_working_dir)
+
+        # test dryrun operation
+        result = self.cmd('webapp up -n {} --dryrun --os-type Linux'
+                          .format(webapp_name)).get_output_in_json()
+        self.assertEqual(result['sku'].lower(), 'free')
+        self.assertTrue(result['name'].startswith(webapp_name))
+        self.assertTrue(result['src_path'].replace(
+            os.sep + os.sep, os.sep), up_working_dir)
+        self.assertEqual(result['runtime_version'].lower(), 'dotnetcore|6.0')
+        self.assertEqual(result['os'].lower(), 'linux')
+        self.assertNotEqual(result['location'], 'None')
+
+        # test the full E2E operation works
+        full_result = self.cmd(
+            'webapp up -n {} -g {} --plan {}'.format(webapp_name, resource_group, plan)).get_output_in_json()
+        self.assertEqual(result['name'], full_result['name'])
+        self.assertEqual(result['location'], full_result['location'])
+
+        # Verify app is created
+        # since we set local context, -n and -g are no longer required
+        self.cmd('webapp show', checks=[
+            JMESPathCheck('name', webapp_name),
+            JMESPathCheck('httpsOnly', True),
+            JMESPathCheck('kind', 'app'),
+            JMESPathCheck('resourceGroup', resource_group)
+        ])
+
+        self.cmd('webapp config show', checks=[
+            JMESPathCheck('tags.cli', 'None'),
+            JMESPathCheck('windowsFxVersion', None)
+        ])
+
+        self.cmd('webapp config appsettings list', checks=[
+            JMESPathCheck('[0].name', 'SCM_DO_BUILD_DURING_DEPLOYMENT'),
+            JMESPathCheck('[0].value', 'True')
+        ])
+
+        # verify SKU and kind of ASP created
+        self.cmd('appservice plan show', checks=[
+            JMESPathCheck('properties.reserved', False),
+            JMESPathCheck('name', plan),
+            JMESPathCheck('sku.tier', 'Free'),
+            JMESPathCheck('sku.name', 'F1')
+        ])
+
+        # cleanup
+        # switch back the working dir
+        os.chdir(current_working_dir)
+        # delete temp_dir
+        import shutil
+        shutil.rmtree(temp_dir)
+
+    @live_only()
+    @ResourceGroupPreparer(random_name_length=24, name_prefix='clitest', location=WINDOWS_ASP_LOCATION_WEBAPP)
+    def test_webapp_up_nested_dotnet_project_e2e(self, resource_group):
+        plan = self.create_random_name('up-dotnetplan', 24)
+        webapp_name = self.create_random_name('up-dotnetapp', 24)
+        zip_file_name = os.path.join(TEST_DIR, 'dotnet6-nested-hello-up.zip')
+
+        # create a temp directory and unzip the code to this folder
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        # change the working dir to the dir where the code has been extracted to
+        up_working_dir = temp_dir
+        os.chdir(up_working_dir)
+
+        # test dryrun operation
+        result = self.cmd('webapp up -n {} --dryrun --os-type Linux'
+                          .format(webapp_name)).get_output_in_json()
+        self.assertEqual(result['sku'].lower(), 'free')
+        self.assertTrue(result['name'].startswith(webapp_name))
+        self.assertTrue(result['src_path'].replace(
+            os.sep + os.sep, os.sep), up_working_dir)
+        self.assertEqual(result['runtime_version'], 'dotnetcore|6.0')
+        self.assertEqual(result['os'].lower(), 'linux')
+        self.assertNotEqual(result['location'], 'None')
+
+        # test the full E2E operation works
+        full_result = self.cmd(
+            'webapp up -n {} -g {} --plan {}'.format(webapp_name, resource_group, plan)).get_output_in_json()
+        self.assertEqual(result['name'], full_result['name'])
+        self.assertEqual(result['location'], full_result['location'])
+
+        # Verify app is created
+        # since we set local context, -n and -g are no longer required
+        self.cmd('webapp show', checks=[
+            JMESPathCheck('name', webapp_name),
+            JMESPathCheck('httpsOnly', True),
+            JMESPathCheck('kind', 'app'),
+            JMESPathCheck('resourceGroup', resource_group)
+        ])
+
+        self.cmd('webapp config show', checks=[
+            JMESPathCheck('tags.cli', 'None'),
+            JMESPathCheck('windowsFxVersion', None)
+        ])
+
+        self.cmd('webapp config appsettings list', checks=[
+            JMESPathCheck('[0].name', 'SCM_DO_BUILD_DURING_DEPLOYMENT'),
+            JMESPathCheck('[0].value', 'True')
+        ])
+
+        # verify SKU and kind of ASP created
+        self.cmd('appservice plan show', checks=[
+            JMESPathCheck('properties.reserved', False),
+            JMESPathCheck('name', plan),
+            JMESPathCheck('sku.tier', 'Free'),
+            JMESPathCheck('sku.name', 'F1')
+        ])
+
+        # cleanup
+        # switch back the working dir
+        os.chdir(current_working_dir)
+        # delete temp_dir
+        import shutil
+        shutil.rmtree(temp_dir)
+
+    @live_only()
+    @ResourceGroupPreparer(random_name_length=24, name_prefix='clitest', location=WINDOWS_ASP_LOCATION_WEBAPP)
+    def test_webapp_up_dotnet6_e2e(self, resource_group):
+        plan = self.create_random_name('up-dotnetplan', 24)
+        webapp_name = self.create_random_name('up-dotnetapp', 24)
+        zip_file_name = os.path.join(TEST_DIR, 'dotnet6-webapi-with-dependencies-up.zip')
+
+        # create a temp directory and unzip the code to this folder
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        # change the working dir to the dir where the WebApplication has been extracted to.
+        # the zip contains more than one projects, it is assumed that the user is in this directory
+        # when he makes the webapp up.
+        up_working_dir = temp_dir
+        os.chdir(os.path.join(up_working_dir, "dotnet6-webapi-with-dependencies-up"))
+
+        # test dryrun operation
+        result = self.cmd('webapp up -n {} --dryrun --os-type Linux'
+                          .format(webapp_name)).get_output_in_json()
+        self.assertEqual(result['sku'].lower(), 'free')
+        self.assertTrue(result['name'].startswith(webapp_name))
+        self.assertTrue(result['src_path'].replace(
+            os.sep + os.sep, os.sep), up_working_dir)
+        self.assertEqual(result['runtime_version'].lower(), 'dotnetcore|6.0')
+        self.assertEqual(result['os'].lower(), 'linux')
+        self.assertNotEqual(result['location'], 'None')
+
+        # test the full E2E operation works
+        full_result = self.cmd(
+            'webapp up -n {} -g {} --plan {}'.format(webapp_name, resource_group, plan)).get_output_in_json()
+        self.assertEqual(result['name'], full_result['name'])
+        self.assertEqual(result['location'], full_result['location'])
+
+        # Verify app is created
+        # since we set local context, -n and -g are no longer required
+        self.cmd('webapp show', checks=[
+            JMESPathCheck('name', webapp_name),
+            JMESPathCheck('httpsOnly', True),
+            JMESPathCheck('kind', 'app'),
+            JMESPathCheck('resourceGroup', resource_group)
+        ])
+
+        self.cmd('webapp config show', checks=[
+            JMESPathCheck('tags.cli', 'None'),
+            JMESPathCheck('windowsFxVersion', None)
+        ])
+
+        self.cmd('webapp config appsettings list', checks=[
+            JMESPathCheck('[0].name', 'SCM_DO_BUILD_DURING_DEPLOYMENT'),
+            JMESPathCheck('[0].value', 'True')
+        ])
+
+        # verify SKU and kind of ASP created
+        self.cmd('appservice plan show', checks=[
+            JMESPathCheck('properties.reserved', False),
+            JMESPathCheck('name', plan),
+            JMESPathCheck('sku.tier', 'Free'),
+            JMESPathCheck('sku.name', 'F1')
+        ])
+
+        # cleanup
+        # switch back the working dir
+        os.chdir(current_working_dir)
+        # delete temp_dir
+        import shutil
+        shutil.rmtree(temp_dir)
+
+    @live_only()
+    @ResourceGroupPreparer(random_name_length=24, name_prefix='clitest', location=WINDOWS_ASP_LOCATION_WEBAPP)
+    def test_webapp_up_statichtml_e2e(self, resource_group):
+        plan = self.create_random_name('up-statichtmlplan', 24)
+        webapp_name = self.create_random_name('up-statichtmlapp', 24)
+        zip_file_name = os.path.join(
+            TEST_DIR, 'html-static-hello-world-up.zip')
+
+        # create a temp directory and unzip the code to this folder
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        # change the working dir to the dir where the code has been extracted to
+        up_working_dir = os.path.join(temp_dir, 'html-docs-hello-world-master')
+        os.chdir(up_working_dir)
+
+        # test dryrun operation
+        result = self.cmd('webapp up -n {} --dryrun --html'
+                          .format(webapp_name)).get_output_in_json()
+        self.assertEqual(result['sku'].lower(), 'free')
+        self.assertTrue(result['name'].startswith(webapp_name))
+        self.assertTrue(result['src_path'].replace(
+            os.sep + os.sep, os.sep), up_working_dir)
+        self.assertEqual(result['runtime_version'].lower(), '-')
+        self.assertEqual(result['os'].lower(), 'windows')
+
+        # test the full E2E operation works
+        full_result = self.cmd(
+            'webapp up -n {} -g {} --plan {} --html'.format(webapp_name, resource_group, plan)).get_output_in_json()
+        self.assertEqual(result['name'], full_result['name'])
+
+        # Verify app is created
+        # since we set local context, -n and -g are no longer required
+        self.cmd('webapp show', checks=[
+            JMESPathCheck('name', webapp_name),
+            JMESPathCheck('httpsOnly', True),
+            JMESPathCheck('kind', 'app'),
+            JMESPathCheck('resourceGroup', resource_group)
+        ])
+
+        self.cmd('webapp config show', checks=[
+            JMESPathCheck('tags.cli', 'None'),
+            JMESPathCheck('windowsFxVersion', None)
+        ])
+
+        self.cmd('webapp config appsettings list', checks=[
+            JMESPathCheck('[1].name', 'SCM_DO_BUILD_DURING_DEPLOYMENT'),
+            JMESPathCheck('[1].value', 'True')
+        ])
+
+        # verify SKU and kind of ASP created
+        self.cmd('appservice plan show', checks=[
+            JMESPathCheck('properties.reserved', False),
+            JMESPathCheck('name', plan),
+            JMESPathCheck('sku.tier', 'Free'),
+            JMESPathCheck('sku.name', 'F1')
+        ])
+
+        # cleanup
+        # switch back the working dir
+        os.chdir(current_working_dir)
+        # delete temp_dir
+        import shutil
+        shutil.rmtree(temp_dir)
+
+    @live_only()
+    @ResourceGroupPreparer(random_name_length=24, name_prefix='clitest', location=LINUX_ASP_LOCATION_WEBAPP)
+    def test_webapp_up_invalid_name(self, resource_group):
+        webapp_name = self.create_random_name('invalid_name', 40)
+        zip_file_name = os.path.join(TEST_DIR, 'python-hello-world-up.zip')
+
+        # create a temp directory and unzip the code to this folder
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        # change the working dir to the dir where the code has been extracted to
+        up_working_dir = os.path.join(temp_dir, 'python-docs-hello-world')
+        os.chdir(up_working_dir)
+
+        from azure.cli.core.util import CLIError
+        with self.assertRaises(CLIError):
+            self.cmd('webapp up -n {} --dryrun'.format(webapp_name))
+        with self.assertRaises(CLIError):
+            self.cmd('webapp up -n {}'.format(webapp_name))
+
+        # cleanup
+        # switch back the working dir
+        os.chdir(current_working_dir)
+        # delete temp_dir
+        import shutil
+        shutil.rmtree(temp_dir)
+
+    @live_only()
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(random_name_length=24, name_prefix='clitest', location=LINUX_ASP_LOCATION_WEBAPP)
+    def test_webapp_up_name_exists_not_in_subscription(self, resource_group):
+        # Make sure webapp_name is the name of an existing web app and is not in your subscription
+        webapp_name = 'helloworld'
+        zip_file_name = os.path.join(TEST_DIR, 'python-hello-world-up.zip')
+
+        # create a temp directory and unzip the code to this folder
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        # change the working dir to the dir where the code has been extracted to
+        up_working_dir = os.path.join(temp_dir, 'python-docs-hello-world')
+        os.chdir(up_working_dir)
+
+        from azure.cli.core.util import CLIError
+        with self.assertRaises(CLIError):
+            self.cmd('webapp up -n {} --dryrun'.format(webapp_name))
+        with self.assertRaises(CLIError):
+            self.cmd('webapp up -n {}'.format(webapp_name))
+
+        # cleanup
+        # switch back the working dir
+        os.chdir(current_working_dir)
+        # delete temp_dir
+        import shutil
+        shutil.rmtree(temp_dir)
+
+    @live_only()
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(random_name_length=24, name_prefix='clitest', location=LINUX_ASP_LOCATION_WEBAPP)
+    def test_webapp_up_name_exists_in_subscription(self, resource_group):
+        plan = self.create_random_name('up-name-exists-plan', 40)
+        webapp_name = self.create_random_name('up-name-exists-app', 40)
+        zip_file_name = os.path.join(TEST_DIR, 'python-hello-world-up.zip')
+
+        # create a temp directory and unzip the code to this folder
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        # change the working dir to the dir where the code has been extracted to
+        up_working_dir = os.path.join(temp_dir, 'python-docs-hello-world')
+        os.chdir(up_working_dir)
+
+        # create a webapp with the same name
+        self.cmd(
+            'appservice plan create -g {} -n {} --sku S1 --is-linux'.format(resource_group, plan))
+        self.cmd(
+            'webapp create -g {} -n {} --plan {} -r "python|3.7"'.format(resource_group, webapp_name, plan))
+        requests.get('http://{}.azurewebsites.net'.format(webapp_name), timeout=240)
+        self.cmd('webapp up -n {}'.format(webapp_name))
+        self.cmd('webapp list -g {}'.format(resource_group), checks=[
+            JMESPathCheck('length(@)', 1),
+            JMESPathCheck('[0].name', webapp_name),
+            JMESPathCheck('[0].hostNames[0]', webapp_name +
+                          '.azurewebsites.net')
+        ])
+
+        # test dryrun operation
+        result = self.cmd('webapp up -n {} --sku S1 --dryrun'
+                          .format(webapp_name)).get_output_in_json()
+        self.assertEqual(result['sku'].lower(), 'standard')
+        self.assertTrue(result['name'].startswith(webapp_name))
+        self.assertTrue(result['src_path'].replace(
+            os.sep + os.sep, os.sep), up_working_dir)
+        self.assertEqual(result['runtime_version'], 'python|3.7')
+        self.assertEqual(result['os'].lower(), 'linux')
+
+        # test the full E2E operation works
+        full_result = self.cmd(
+            'webapp up -n {} --sku S1 -g {} --plan {}'.format(webapp_name, resource_group, plan)).get_output_in_json()
+        self.assertEqual(result['name'], full_result['name'])
+
+        # cleanup
+        # switch back the working dir
+        os.chdir(current_working_dir)
+        # delete temp_dir
+        import shutil
+        shutil.rmtree(temp_dir)
+
+    @live_only()
+    @ResourceGroupPreparer(random_name_length=24, name_prefix='clitest', location=LINUX_ASP_LOCATION_WEBAPP)
+    def test_webapp_up_choose_os(self, resource_group):
+        plan = self.create_random_name('up-nodeplan', 24)
+        webapp_name = self.create_random_name('up-nodeapp', 24)
+        zip_file_name = os.path.join(TEST_DIR, 'node-Express-up.zip')
+
+        # create a temp directory and unzip the code to this folder
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        # change the working dir to the dir where the code has been extracted to
+        up_working_dir = os.path.join(temp_dir, 'myExpressApp')
+        os.chdir(up_working_dir)
+
+        # test dryrun operation
+        result = self.cmd(
+            'webapp up -n {} -g {} --plan {} --os-type "linux" --dryrun'.format(webapp_name, resource_group, plan)).get_output_in_json()
+        self.assertEqual(result['sku'].lower(), 'premiumv2')
+        self.assertTrue(result['name'].startswith(webapp_name))
+        self.assertTrue(result['src_path'].replace(
+            os.sep + os.sep, os.sep), up_working_dir)
+        self.assertIn("node|", result['runtime_version'].lower())
+        self.assertEqual(result['os'].lower(), 'linux')
+
+        # test the full E2E operation works
+        full_result = self.cmd(
+            'webapp up -n {} -g {} --plan {} --os-type "linux"'.format(webapp_name, resource_group, plan)).get_output_in_json()
+        self.assertEqual(result['name'], full_result['name'])
+
+        # Verify app is created
+        # since we set local context, -n and -g are no longer required
+        self.cmd('webapp show', checks=[
+            JMESPathCheck('name', webapp_name),
+            JMESPathCheck('httpsOnly', True),
+            JMESPathCheck('kind', 'app,linux'),
+            JMESPathCheck('resourceGroup', resource_group)
+        ])
+
+        self.cmd('webapp config show', checks=[
+            JMESPathCheck('tags.cli', 'None')
+        ])
+
+        self.cmd('webapp config appsettings list', checks=[
+            JMESPathCheck('[0].name', 'SCM_DO_BUILD_DURING_DEPLOYMENT'),
+            JMESPathCheck('[0].value', 'True')
+        ])
+
+        self.cmd('appservice plan show', checks=[
+            JMESPathCheck('name', plan),
+            JMESPathCheck('sku.tier', 'PremiumV2'),
+            JMESPathCheck('sku.name', 'P1v2')
+        ])
+
+        # cleanup
+        # switch back the working dir
+        os.chdir(current_working_dir)
+        # delete temp_dir
+        import shutil
+        shutil.rmtree(temp_dir)
+
+    @live_only()
+    @ResourceGroupPreparer(random_name_length=24, name_prefix='clitest', location=LINUX_ASP_LOCATION_WEBAPP)
+    def test_webapp_up_choose_runtime(self, resource_group):
+        plan = self.create_random_name('up-pythonplan', 24)
+        webapp_name = self.create_random_name('up-pythonapp', 24)
+        zip_file_name = os.path.join(TEST_DIR, 'python-hello-world-up.zip')
+
+        # create a temp directory and unzip the code to this folder
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        # change the working dir to the dir where the code has been extracted to
+        up_working_dir = os.path.join(temp_dir, 'python-docs-hello-world')
+        os.chdir(up_working_dir)
+
+        # test dryrun operation
+        result = self.cmd(
+            'webapp up -n {} -g {} --plan {} --runtime "PYTHON|3.7" --sku S1 --dryrun'.format(webapp_name, resource_group, plan)).get_output_in_json()
+        self.assertEqual(result['sku'].lower(), 'standard')
+        self.assertTrue(result['name'].startswith(webapp_name))
+        self.assertTrue(result['src_path'].replace(
+            os.sep + os.sep, os.sep), up_working_dir)
+        self.assertEqual(result['runtime_version'].lower(), 'python|3.7')
+        self.assertEqual(result['os'].lower(), 'linux')
+
+        # test the full E2E operation works
+        full_result = self.cmd(
+            'webapp up -n {} -g {} --plan {} --runtime "PYTHON|3.7" --sku "S1"'.format(webapp_name, resource_group, plan)).get_output_in_json()
+        self.assertEqual(result['name'], full_result['name'])
+
+        # Verify app is created
+        # since we set local context, -n and -g are no longer required
+        self.cmd('webapp show', checks=[
+            JMESPathCheck('name', webapp_name),
+            JMESPathCheck('httpsOnly', True),
+            JMESPathCheck('kind', 'app,linux'),
+            JMESPathCheck('resourceGroup', resource_group)
+        ])
+
+        self.cmd('webapp config show', checks=[
+            JMESPathCheck('linuxFxVersion', 'PYTHON|3.7'),
+            JMESPathCheck('tags.cli', 'None')
+        ])
+
+        self.cmd('webapp config appsettings list', checks=[
+            JMESPathCheck('[0].name', 'SCM_DO_BUILD_DURING_DEPLOYMENT'),
+            JMESPathCheck('[0].value', 'True')
+        ])
+
+        self.cmd('appservice plan show', checks=[
+            JMESPathCheck('properties.reserved', True),
+            JMESPathCheck('name', plan),
+            JMESPathCheck('sku.tier', 'Standard'),
+            JMESPathCheck('sku.name', 'S1')
+        ])
+
+        # cleanup
+        # switch back the working dir
+        os.chdir(current_working_dir)
+        # delete temp_dir
+        import shutil
+        shutil.rmtree(temp_dir)
+
+    @live_only()
+    @ResourceGroupPreparer(random_name_length=24, name_prefix='clitest', location=LINUX_ASP_LOCATION_WEBAPP)
+    def test_webapp_up_choose_os_and_runtime(self, resource_group):
+        plan = self.create_random_name('up-nodeplan', 24)
+        webapp_name = self.create_random_name('up-nodeapp', 24)
+        zip_file_name = os.path.join(TEST_DIR, 'node-Express-up.zip')
+
+        # create a temp directory and unzip the code to this folder
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        # change the working dir to the dir where the code has been extracted to
+        up_working_dir = os.path.join(temp_dir, 'myExpressApp')
+        os.chdir(up_working_dir)
+
+        # test dryrun operation
+        result = self.cmd(
+            'webapp up -n {} -g {} --plan {} --os "linux" --runtime "node|22-lts" --sku "S1" --dryrun'.format(webapp_name, resource_group, plan)).get_output_in_json()
+        self.assertEqual(result['sku'].lower(), 'standard')
+        self.assertTrue(result['name'].startswith(webapp_name))
+        self.assertTrue(result['src_path'].replace(
+            os.sep + os.sep, os.sep), up_working_dir)
+        self.assertEqual(result['runtime_version'].lower(), 'node|22-lts')
+        self.assertEqual(result['os'].lower(), 'linux')
+
+        # test the full E2E operation works
+        full_result = self.cmd(
+            'webapp up -n {} -g {} --plan {} --os "linux" --runtime "node|22-lts" --sku "S1"'.format(webapp_name, resource_group, plan)).get_output_in_json()
+        self.assertEqual(result['name'], full_result['name'])
+
+        # Verify app is created
+        # since we set local context, -n and -g are no longer required
+        self.cmd('webapp show', checks=[
+            JMESPathCheck('name', webapp_name),
+            JMESPathCheck('httpsOnly', True),
+            JMESPathCheck('kind', 'app,linux'),
+            JMESPathCheck('resourceGroup', resource_group)
+        ])
+
+        self.cmd('webapp config show', checks=[
+            JMESPathCheck('tags.cli', 'None')
+        ])
+
+        self.cmd('webapp config appsettings list', checks=[
+            JMESPathCheck('[0].name', 'SCM_DO_BUILD_DURING_DEPLOYMENT'),
+            JMESPathCheck('[0].value', 'True')
+        ])
+
+        self.cmd('appservice plan show', checks=[
+            JMESPathCheck('name', plan),
+            JMESPathCheck('sku.tier', 'Standard'),
+            JMESPathCheck('sku.name', 'S1')
+        ])
+
+        # cleanup
+        # switch back the working dir
+        os.chdir(current_working_dir)
+        # delete temp_dir
+        import shutil
+        shutil.rmtree(temp_dir)
+
+    @live_only()
+    @ResourceGroupPreparer(random_name_length=24, name_prefix='clitest', location=LINUX_ASP_LOCATION_WEBAPP)
+    def test_webapp_up_runtime_delimiters(self, resource_group):
+        plan = self.create_random_name('up-nodeplan', 24)
+        webapp_name = self.create_random_name('up-nodeapp', 24)
+        zip_file_name = os.path.join(TEST_DIR, 'node-Express-up.zip')
+
+        # create a temp directory and unzip the code to this folder
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        # change the working dir to the dir where the code has been extracted to
+        up_working_dir = os.path.join(temp_dir, 'myExpressApp')
+        os.chdir(up_working_dir)
+
+        # test dryrun operation
+        result = self.cmd(
+            'webapp up -n {} -g {} --plan {} --os "windows" --runtime "java|1.8|Java SE|8" --sku "S1" --dryrun'.format(webapp_name, resource_group, plan)).get_output_in_json()
+        self.assertEqual(result['sku'].lower(), 'standard')
+        self.assertTrue(result['name'].startswith(webapp_name))
+        self.assertTrue(result['src_path'].replace(
+            os.sep + os.sep, os.sep), up_working_dir)
+        self.assertEqual(result['runtime_version'].lower(), 'java|1.8|java se|8')
+
+        # test dryrun operation
+        result = self.cmd(
+            'webapp up -n {} -g {} --plan {} --os "windows" --runtime "java:1.8:Java SE:8" --sku "S1" --dryrun'.format(webapp_name, resource_group, plan)).get_output_in_json()
+        self.assertEqual(result['sku'].lower(), 'standard')
+        self.assertTrue(result['name'].startswith(webapp_name))
+        self.assertTrue(result['src_path'].replace(
+            os.sep + os.sep, os.sep), up_working_dir)
+        self.assertEqual(result['runtime_version'].lower(), 'java|1.8|java se|8')
+
+        # cleanup
+        # switch back the working dir
+        os.chdir(current_working_dir)
+        # delete temp_dir
+        import shutil
+        shutil.rmtree(temp_dir)
+
+    @live_only()
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(random_name_length=24, name_prefix='clitest', location=LINUX_ASP_LOCATION_WEBAPP)
+    def test_linux_to_windows_fail(self, resource_group):
+        plan = self.create_random_name('up-nodeplan', 24)
+        webapp_name = self.create_random_name('up-nodeapp', 24)
+        zip_file_name = os.path.join(TEST_DIR, 'node-Express-up.zip')
+
+        # create a temp directory and unzip the code to this folder
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        # change the working dir to the dir where the code has been extracted to
+        up_working_dir = os.path.join(temp_dir, 'myExpressApp')
+        os.chdir(up_working_dir)
+
+        # test dryrun operation
+        result = self.cmd(
+            'webapp up -n {} -g {} --plan {} --os "linux" --runtime "node|22-lts" --sku "S1" --dryrun'.format(webapp_name, resource_group, plan)).get_output_in_json()
+        self.assertEqual(result['sku'].lower(), 'standard')
+        self.assertTrue(result['name'].startswith(webapp_name))
+        self.assertTrue(result['src_path'].replace(
+            os.sep + os.sep, os.sep), up_working_dir)
+        self.assertEqual(result['runtime_version'].lower(), 'node|22-lts')
+        self.assertEqual(result['os'].lower(), 'linux')
+
+        # test the full E2E operation works
+        full_result = self.cmd(
+            'webapp up -n {} -g {} --plan {} --os "linux" --runtime "node|22-lts" --sku "S1"'.format(webapp_name, resource_group, plan)).get_output_in_json()
+        self.assertEqual(result['name'], full_result['name'])
+
+        # Verify app is created
+        # since we set local context, -n and -g are no longer required
+        self.cmd('webapp show', checks=[
+            JMESPathCheck('name', webapp_name),
+            JMESPathCheck('httpsOnly', True),
+            JMESPathCheck('kind', 'app,linux'),
+            JMESPathCheck('resourceGroup', resource_group)
+        ])
+
+        from azure.cli.core.util import CLIError
+        # changing existing linux app to windows should fail gracefully
+        with self.assertRaises(CLIError):
+            self.cmd('webapp up -n {} -g {} --plan {} --os "windows" --runtime "node|22LTS" --sku "S1"'.format(webapp_name, resource_group, plan))
+
+        # cleanup
+        # switch back the working dir
+        os.chdir(current_working_dir)
+        # delete temp_dir
+        import shutil
+        shutil.rmtree(temp_dir)
+
+    @live_only()
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(random_name_length=24, name_prefix='clitest', location=WINDOWS_ASP_LOCATION_WEBAPP)
+    @unittest.skip("Temp skip - flaky test")
+    def test_windows_to_linux_fail(self, resource_group):
+        plan = self.create_random_name('up-nodeplan', 24)
+        webapp_name = self.create_random_name('up-nodeapp', 24)
+        zip_file_name = os.path.join(TEST_DIR, 'node-Express-up-windows.zip')
+
+        # create a temp directory and unzip the code to this folder
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        # change the working dir to the dir where the code has been extracted to
+        up_working_dir = os.path.join(temp_dir, 'myExpressApp')
+        os.chdir(temp_dir)
+
+        # test dryrun operation
+        result = self.cmd(
+            'webapp up -n {} -g {} --plan {} --os "windows" --runtime "node|22LTS" --sku "S1" --dryrun'.format(webapp_name, resource_group, plan)).get_output_in_json()
+        self.assertEqual(result['sku'].lower(), 'standard')
+        self.assertTrue(result['name'].startswith(webapp_name))
+        self.assertTrue(result['src_path'].replace(
+            os.sep + os.sep, os.sep), up_working_dir)
+        self.assertEqual(result['runtime_version'].lower(), 'node|22lts')
+        self.assertEqual(result['os'].lower(), 'windows')
+
+        # test the full E2E operation works
+        full_result = self.cmd(
+            'webapp up -n {} -g {} --plan {} --os "windows" --runtime "node|22LTS" --sku "S1"'.format(webapp_name, resource_group, plan)).get_output_in_json()
+        self.assertEqual(result['name'], full_result['name'])
+
+        # Verify app is created
+        # since we set local context, -n and -g are no longer required
+        self.cmd('webapp show', checks=[
+            JMESPathCheck('name', webapp_name),
+            JMESPathCheck('httpsOnly', True),
+            JMESPathCheck('kind', 'app'),
+            JMESPathCheck('resourceGroup', resource_group)
+        ])
+
+        from azure.cli.core.util import CLIError
+        # changing existing linux app to windows should fail gracefully
+        with self.assertRaises(CLIError):
+            self.cmd('webapp up -n {} -g {} --plan {} --os "linux" --runtime "node|22-LTS" --sku "S1"'.format(webapp_name, resource_group, plan))
+
+        # cleanup
+        # switch back the working dir
+        os.chdir(current_working_dir)
+        # delete temp_dir
+        import shutil
+        shutil.rmtree(temp_dir)
+
+    @live_only()
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(random_name_length=24, name_prefix='clitest', location=WINDOWS_ASP_LOCATION_WEBAPP)
+    def test_webapp_up_runtime_case_insensitivity_windows(self, resource_group):
+        plan = self.create_random_name('up-nodeplan', 24)
+        webapp_name = self.create_random_name('up-nodeapp', 24)
+        zip_file_name = os.path.join(TEST_DIR, 'node_app.zip')
+
+        # create a temp directory and unzip the code to this folder
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        # change the working dir to the dir where the code has been extracted to
+        os.chdir(temp_dir)
+
+        # test the full E2E operation works
+        self.cmd('webapp up -n {} -g {} --plan {} --os "windows" --runtime "node|22-LTS"'.format(webapp_name, resource_group, plan))
+
+        # Verify app is created
+        # since we set local context, -n and -g are no longer required
+        self.cmd('webapp show', checks=[
+            JMESPathCheck('name', webapp_name),
+            JMESPathCheck('kind', 'app'),
+            JMESPathCheck('resourceGroup', resource_group)
+        ])
+
+        # verify runtime version
+        app_settings = self.cmd('webapp config appsettings list').get_output_in_json()
+        app_settings = {s["name"] : s["value"] for s in app_settings}
+        self.assertIn("WEBSITE_NODE_DEFAULT_VERSION", app_settings)
+        self.assertEqual(app_settings["WEBSITE_NODE_DEFAULT_VERSION"], "~22")
+
+        # re-run with a differently-cased runtime alias to verify idempotency / case-insensitivity
+        # (Windows App Service currently only exposes Node 22 LTS, so we cannot switch to another
+        # Node major; this exercise confirms 'webapp up' treats runtime tokens case-insensitively.)
+        self.cmd('webapp up -n {} -g {} --plan {} --os "windows" --runtime "node|22-lts"'.format(webapp_name, resource_group, plan))
+
+        # verify the runtime is unchanged
+        app_settings = self.cmd('webapp config appsettings list').get_output_in_json()
+        app_settings = {s["name"] : s["value"] for s in app_settings}
+        self.assertIn("WEBSITE_NODE_DEFAULT_VERSION", app_settings)
+        self.assertEqual(app_settings["WEBSITE_NODE_DEFAULT_VERSION"], "~22")
+
+        # cleanup
+        # switch back the working dir
+        os.chdir(current_working_dir)
+        # delete temp_dir
+        import shutil
+        shutil.rmtree(temp_dir)
+
+    @live_only()
+    @ResourceGroupPreparer(random_name_length=24, name_prefix='clitest', location=LINUX_ASP_LOCATION_WEBAPP)
+    def test_webapp_up_generate_default_name(self, resource_group):
+        plan = self.create_random_name('up-nodeplan', 24)
+        zip_file_name = os.path.join(TEST_DIR, 'node-Express-up.zip')
+
+        # create a temp directory and unzip the code to this folder
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        # change the working dir to the dir where the code has been extracted to
+        up_working_dir = os.path.join(temp_dir, 'myExpressApp')
+        os.chdir(up_working_dir)
+
+        # test dryrun operation
+        result = self.cmd(
+            'webapp up --dryrun').get_output_in_json()
+        self.assertEqual(result['sku'].lower(), 'premiumv2')
+        self.assertTrue(result['src_path'].replace(
+            os.sep + os.sep, os.sep), up_working_dir)
+        self.assertEqual(result['runtime_version'].lower(), 'node|22-lts')
+        self.assertEqual(result['os'].lower(), 'linux')
+
+        # test the full E2E operation works
+        self.cmd(
+            'webapp up -g {} --plan {}'.format(resource_group, plan)).get_output_in_json()
+
+        # Verify app is created
+        # since we set local context, -n and -g are no longer required
+        self.cmd('webapp show', checks=[
+            JMESPathCheck('httpsOnly', True),
+            JMESPathCheck('kind', 'app,linux'),
+            JMESPathCheck('resourceGroup', resource_group)
+        ])
+
+        self.cmd('webapp config show', checks=[
+            JMESPathCheck('linuxFxVersion', 'NODE|22-lts'),
+            JMESPathCheck('tags.cli', 'None'),
+        ])
+
+        self.cmd('webapp config appsettings list', checks=[
+            JMESPathCheck('[0].name', 'SCM_DO_BUILD_DURING_DEPLOYMENT'),
+            JMESPathCheck('[0].value', 'True')
+        ])
+
+        self.cmd('appservice plan show', checks=[
+            JMESPathCheck('properties.reserved', True),
+            JMESPathCheck('name', plan),
+            JMESPathCheck('sku.tier', 'PremiumV2'),
+            JMESPathCheck('sku.name', 'P1v2')
+        ])
+
+        # cleanup
+        # switch back the working dir
+        os.chdir(current_working_dir)
+        # delete temp_dir
+        import shutil
+        shutil.rmtree(temp_dir)
+
+
+    @live_only()
+    @ResourceGroupPreparer(random_name_length=24, name_prefix='clitest', location=LINUX_ASP_LOCATION_WEBAPP)
+    def test_webapp_up_linux_windows_sharing_resource_group(self, resource_group):
+        linux_plan = self.create_random_name('plan-linux', 24)
+        linux_webapp_name = self.create_random_name('app-linux', 24)
+        windows_plan = self.create_random_name('plan-windows', 26)
+        windows_webapp_name = self.create_random_name('app-windows', 26)
+        zip_file_name = os.path.join(TEST_DIR, 'node-Express-up.zip')
+
+        # create a temp directory and unzip the code to this folder
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        # change the working dir to the dir where the code has been extracted to
+        up_working_dir = os.path.join(temp_dir, 'myExpressApp')
+        os.chdir(up_working_dir)
+
+        # test linux dryrun operation
+        result = self.cmd('webapp up -n {} --sku  S1 --dryrun'
+                          .format(linux_webapp_name)).get_output_in_json()
+        self.assertEqual(result['sku'].lower(), 'standard')
+        self.assertTrue(result['name'].startswith(linux_webapp_name))
+        self.assertTrue(result['src_path'].replace(
+            os.sep + os.sep, os.sep), up_working_dir)
+        self.assertEqual(result['runtime_version'].lower(), 'node|22-lts')
+        self.assertEqual(result['os'].lower(), 'linux')
+
+        # test the full linux E2E operation works
+        full_result = self.cmd(
+            'webapp up -n {} --sku  S1 -g {} --plan {} --os-type linux'.format(linux_webapp_name, resource_group, linux_plan)).get_output_in_json()
+        self.assertEqual(result['name'], full_result['name'])
+
+        # Verify linux app is created
+        # since we set local context, -n and -g are no longer required
+        self.cmd('webapp show', checks=[
+            JMESPathCheck('name', linux_webapp_name),
+            JMESPathCheck('httpsOnly', True),
+            JMESPathCheck('kind', 'app,linux'),
+            JMESPathCheck('resourceGroup', resource_group)
+        ])
+
+        self.cmd('webapp config show', checks=[
+            JMESPathCheck('linuxFxVersion', 'NODE|22-lts'),
+            JMESPathCheck('tags.cli', 'None'),
+        ])
+
+        self.cmd('webapp config appsettings list', checks=[
+            JMESPathCheck('[0].name', 'SCM_DO_BUILD_DURING_DEPLOYMENT'),
+            JMESPathCheck('[0].value', 'True')
+        ])
+
+        # test windows dryrun operation
+        result = self.cmd("webapp up -n {} --sku  S1 --dryrun -r 'node|22lts' --os-type windows --plan {}"
+                          .format(windows_webapp_name, windows_plan)).get_output_in_json()
+        self.assertEqual(result['sku'].lower(), 'standard')
+        self.assertTrue(result['name'].startswith(windows_webapp_name))
+        self.assertTrue(result['src_path'].replace(
+            os.sep + os.sep, os.sep), up_working_dir)
+        self.assertEqual(result['runtime_version'].lower(), 'node|22lts')
+        self.assertEqual(result['os'].lower(), 'windows')
+
+        # test the full windows E2E operation works
+        full_result = self.cmd(
+            'webapp up -n {} --sku  S1 -g {} --plan {}'.format(windows_webapp_name, resource_group, windows_plan)).get_output_in_json()
+        self.assertEqual(result['name'], full_result['name'])
+
+        # Verify windows app is created
+        self.cmd('webapp show -g {} -n {}'.format(resource_group, windows_webapp_name), checks=[
+            JMESPathCheck('name', windows_webapp_name),
+            JMESPathCheck('httpsOnly', True),
+            JMESPathCheck('resourceGroup', resource_group)
+        ])
+
+        # verify windows SKU and kind of ASP created
+        self.cmd('appservice plan show', checks=[
+            JMESPathCheck('properties.reserved', True),
+            JMESPathCheck('name', windows_plan),
+            JMESPathCheck('sku.tier', 'Standard'),
+            JMESPathCheck('sku.name', 'S1')
+        ])
+
+
+        # cleanup
+        # switch back the working dir
+        os.chdir(current_working_dir)
+        # delete temp_dir
+        import shutil
+        shutil.rmtree(temp_dir)
+
+    @live_only()
+    @ResourceGroupPreparer(name_prefix='cli_test_webapp_up_runtimestatus', location='eastus')
+    def test_webapp_up_track_runtimestatus_runtimesuccessful(self, resource_group):
+        plan_name = self.create_random_name('plan-linux', 24)
+        webapp_name = self.create_random_name('app-linux', 24)
+        zip_file_name = os.path.join(TEST_DIR, 'node-Express-up.zip')
+
+        # create a temp directory and unzip the code to this folder
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        # change the working dir to the dir where the code has been extracted to
+        up_working_dir = os.path.join(temp_dir, 'myExpressApp')
+        os.chdir(up_working_dir)
+
+        self.cmd('webapp up -g {} -n {} --os-type linux'.format(resource_group, webapp_name)).assert_with_checks([
+            JMESPathCheck('resourcegroup', resource_group),
+            JMESPathCheck('name', webapp_name),
+        ])
+
+        # cleanup
+        # switch back the working dir
+        os.chdir(current_working_dir)
+        # delete temp_dir
+        import shutil
+        shutil.rmtree(temp_dir)
+
+    @live_only()
+    @ResourceGroupPreparer(name_prefix='cli_test_webapp_up_runtimestatus', location='eastus')
+    def test_webapp_up_track_runtimestatus_buildfailed(self, resource_group):
+        plan_name = self.create_random_name('plan-linux', 24)
+        webapp_name = self.create_random_name('app-linux', 24)
+        zip_file_name = os.path.join(TEST_DIR, 'data', 'nodebuildfailed.zip')
+
+        # create a temp directory and unzip the code to this folder
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        # change the working dir to the dir where the code has been extracted to
+        os.chdir(temp_dir)
+
+        with self.assertRaisesRegex(CLIError, "Deployment failed because the build process failed"):
+            self.cmd('webapp up -g {} -n {} --os-type linux -r "NODE|22-LTS"'.format(resource_group, webapp_name))
+
+        # cleanup
+        # switch back the working dir
+        os.chdir(current_working_dir)
+        # delete temp_dir
+        import shutil
+        shutil.rmtree(temp_dir)
+
+    @live_only()
+    @ResourceGroupPreparer(name_prefix='cli_test_webapp_up_runtimestatus', location='eastus')
+    def test_webapp_up_track_runtimestatus_runtimefailed(self, resource_group):
+        plan_name = self.create_random_name('plan-linux', 24)
+        webapp_name = self.create_random_name('app-linux', 24)
+        zip_file_name = os.path.join(TEST_DIR, 'data', 'noderuntimefailed.zip')
+
+        # create a temp directory and unzip the code to this folder
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        # change the working dir to the dir where the code has been extracted to
+        os.chdir(temp_dir)
+
+        with self.assertRaisesRegex(CLIError, "Deployment failed because the site failed to start within 10 mins."):
+            self.cmd('webapp up -g {} -n {} --os-type linux -r "NODE|22-LTS"'.format(resource_group, webapp_name))
+
+        # cleanup
+        # switch back the working dir
+        os.chdir(current_working_dir)
+        # delete temp_dir
+        import shutil
+        shutil.rmtree(temp_dir)
+
+    @live_only()
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(random_name_length=24, name_prefix='clitest', location=LINUX_ASP_LOCATION_WEBAPP)
+    def test_webapp_up_with_domain_name_scope(self, resource_group):
+        plan = self.create_random_name('up-dnlplan', 24)
+        webapp_name = self.create_random_name('up-dnl-app', 24)
+        zip_file_name = os.path.join(TEST_DIR, 'node-Express-up.zip')
+
+        import zipfile
+        import tempfile
+        temp_dir = tempfile.mkdtemp()
+        zip_ref = zipfile.ZipFile(zip_file_name, 'r')
+        zip_ref.extractall(temp_dir)
+        current_working_dir = os.getcwd()
+
+        up_working_dir = os.path.join(temp_dir, 'myExpressApp')
+        os.chdir(up_working_dir)
+
+        # test dryrun with --domain-name-scope
+        result = self.cmd('webapp up -n {} --dryrun --domain-name-scope TenantReuse'.format(
+            webapp_name)).get_output_in_json()
+        self.assertTrue(result['name'].startswith(webapp_name))
+        self.assertIn("node|", result['runtime_version'].lower())
+        self.assertEqual(result['os'].lower(), 'linux')
+
+        # test the full E2E operation works
+        self.cmd('webapp up -n {} -g {} --plan {} --domain-name-scope TenantReuse'.format(
+            webapp_name, resource_group, plan)).get_output_in_json()
+
+        # Verify app is created with domain name scope
+        result = self.cmd('webapp show -n {} -g {}'.format(webapp_name, resource_group), checks=[
+            JMESPathCheck('name', webapp_name),
+            JMESPathCheck('state', 'Running'),
+            JMESPathCheck('resourceGroup', resource_group),
+            JMESPathCheck('autoGeneratedDomainNameLabelScope', 'TenantReuse')
+        ]).get_output_in_json()
+
+        # Verify the default hostname matches the regional pattern with hash
+        default_hostname = result.get('defaultHostName')
+        pattern = r'^([a-zA-Z0-9\-]+)-([a-z0-9]{16})\.([a-z]+-\d{2})\.azurewebsites\.net$'
+        match = re.match(pattern, default_hostname)
+        self.assertIsNotNone(match, "defaultHostName '{}' does not match expected pattern".format(default_hostname))
+        app_name, hash_part, region = match.groups()
+        self.assertTrue(len(hash_part) == 16 and hash_part.islower(), "Hash is not 16 chars or not lowercase.")
+        self.assertIn('-', region, "Region part does not have '-' separator.")
+        self.assertEqual(app_name, webapp_name, "App name and defaultHostName app name do not match.")
+
+        # cleanup
+        os.chdir(current_working_dir)
+        import shutil
+        shutil.rmtree(temp_dir)
+
+
+if __name__ == '__main__':
+    unittest.main()
