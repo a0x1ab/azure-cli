@@ -6,7 +6,7 @@
 from azure.cli.command_modules.vm._client_factory import (cf_vm,
                                                           cf_vm_ext, cf_vm_ext_image,
                                                           cf_vm_image, cf_vm_image_term, cf_usage,
-                                                          cf_vmss, cf_images,
+                                                          cf_vmss,
                                                           cf_galleries, cf_gallery_images, cf_gallery_image_versions,
                                                           cf_proximity_placement_groups,
                                                           cf_dedicated_hosts, cf_dedicated_host_groups,
@@ -60,11 +60,6 @@ def load_command_table(self, _):
     compute_availset_profile = CliCommandType(
         operations_tmpl='azure.mgmt.compute.operations#AvailabilitySetsOperations.{}',
         operation_group='availability_sets'
-    )
-
-    compute_image_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.compute.operations#ImagesOperations.{}',
-        client_factory=cf_images
     )
 
     compute_vm_sdk = CliCommandType(
@@ -221,7 +216,7 @@ def load_command_table(self, _):
         self.command_table['disk-encryption-set identity remove'] = DiskEncryptionSetIdentityRemove(loader=self)
         g.custom_show_command('show', 'show_disk_encryption_set_identity')
 
-    with self.command_group('image', compute_image_sdk) as g:
+    with self.command_group('image') as g:
         g.custom_command('create', 'create_image', validator=process_image_create_namespace)
 
     with self.command_group('image builder', image_builder_image_templates_sdk, custom_command_type=image_builder_custom) as g:
