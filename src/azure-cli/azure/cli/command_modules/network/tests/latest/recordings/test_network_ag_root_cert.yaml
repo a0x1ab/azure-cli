@@ -1,0 +1,109 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network public-ip create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --ip-tags
+      User-Agent:
+      - AZURECLI/2.84.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_ag_root_cert000001?api-version=2024-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_ag_root_cert000001","name":"cli_test_ag_root_cert000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_network_ag_root_cert","date":"2026-03-27T04:02:43Z","module":"network"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '386'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 27 Mar 2026 04:02:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 32EC992813E74A17954932724E6C334F Ref B: SG2AA1070303060 Ref C: 2026-03-27T04:02:50Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "properties": {"idleTimeoutInMinutes": 4, "ipTags":
+      [{"ipTagType": "FirstPartyUsage", "tag": "/NonProd"}], "publicIPAllocationMethod":
+      "Static"}, "sku": {"name": "Standard"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network public-ip create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '197'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --sku --ip-tags
+      User-Agent:
+      - AZURECLI/2.84.0 azsdk-python-core/1.38.0 Python/3.12.10 (Windows-11-10.0.26200-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_ag_root_cert000001/providers/Microsoft.Network/publicIPAddresses/myip1?api-version=2025-07-01
+  response:
+    body:
+      string: '{"error":{"code":"SubscriptionNotRegisteredForFeature","message":"Subscription
+        /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups//providers/Microsoft.Network/subscriptions/
+        is not registered for feature Microsoft.Network/AllowBringYourOwnPublicIpAddress
+        required to carry out the requested operation.","details":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '333'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 27 Mar 2026 04:02:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 6a1d7985-58dd-4b73-9a8d-fcf3cc5515f5
+      x-ms-operation-identifier:
+      - tenantId=ed94de55-1f87-4278-9651-525e7ba467d6,objectId=4c73e7a5-a580-4613-82cf-af0b98695e15/westus/024215bb-2a32-4c0d-b3ea-f5347e31fcce
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 64A07080E07F4A5496E5C3E554114801 Ref B: SG2AA1070301042 Ref C: 2026-03-27T04:02:50Z'
+    status:
+      code: 400
+      message: Bad Request
+version: 1
