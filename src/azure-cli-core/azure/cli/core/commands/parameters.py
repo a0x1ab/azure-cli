@@ -132,7 +132,8 @@ resource_group_name_type = CliArgumentType(
     options_list=('--resource-group', '-g'),
     completer=get_resource_group_completion_list,
     id_part='resource_group',
-    help='Name of resource group')
+    help='Name of resource group',
+    configured_default='resource_group')
 
 name_type = CliArgumentType(options_list=('--name', '-n'), help='the primary resource name')
 
@@ -140,7 +141,8 @@ location_type = CliArgumentType(
     options_list=('--location', '-l'),
     completer=get_location_completion_list,
     type=location_name_type,
-    help='Location.', metavar='LOCATION')
+    help='Location.', metavar='LOCATION',
+    configured_default='location')
 
 deployment_name_type = CliArgumentType(
     help=argparse.SUPPRESS,
