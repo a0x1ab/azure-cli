@@ -1,0 +1,27 @@
+parameters:
+  - name: CLIRepoPath
+    type: string
+    default: '.'
+  - name: CLIExtensionRepoPath
+    type: string
+    default: ''
+steps:
+  - bash: |
+      set -ev
+
+      python -m venv env
+      chmod +x env/bin/activate
+      . env/bin/activate
+      python -m pip install -U pip
+      pip install azdev==0.1.30
+      azdev --version
+
+      if [ -z "$CLI_EXT_REPO_PATH" ]; then
+        azdev setup -c $CLI_REPO_PATH --debug
+      else
+        azdev setup -c $CLI_REPO_PATH -r $CLI_EXT_REPO_PATH --debug
+      fi
+    displayName: 'Azdev Setup'
+    env:
+      CLI_REPO_PATH: ${{ parameters.CLIRepoPath }}
+      CLI_EXT_REPO_PATH: ${{ parameters.CLIExtensionRepoPath }}
