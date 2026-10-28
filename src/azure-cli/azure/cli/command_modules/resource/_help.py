@@ -1783,6 +1783,20 @@ examples:
         az provider unregister --namespace Microsoft.Automation
     crafted: true
 """
+helps['provider register-mg'] = """
+type: command
+short-summary: Register a management group.
+parameters:
+  - name: --management-group-id
+    short-summary: The management group id to register.
+  - name: --wait
+    short-summary: Wait for the registration to finish.
+examples:
+  - name: Register a management group.
+    text: |
+        az provider register-mg --namespace Microsoft.Automation --management-group-id mgID
+    crafted: true
+"""
 
 helps['resource'] = """
 type: group
