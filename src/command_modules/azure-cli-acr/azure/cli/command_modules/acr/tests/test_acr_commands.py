@@ -6,6 +6,8 @@
 # AZURE CLI ACR TEST DEFINITIONS
 #pylint: disable=line-too-long
 
+from random import randint
+
 from azure.cli.core.test_utils.vcr_test_base import (
     ResourceGroupVCRTestBase,
     JMESPathCheck,
@@ -18,8 +20,8 @@ class ACRTest(ResourceGroupVCRTestBase):
         super(ACRTest, self).__init__(__file__, test_method, resource_group='acr_resource_group')
         self.registry_name_1 = 'acrtestregistry1'
         self.registry_name_2 = 'acrtestregistry2'
-        self.storage_account_1 = 'acrstorageaccount1'
-        self.storage_account_2 = 'acrstorageaccount2'
+        self.storage_account_1 = 'acrteststorage1'
+        self.storage_account_2 = 'acrteststorage2'
         self.location = 'southcentralus'
 
     def test_acr(self):
