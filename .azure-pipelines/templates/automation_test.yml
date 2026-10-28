@@ -7,6 +7,9 @@ parameters:
 - name: profile
   type: string
   default: latest
+- name: parallel
+  type: string
+  default: '1_1'
 - name: fullTest
   displayName: Run full test?
   type: boolean
@@ -56,7 +59,7 @@ steps:
         azdev test --no-exitfirst --repo=./ --src=HEAD --tgt=origin/$(System.PullRequest.TargetBranch) --cli-ci --profile ${{ parameters.profile }} --verbose --series --pytest-args "--durations=0"
       else
         echo "Running full test"
-        python scripts/ci/automation_full_test.py "${{ parameters.profile }}" "$serial_modules"
+        python scripts/ci/automation_full_test.py "${{ parameters.parallel }}" "${{ parameters.profile }}" "$serial_modules"
       fi
     displayName: "azdev test"
     env:
