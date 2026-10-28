@@ -305,7 +305,7 @@ class Profile(object):
 
     def get_access_token_for_resource(self, username, tenant, resource):
         tenant = tenant or 'common'
-        _, access_token = self._creds_cache.retrieve_token_for_user(
+        _, access_token, _ = self._creds_cache.retrieve_token_for_user(
             username, tenant, resource)
         return access_token
 
@@ -322,11 +322,26 @@ class Profile(object):
             else:
                 return self._creds_cache.retrieve_token_for_service_principal(username_or_sp_id,
                                                                               resource)
-
         from azure.cli.core.adal_authentication import AdalAuthentication
         auth_object = AdalAuthentication(_retrieve_token)
 
         return (auth_object,
+                str(account[_SUBSCRIPTION_ID]),
+                str(account[_TENANT_ID]))
+
+    def get_raw_token(self, resource=CLOUD.endpoints.active_directory_resource_id,
+                      subscription_id=None):
+        account = self.get_subscription(subscription_id)
+        user_type = account[_USER_ENTITY][_USER_TYPE]
+        username_or_sp_id = account[_USER_ENTITY][_USER_NAME]
+
+        if user_type == _USER:
+            creds = self._creds_cache.retrieve_token_for_user(username_or_sp_id,
+                                                              account[_TENANT_ID], resource)
+        else:
+            creds = self._creds_cache.retrieve_token_for_service_principal(username_or_sp_id,
+                                                                           resource)
+        return (creds,
                 str(account[_SUBSCRIPTION_ID]),
                 str(account[_TENANT_ID]))
 
@@ -522,7 +537,7 @@ class CredsCache(object):
 
         if self.adal_token_cache.has_state_changed:
             self.persist_cached_creds()
-        return (token_entry[_TOKEN_ENTRY_TOKEN_TYPE], token_entry[_ACCESS_TOKEN])
+        return (token_entry[_TOKEN_ENTRY_TOKEN_TYPE], token_entry[_ACCESS_TOKEN], token_entry)
 
     def retrieve_token_for_service_principal(self, sp_id, resource):
         self.load_adal_token_cache()
@@ -535,7 +550,7 @@ class CredsCache(object):
         sp_auth = ServicePrincipalAuth(cred.get(_ACCESS_TOKEN, None) or
                                        cred.get(_SERVICE_PRINCIPAL_CERT_FILE, None))
         token_entry = sp_auth.acquire_token(context, resource, sp_id)
-        return (token_entry[_TOKEN_ENTRY_TOKEN_TYPE], token_entry[_ACCESS_TOKEN])
+        return (token_entry[_TOKEN_ENTRY_TOKEN_TYPE], token_entry[_ACCESS_TOKEN], token_entry)
 
     def retrieve_secret_of_service_principal(self, sp_id):
         self.load_adal_token_cache()
