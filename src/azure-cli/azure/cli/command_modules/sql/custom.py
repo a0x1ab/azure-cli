@@ -1440,6 +1440,7 @@ def db_export(
         resource_group_name,
         storage_key_type,
         storage_key,
+        no_wait=False,
         **kwargs):
     '''
     Exports a database to a bacpac file.
@@ -1454,6 +1455,7 @@ def db_export(
         database_name=database_name,
         server_name=server_name,
         resource_group_name=resource_group_name,
+        no_wait=no_wait,
         parameters=kwargs)
 
 
@@ -1464,6 +1466,7 @@ def db_import(
         resource_group_name,
         storage_key_type,
         storage_key,
+        no_wait=False,
         **kwargs):
     '''
     Imports a bacpac file into an existing database.
@@ -1478,6 +1481,7 @@ def db_import(
         database_name=database_name,
         server_name=server_name,
         resource_group_name=resource_group_name,
+        no_wait=no_wait,
         parameters=kwargs)
 
 
