@@ -229,6 +229,10 @@ Release History
 * Remove unrelated exception from error message
 * Fix issues with incorrect error message "You do not have the required permissions needed to perform this operation." when blocked by network rules or AuthenticationFailed.
 
+**SQL VM**
+
+* Add new --license-type supporting Disaster Recovery Benefit (DR).
+
 2.0.76
 ++++++
 
