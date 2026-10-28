@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from knack.prompting import NoTTYException, prompt, prompt_pass
 from knack.log import get_logger
 from typing import Any, List, Dict, Union
 
@@ -12,6 +13,7 @@ from azure.cli.core.azclierror import (
     MutuallyExclusiveArgumentError,
     RequiredArgumentMissingError,
     InvalidArgumentValueError,
+    NoTTYError,
 )
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
@@ -292,24 +294,28 @@ class AKSCreateContext:
         else:
             dns_name_prefix = raw_value
 
-        dynamic_completion = False
-        # check whether the parameter meet the conditions of dynamic completion
-        if not dns_name_prefix and not self.get_fqdn_subdomain():
-            dynamic_completion = True
-        # disable dynamic completion if the value is read from `mc`
-        dynamic_completion = dynamic_completion and not read_from_mc
-        # In case the user does not specify the parameter and it meets the conditions of automatic completion,
-        # necessary information is dynamically completed.
-        if dynamic_completion:
-            dns_name_prefix = _get_default_dns_prefix(
-                name=self.get_name(),
-                resource_group_name=self.get_resource_group_name(),
-                subscription_id=self.get_intermediate("subscription_id"),
-            )
-            # add to intermediate
-            self.set_intermediate(
-                parameter_name, dns_name_prefix, overwrite_exists=True
-            )
+        # use the additional optional parameter "disable_dynamic_completion" to avoid loop calls
+        if not kwargs.get("disable_dynamic_completion", False):
+            dynamic_completion = False
+            # check whether the parameter meet the conditions of dynamic completion
+            if not dns_name_prefix and not self.get_fqdn_subdomain(
+                disable_dynamic_completion=True
+            ):
+                dynamic_completion = True
+            # disable dynamic completion if the value is read from `mc`
+            dynamic_completion = dynamic_completion and not read_from_mc
+            # In case the user does not specify the parameter and it meets the conditions of automatic completion,
+            # necessary information is dynamically completed.
+            if dynamic_completion:
+                dns_name_prefix = _get_default_dns_prefix(
+                    name=self.get_name(),
+                    resource_group_name=self.get_resource_group_name(),
+                    subscription_id=self.get_intermediate("subscription_id"),
+                )
+                # add to intermediate
+                self.set_intermediate(
+                    parameter_name, dns_name_prefix, overwrite_exists=True
+                )
 
         # validation
         if enable_validation:
@@ -344,20 +350,22 @@ class AKSCreateContext:
         else:
             location = raw_value
 
-        dynamic_completion = False
-        # check whether the parameter meet the conditions of dynamic completion
-        if location is None:
-            dynamic_completion = True
-        # disable dynamic completion if the value is read from `mc`
-        dynamic_completion = dynamic_completion and not read_from_mc
-        if dynamic_completion:
-            location = _get_rg_location(
-                self.cmd.cli_ctx, self.get_resource_group_name()
-            )
-            # add to intermediate
-            self.set_intermediate(
-                parameter_name, location, overwrite_exists=True
-            )
+        # use the additional optional parameter "disable_dynamic_completion" to avoid loop calls
+        if not kwargs.get("disable_dynamic_completion", False):
+            dynamic_completion = False
+            # check whether the parameter meet the conditions of dynamic completion
+            if location is None:
+                dynamic_completion = True
+            # disable dynamic completion if the value is read from `mc`
+            dynamic_completion = dynamic_completion and not read_from_mc
+            if dynamic_completion:
+                location = _get_rg_location(
+                    self.cmd.cli_ctx, self.get_resource_group_name()
+                )
+                # add to intermediate
+                self.set_intermediate(
+                    parameter_name, location, overwrite_exists=True
+                )
 
         # this parameter does not need validation
         return location
@@ -425,21 +433,23 @@ class AKSCreateContext:
         else:
             vm_set_type = raw_value
 
-        dynamic_completion = False
-        # check whether the parameter meet the conditions of dynamic completion
-        if not vm_set_type:
-            dynamic_completion = True
-        # disable dynamic completion if the value is read from `mc`
-        dynamic_completion = dynamic_completion and not read_from_mc
-        if dynamic_completion:
-            vm_set_type = _set_vm_set_type(
-                vm_set_type=vm_set_type,
-                kubernetes_version=self.get_kubernetes_version(),
-            )
-            # add to intermediate
-            self.set_intermediate(
-                parameter_name, vm_set_type, overwrite_exists=True
-            )
+        # use the additional optional parameter "disable_dynamic_completion" to avoid loop calls
+        if not kwargs.get("disable_dynamic_completion", False):
+            dynamic_completion = False
+            # check whether the parameter meet the conditions of dynamic completion
+            if not vm_set_type:
+                dynamic_completion = True
+            # disable dynamic completion if the value is read from `mc`
+            dynamic_completion = dynamic_completion and not read_from_mc
+            if dynamic_completion:
+                vm_set_type = _set_vm_set_type(
+                    vm_set_type=vm_set_type,
+                    kubernetes_version=self.get_kubernetes_version(),
+                )
+                # add to intermediate
+                self.set_intermediate(
+                    parameter_name, vm_set_type, overwrite_exists=True
+                )
 
         # this parameter does not need validation
         return vm_set_type
@@ -469,21 +479,23 @@ class AKSCreateContext:
         else:
             load_balancer_sku = raw_value
 
-        dynamic_completion = False
-        # check whether the parameter meet the conditions of dynamic completion
-        if not load_balancer_sku:
-            dynamic_completion = True
-        # disable dynamic completion if the value is read from `mc`
-        dynamic_completion = dynamic_completion and not read_from_mc
-        if dynamic_completion:
-            load_balancer_sku = set_load_balancer_sku(
-                sku=load_balancer_sku,
-                kubernetes_version=self.get_kubernetes_version(),
-            )
-            # add to intermediate
-            self.set_intermediate(
-                parameter_name, load_balancer_sku, overwrite_exists=True
-            )
+        # use the additional optional parameter "disable_dynamic_completion" to avoid loop calls
+        if not kwargs.get("disable_dynamic_completion", False):
+            dynamic_completion = False
+            # check whether the parameter meet the conditions of dynamic completion
+            if not load_balancer_sku:
+                dynamic_completion = True
+            # disable dynamic completion if the value is read from `mc`
+            dynamic_completion = dynamic_completion and not read_from_mc
+            if dynamic_completion:
+                load_balancer_sku = set_load_balancer_sku(
+                    sku=load_balancer_sku,
+                    kubernetes_version=self.get_kubernetes_version(),
+                )
+                # add to intermediate
+                self.set_intermediate(
+                    parameter_name, load_balancer_sku, overwrite_exists=True
+                )
 
         # validation
         if enable_validation:
@@ -584,21 +596,23 @@ class AKSCreateContext:
         else:
             nodepool_name = raw_value
 
-        dynamic_completion = False
-        # check whether the parameter meet the conditions of dynamic completion
-        if kwargs.get("enable_trim", False):
-            dynamic_completion = True
-        # disable dynamic completion if the value is read from `mc`
-        dynamic_completion = dynamic_completion and not read_from_mc
-        if dynamic_completion:
-            if not nodepool_name:
-                nodepool_name = "nodepool1"
-            else:
-                nodepool_name = nodepool_name[:12]
-            # add to intermediate
-            self.set_intermediate(
-                parameter_name, nodepool_name, overwrite_exists=True
-            )
+        # use the additional optional parameter "disable_dynamic_completion" to avoid loop calls
+        if not kwargs.get("disable_dynamic_completion", False):
+            dynamic_completion = False
+            # check whether the parameter meet the conditions of dynamic completion
+            if kwargs.get("enable_trim", False):
+                dynamic_completion = True
+            # disable dynamic completion if the value is read from `mc`
+            dynamic_completion = dynamic_completion and not read_from_mc
+            if dynamic_completion:
+                if not nodepool_name:
+                    nodepool_name = "nodepool1"
+                else:
+                    nodepool_name = nodepool_name[:12]
+                # add to intermediate
+                self.set_intermediate(
+                    parameter_name, nodepool_name, overwrite_exists=True
+                )
 
         # this parameter does not need validation
         return nodepool_name
@@ -1136,6 +1150,136 @@ class AKSCreateContext:
         # this parameter does not need validation
         return admin_username
 
+    # pylint: disable=unused-argument
+    def get_windows_admin_username(
+        self, enable_validation: bool = False, **kwargs
+    ):
+        parameter_name = "windows_admin_username"
+
+        # read the original value passed by the command
+        raw_value = self.raw_param.get(parameter_name)
+        # try to read from intermediates
+        intermediate = self.get_intermediate(parameter_name, None)
+        # try to read the property value corresponding to the parameter from the `mc` object
+        value_obtained_from_mc = None
+        if self.mc and self.mc.windows_profile:
+            value_obtained_from_mc = self.mc.windows_profile.admin_username
+
+        # set default value
+        read_from_mc = False
+        if value_obtained_from_mc is not None:
+            windows_admin_username = value_obtained_from_mc
+            # clean up intermediate if `mc` has been decorated
+            self.remove_intermediate(parameter_name)
+            read_from_mc = True
+        elif intermediate is not None:
+            windows_admin_username = intermediate
+        else:
+            windows_admin_username = raw_value
+
+        # use the additional optional parameter "disable_dynamic_completion" to avoid loop calls
+        if not kwargs.get("disable_dynamic_completion", False):
+            dynamic_completion = False
+            # check whether the parameter meet the conditions of dynamic completion
+            # to avoid that windows_admin_password is set but windows_admin_username is not
+            if (
+                windows_admin_username is None and
+                self.get_windows_admin_password(
+                    disable_dynamic_completion=True
+                )
+            ):
+                dynamic_completion = True
+            # disable dynamic completion if the value is read from `mc`
+            dynamic_completion = dynamic_completion and not read_from_mc
+            if dynamic_completion:
+                try:
+                    windows_admin_username = prompt("windows_admin_username: ")
+                    # The validation for admin_username in ManagedClusterWindowsProfile will fail even if
+                    # users still set windows_admin_username to empty here
+                except NoTTYException:
+                    raise NoTTYError(
+                        "Please specify username for Windows in non-interactive mode."
+                    )
+                # add to intermediate
+                self.set_intermediate(
+                    parameter_name,
+                    windows_admin_username,
+                    overwrite_exists=True,
+                )
+
+        # this parameter does not need validation
+        return windows_admin_username
+
+    # pylint: disable=unused-argument
+    def get_windows_admin_password(
+        self, enable_validation: bool = False, **kwargs
+    ):
+        parameter_name = "windows_admin_password"
+
+        # read the original value passed by the command
+        raw_value = self.raw_param.get(parameter_name)
+        # try to read from intermediates
+        intermediate = self.get_intermediate(parameter_name, None)
+        # try to read the property value corresponding to the parameter from the `mc` object
+        value_obtained_from_mc = None
+        if self.mc and self.mc.windows_profile:
+            value_obtained_from_mc = self.mc.windows_profile.admin_password
+
+        # set default value
+        read_from_mc = False
+        if value_obtained_from_mc is not None:
+            windows_admin_password = value_obtained_from_mc
+            # clean up intermediate if `mc` has been decorated
+            self.remove_intermediate(parameter_name)
+            read_from_mc = True
+        elif intermediate is not None:
+            windows_admin_password = intermediate
+        else:
+            windows_admin_password = raw_value
+
+        # use the additional optional parameter "disable_dynamic_completion" to avoid loop calls
+        if not kwargs.get("disable_dynamic_completion", False):
+            dynamic_completion = False
+            # check whether the parameter meet the conditions of dynamic completion
+            # to avoid that windows_admin_username is set but windows_admin_password is not
+            if (
+                windows_admin_password is None and
+                self.get_windows_admin_username(
+                    disable_dynamic_completion=True
+                )
+            ):
+                dynamic_completion = True
+            # disable dynamic completion if the value is read from `mc`
+            dynamic_completion = dynamic_completion and not read_from_mc
+            if dynamic_completion:
+                try:
+                    windows_admin_password = prompt_pass(
+                        msg="windows-admin-password: ", confirm=True
+                    )
+                except NoTTYException:
+                    raise NoTTYError(
+                        "Please specify both username and password in non-interactive mode."
+                    )
+                # add to intermediate
+                self.set_intermediate(
+                    parameter_name,
+                    windows_admin_password,
+                    overwrite_exists=True,
+                )
+
+        # this parameter does not need validation
+        return windows_admin_password
+
+    # pylint: disable=unused-argument
+    def get_enable_ahub(self, enable_validation: bool = False, **kwargs):
+        # Note: This parameter will not be decorated into the `mc` object.
+        # read the original value passed by the command
+        enable_ahub = self.raw_param.get("enable_ahub")
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return enable_ahub
+
 
 class AKSCreateDecorator:
     def __init__(
@@ -1228,13 +1372,37 @@ class AKSCreateDecorator:
             mc.linux_profile = linux_profile
         return mc
 
+    def set_up_windows_profile(self, mc):
+        windows_admin_username = self.context.get_windows_admin_username()
+        windows_admin_password = self.context.get_windows_admin_password()
+        if windows_admin_username or windows_admin_password:
+            windows_license_type = None
+            if self.context.get_enable_ahub():
+                windows_license_type = "Windows_Server"
+
+            # this would throw an error if windows_admin_username is empty (the user enters an empty
+            # string after being prompted), since admin_username is a required parameter
+            windows_profile = self.models.ManagedClusterWindowsProfile(
+                admin_username=windows_admin_username,
+                admin_password=windows_admin_password,
+                license_type=windows_license_type,
+            )
+
+            mc.windows_profile = windows_profile
+        return mc
+
     def construct_default_mc(self):
         # An all-in-one function used to create the complete `ManagedCluster` object, which will later be
         # passed as a parameter to the underlying SDK (mgmt-containerservice) to send the actual request.
         # Note: to reduce the risk of regression introduced by refactoring, this function is not complete
         # and is being implemented gradually.
-        # initialize the `ManagedCluster` object
+
+        # initialize the `ManagedCluster` object, also set up the intermediate named "subscription_id"
         mc = self.init_mc()
         # set up agent pool profile(s)
         mc = self.set_up_agent_pool_profiles(mc)
+        # set up linux profile (for ssh access)
+        mc = self.set_up_linux_profile(mc)
+        # set up windows profile
+        mc = self.set_up_windows_profile(mc)
         return mc
