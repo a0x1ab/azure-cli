@@ -16,8 +16,8 @@ from azure.cli.core.commands.validators import DefaultStr
 
 logger = get_logger(__name__)
 
-_CLOUD_CONSOLE_WARNING_TEMPLATE = ("Azure Cloud Shell automatically authenticates the user account it was initially"
-                                   " launched under, as a result 'az %s' is disabled.")
+_CLOUD_CONSOLE_WARNING = ("Logout successful. Re-login to your initial Cloud Shell identity with 'az login --msi'."
+                          " Login with a new identity with 'az login'.")
 
 
 def _load_subscriptions(cli_ctx, all_clouds=False, refresh=False):
@@ -83,6 +83,8 @@ def set_active_subscription(cmd, subscription):
 
 def account_clear(cmd):
     """Clear all stored subscriptions. To clear individual, use 'logout'"""
+    if in_cloud_console():
+        logger.warning(_CLOUD_CONSOLE_WARNING)
     profile = Profile(cli_ctx=cmd.cli_ctx)
     profile.logout_all()
 
@@ -91,8 +93,6 @@ def account_clear(cmd):
 def login(cmd, username=None, password=None, service_principal=None, tenant=None,
           allow_no_subscriptions=False, msi=False, msi_port=DefaultStr(50342)):
     """Log in to access Azure subscriptions"""
-    import os
-    import re
     from adal.adal_error import AdalError
     import requests
 
@@ -105,14 +105,9 @@ def login(cmd, username=None, password=None, service_principal=None, tenant=None
 
     profile = Profile(cli_ctx=cmd.cli_ctx, async_persist=False)
 
-    if in_cloud_console():
-        console_tokens = os.environ.get('AZURE_CONSOLE_TOKENS', None)
-        if console_tokens:
-            return profile.find_subscriptions_in_cloud_console(re.split(';|,', console_tokens))
-        logger.warning(_CLOUD_CONSOLE_WARNING_TEMPLATE, 'login')
-        return
-
     if msi:
+        if in_cloud_console():
+            return profile.find_subscriptions_in_cloud_console()
         return profile.find_subscriptions_in_vm_with_msi(msi_port, username)
 
     if username:
@@ -153,8 +148,7 @@ def login(cmd, username=None, password=None, service_principal=None, tenant=None
 def logout(cmd, username=None):
     """Log out to remove access to Azure subscriptions"""
     if in_cloud_console():
-        logger.warning(_CLOUD_CONSOLE_WARNING_TEMPLATE, 'logout')
-        return
+        logger.warning(_CLOUD_CONSOLE_WARNING)
 
     profile = Profile(cli_ctx=cmd.cli_ctx)
     if not username:
