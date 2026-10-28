@@ -40,6 +40,16 @@ _PROXYID_RE = re.compile(
 
 _CHILDREN_RE = re.compile('(?i)/(?P<child_type>[^/]*)/(?P<child_name>[^/]*)')
 
+_PACKAGE_UPGRADE_INSTRUCTIONS = {"YUM": ("sudo yum update -y azure-cli", "https://aka.ms/doc/UpdateAzureCliYum"),
+                                 "ZYPPER": ("sudo zypper refresh && sudo zypper update -y azure-cli", "https://aka.ms/doc/UpdateAzureCliZypper"),
+                                 "DEB": ("sudo apt-get update && sudo apt-get install --only-upgrade -y azure-cli", "https://aka.ms/doc/UpdateAzureCliApt"),
+                                 "HOMEBREW": ("brew update && brew upgrade azure-cli", "https://aka.ms/doc/UpdateAzureCliHomebrew"),
+                                 "PIP": ("curl -L https://aka.ms/InstallAzureCli | bash", "https://aka.ms/doc/UpdateAzureCliLinux"),
+                                 "MSI": ("https://aka.ms/installazurecliwindows", "https://aka.ms/doc/UpdateAzureCliMsi"),
+                                 "DOCKER": ("docker pull mcr.microsoft.com/azure-cli", "https://aka.ms/doc/UpdateAzureCliDocker")}
+
+_GENERAL_UPGRADE_INSTRUCTION = 'Instructions can be found at https://aka.ms/doc/InstallAzureCli'
+
 
 def handle_exception(ex):  # pylint: disable=too-many-return-statements
     # For error code, follow guidelines at https://docs.python.org/2/library/sys.html#sys.exit,
@@ -150,7 +160,41 @@ def _update_latest_from_pypi(versions):
     return versions, success
 
 
-def get_az_version_string():
+def _get_cached_latest_versions(versions):
+    """ Get the latest versions from a cached file"""
+    import os
+    import datetime
+    from azure.cli.core._environment import get_config_dir
+    from distutils.version import LooseVersion
+    az_versions_file = os.path.join(get_config_dir(), 'version', 'azVersions.json')
+    if os.path.exists(az_versions_file):
+        try:
+            file_json = get_file_json(az_versions_file, throw_on_empty=False) or []
+            cache_versions = file_json['versions']
+            if cache_versions['azure-cli']['local'] == versions['azure-cli']['local']:
+                # If cached version is still greater than local version, no need to refresh cache
+                if LooseVersion(versions['azure-cli']['local']) < LooseVersion(cache_versions['azure-cli']['pypi']):
+                    return cache_versions, True
+                time_now = datetime.datetime.now()
+                update_time = datetime.datetime.strptime(file_json['update_time'], '%Y-%m-%d %H:%M:%S.%f')
+                if time_now - update_time < datetime.timedelta(days=1):
+                    return cache_versions, True
+        except (CLIError, ValueError) as ex:
+            logger.info(ex)
+            os.remove(az_versions_file)
+    versions, success = _update_latest_from_pypi(versions)
+    if success:
+        dir_path = os.path.join(get_config_dir(), 'version')
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
+        with os.fdopen(os.open(az_versions_file, os.O_RDWR | os.O_CREAT | os.O_TRUNC, 0o600),
+                       'w+') as version_file:
+            file_json = {'versions': versions, 'update_time': str(datetime.datetime.now())}
+            version_file.write(json.dumps(file_json))
+    return versions, success
+
+
+def get_az_version_string(use_cache=False):
     from azure.cli.core.extension import get_extensions, EXTENSIONS_DIR, DEV_EXTENSION_SOURCES
 
     output = six.StringIO()
@@ -165,7 +209,7 @@ def get_az_version_string():
             versions[comp_name] = {'local': dist.version}
 
     # get the versions from pypi
-    versions, success = _update_latest_from_pypi(versions)
+    versions, success = _get_cached_latest_versions(versions) if use_cache else _update_latest_from_pypi(versions)
     updates_available = 0
 
     def _print(val=''):
@@ -230,6 +274,90 @@ def get_az_version_json():
         for ext in extensions:
             versions['extensions'][ext.name] = ext.version or 'Unknown'
     return versions
+
+
+def show_updates_available(new_line_before=False, new_line_after=False):
+    if should_show_updates_available():
+        import os
+        _, updates_available = get_az_version_string(use_cache=True)
+        if updates_available > 0:
+            from azure.cli.core._environment import get_config_dir
+            if new_line_before:
+                logger.warning("")
+            show_updates(updates_available)
+            if new_line_after:
+                logger.warning("")
+        # Cache the last time that should show updates available
+        dir_path = os.path.join(get_config_dir(), 'version')
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
+        version_time_file = os.path.join(dir_path, 'showUpdatesAvailable.txt')
+        with os.fdopen(os.open(version_time_file, os.O_RDWR | os.O_CREAT | os.O_TRUNC, 0o600),
+                       'w+') as time_file:
+            from datetime import datetime
+            time_file.write(str(datetime.now()))
+
+
+def should_show_updates_available():
+    """ Should only show once in a wait period """
+    import datetime
+    import os
+    import stat
+    from azure.cli.core._environment import get_config_dir
+    wait_period = datetime.timedelta(days=7)
+    file_path = os.path.join(get_config_dir(), 'version', 'showUpdatesAvailable.txt')
+    if not os.path.exists(file_path):
+        return True
+
+    file_stat = os.stat(file_path)
+    if not stat.S_ISREG(file_stat.st_mode):
+        return False
+
+    modify_time = datetime.datetime.fromtimestamp(file_stat.st_mtime)
+    if datetime.datetime.now() - modify_time > wait_period:
+        return True
+
+    return False
+
+
+def show_updates(updates_available):
+    if updates_available == -1:
+        logger.warning('Unable to check if your CLI is up-to-date. Check your internet connection.')
+    elif updates_available:  # pylint: disable=too-many-nested-blocks
+        if in_cloud_console():
+            warning_msg = 'You have %i updates available. They will be updated with the next build of Cloud Shell.'
+        else:
+            warning_msg = 'You have %i updates available. Consider updating your CLI installation'
+            from azure.cli.core._environment import _ENV_AZ_INSTALLER
+            import os
+            installer = os.getenv(_ENV_AZ_INSTALLER)
+            instruction_msg = ''
+            if installer in _PACKAGE_UPGRADE_INSTRUCTIONS:
+                if installer == 'RPM':
+                    distname, _ = get_linux_distro()
+                    if not distname:
+                        instruction_msg = '. {}'.format(_GENERAL_UPGRADE_INSTRUCTION)
+                    else:
+                        distname = distname.lower().strip()
+                        if any(x in distname for x in ['centos', 'rhel', 'red hat', 'fedora']):
+                            installer = 'YUM'
+                        elif any(x in distname for x in ['opensuse', 'suse', 'sles']):
+                            installer = 'ZYPPER'
+                        else:
+                            instruction_msg = '. {}'.format(_GENERAL_UPGRADE_INSTRUCTION)
+                elif installer == 'PIP':
+                    system = platform.system()
+                    alternative_command = " or '{}' if you used our script for installation. Detailed instructions can be found at {}".format(_PACKAGE_UPGRADE_INSTRUCTIONS[installer][0], _PACKAGE_UPGRADE_INSTRUCTIONS[installer][1]) if system != 'Windows' else ''
+                    instruction_msg = " with 'pip install --upgrade azure-cli'{}".format(alternative_command)
+                if instruction_msg:
+                    warning_msg += instruction_msg
+                else:
+                    warning_msg += " with '{}'. Detailed instructions can be found at {}".format(_PACKAGE_UPGRADE_INSTRUCTIONS[installer][0], _PACKAGE_UPGRADE_INSTRUCTIONS[installer][1])
+            else:
+                warning_msg += '. {}'.format(_GENERAL_UPGRADE_INSTRUCTION)
+        logger.warning(warning_msg, updates_available)
+    else:
+        print('Your CLI is up-to-date.')
 
 
 def get_json_object(json_string):
