@@ -52,6 +52,10 @@ class AzCompletionFinder(argcomplete.CompletionFinder):
 class AzCliCommandParser(CLICommandParser):
     """ArgumentParser implementation specialized for the Azure CLI utility."""
 
+    @staticmethod
+    def recommendation_provider(version, command, parameters, extension):
+        pass
+
     def __init__(self, cli_ctx=None, cli_help=None, **kwargs):
         self.command_source = kwargs.pop('_command_source', None)
         self.subparser_map = {}
@@ -141,6 +145,7 @@ class AzCliCommandParser(CLICommandParser):
         with CommandLoggerContext(logger):
             logger.error('%(prog)s: error: %(message)s', args)
         self.print_usage(sys.stderr)
+        self._make_failure_recovery_recommendations(*self._get_failure_recovery_arguments())
         self.exit(2)
 
     def format_help(self):
@@ -164,6 +169,40 @@ class AzCliCommandParser(CLICommandParser):
         argcomplete.autocomplete = AzCompletionFinder()
         argcomplete.autocomplete(self, validator=lambda c, p: c.lower().startswith(p.lower()),
                                  default_completer=lambda _: ())
+
+    @classmethod
+    def _make_failure_recovery_recommendations(cls, *args, **kwargs):
+        if telemetry.is_telemetry_enabled():
+            cls.recommendation_provider(telemetry._get_core_version(), *args, **kwargs)  # pylint: disable=protected-access
+
+    def _get_failure_recovery_arguments(self, action=None):
+        command = self.prog[3:].strip()
+        parameters = self.cli_ctx.data['safe_params'] if self.cli_ctx and self.cli_ctx.data else None
+        extension = None
+
+        session = telemetry._session  # pylint: disable=protected-access
+
+        if not command and session.raw_command:
+            command = session.raw_command
+        if not parameters and session.parameters:
+            try:
+                command = ','.join(session.parameters)
+            except Exception:  # pylint: disable=broad-except
+                pass
+
+        if action and action.dest == '_subcommand':
+            for _, context in action.choices.items():
+                if isinstance(context.command_source, ExtensionCommandSource):
+                    extension = context.command_source.extension_name
+        elif isinstance(self.subparser_map, dict):
+            for _, context in self.subparser_map.items():
+                if isinstance(context.command_source, ExtensionCommandSource):
+                    extension = context.command_source.extension_name
+                else:
+                    extension = None
+                    break
+
+        return (command, parameters, extension)
 
     def _get_values(self, action, arg_strings):
         value = super(AzCliCommandParser, self)._get_values(action, arg_strings)
@@ -202,4 +241,5 @@ class AzCliCommandParser(CLICommandParser):
                 suggestion_msg += '\n'.join(['\t' + candidate for candidate in candidates])
                 print(suggestion_msg, file=sys.stderr)
 
+            self._make_failure_recovery_recommendations(*self._get_failure_recovery_arguments(action))
             self.exit(2)
