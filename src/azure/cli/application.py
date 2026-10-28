@@ -4,12 +4,18 @@ import sys
 import re
 import argparse
 from enum import Enum
+import argcomplete
 from .parser import AzCliCommandParser
 import azure.cli.extensions
 import azure.cli._help as _help
 import azure.cli._logging as _logging
 
 logger = _logging.get_az_logger(__name__)
+
+class AlternateCompletionFinder(argcomplete.CompletionFinder):
+    def __init__(self, *args, **kwargs):
+        super(AlternateCompletionFinder, self).__init__(*args, default_completer=lambda _: (),
+                                                        **kwargs)
 
 class Configuration(object): # pylint: disable=too-few-public-methods
     """The configuration object tracks session specific data such
@@ -142,8 +148,9 @@ class Application(object):
 
     @staticmethod
     def _enable_autocomplete(**kwargs):
-        import argcomplete
-        argcomplete.autocomplete(kwargs['parser'])
+        argcomplete.autocomplete = AlternateCompletionFinder()
+        argcomplete.autocomplete(kwargs['parser'],
+                                 validator=lambda c, p: c.lower().startswith(p.lower()))
 
     @staticmethod
     def _register_builtin_arguments(**kwargs):
