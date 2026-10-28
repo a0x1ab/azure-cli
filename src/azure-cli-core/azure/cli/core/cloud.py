@@ -4,8 +4,13 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import json
+import platform
+import ssl
+import sys
 from pprint import pformat
 from six.moves import configparser
+from six.moves.urllib.request import urlopen  # pylint: disable=import-error
 
 from azure.cli.core.profiles import API_PROFILES
 from azure.cli.core._config import GLOBAL_CONFIG_DIR
@@ -17,6 +22,7 @@ from knack.config import get_config_parser
 logger = get_logger(__name__)
 
 CLOUD_CONFIG_FILE = os.path.join(GLOBAL_CONFIG_DIR, 'clouds.config')
+ARM_CLOUD_METADATA_URL = 'https://management.azure.com/metadata/endpoints?api-version=2019-05-01'
 
 
 class CloudNotRegisteredException(Exception):
@@ -127,6 +133,78 @@ class CloudSuffixes(object):  # pylint: disable=too-few-public-methods
         return val
 
 
+def in_cloud_console():
+    return os.environ.get('ACC_CLOUD', None)
+
+
+def _ssl_context():
+    if sys.version_info < (3, 4) or (in_cloud_console() and platform.system() == 'Windows'):
+        try:
+            return ssl.SSLContext(ssl.PROTOCOL_TLS)  # added in python 2.7.13 and 3.6
+        except AttributeError:
+            return ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+
+    return ssl.create_default_context()
+
+
+def urlretrieve(url):
+    req = urlopen(url, context=_ssl_context())
+    return req.read()
+
+
+def get_ossrdbms_resource_id(cloud_name):
+    ossrdbms_mapper = {
+        'AzureCloud': 'https://ossrdbms-aad.database.windows.net',
+        'AzureChinaCloud': 'https://ossrdbms-aad.database.chinacloudapi.cn',
+        'AzureUSGovernment': 'https://ossrdbms-aad.database.usgovcloudapi.net',
+        'AzureGermanCloud': 'https://ossrdbms-aad.database.cloudapi.de'
+    }
+    return ossrdbms_mapper.get(cloud_name, None)
+
+
+def get_microsoft_graph_resource_id(cloud_name):
+    graph_endpoint_mapper = {
+        'AzureCloud': 'https://graph.microsoft.com/',
+        'AzureChinaCloud': 'https://microsoftgraph.chinacloudapi.cn/',
+        'AzureUSGovernment': 'https://graph.microsoft.us/',
+        'AzureGermanCloud': 'https://graph.microsoft.de/'
+    }
+    return graph_endpoint_mapper.get(cloud_name, None)
+
+
+def convert_arm_to_cli(arm_cloud_metadata_dict):
+    cli_cloud_metadata_dict = {}
+    for cloud in arm_cloud_metadata_dict:
+        cli_cloud_metadata_dict[cloud['name']] = arm_to_cli_mapper(cloud)
+    return cli_cloud_metadata_dict
+
+
+def arm_to_cli_mapper(arm_dict):
+    return Cloud(
+        arm_dict['name'],
+        endpoints=CloudEndpoints(
+            management=arm_dict['authentication']['audiences'][0],
+            resource_manager=arm_dict['resourceManager'],
+            sql_management=arm_dict['sqlManagement'],
+            batch_resource_id=arm_dict['batch'],
+            gallery=arm_dict['gallery'],
+            active_directory=arm_dict['authentication']['loginEndpoint'],
+            active_directory_resource_id=arm_dict['authentication']['audiences'][0],
+            active_directory_graph_resource_id=arm_dict['graphAudience'],
+            microsoft_graph_resource_id=get_microsoft_graph_resource_id(arm_dict['name']),  # pylint: disable=line-too-long # change once microsoft_graph_resource_id is fixed in ARM
+            vm_image_alias_doc=arm_dict['vmImageAliasDoc'],  # pylint: disable=line-too-long
+            media_resource_id=arm_dict['media'],
+            ossrdbms_resource_id=get_ossrdbms_resource_id(arm_dict['name']),  # pylint: disable=line-too-long # change once ossrdbms_resource_id is available via ARM
+            active_directory_data_lake_resource_id=arm_dict['activeDirectoryDataLake']),
+        suffixes=CloudSuffixes(
+            storage_endpoint=arm_dict['suffixes']['storage'],
+            keyvault_dns=arm_dict['suffixes']['keyVaultDns'],
+            sql_server_hostname=arm_dict['suffixes']['sqlServerHostname'],
+            azure_datalake_store_file_system_endpoint=arm_dict['suffixes']['azureDataLakeStoreFileSystem'] if 'azureDataLakeStoreFileSystem' in arm_dict['suffixes'] else None,  # pylint: disable=line-too-long
+            azure_datalake_analytics_catalog_and_job_endpoint=arm_dict['suffixes']['azureDataLakeAnalyticsCatalogAndJob'] if 'azureDataLakeAnalyticsCatalogAndJob' in arm_dict['suffixes'] else None,  # pylint: disable=line-too-long
+            acr_login_server_endpoint=arm_dict['suffixes']['acrLoginServer'] if 'acrLoginServer' in arm_dict['suffixes'] else None))  # pylint: disable=line-too-long
+
+
 class Cloud(object):  # pylint: disable=too-few-public-methods
     """ Represents an Azure Cloud instance """
 
@@ -153,91 +231,100 @@ class Cloud(object):  # pylint: disable=too-few-public-methods
         return pformat(o)
 
 
-AZURE_PUBLIC_CLOUD = Cloud(
-    'AzureCloud',
-    endpoints=CloudEndpoints(
-        management='https://management.core.windows.net/',
-        resource_manager='https://management.azure.com/',
-        sql_management='https://management.core.windows.net:8443/',
-        batch_resource_id='https://batch.core.windows.net/',
-        gallery='https://gallery.azure.com/',
-        active_directory='https://login.microsoftonline.com',
-        active_directory_resource_id='https://management.core.windows.net/',
-        active_directory_graph_resource_id='https://graph.windows.net/',
-        microsoft_graph_resource_id='https://graph.microsoft.com/',
-        active_directory_data_lake_resource_id='https://datalake.azure.net/',
-        vm_image_alias_doc='https://raw.githubusercontent.com/Azure/azure-rest-api-specs/master/arm-compute/quickstart-templates/aliases.json',  # pylint: disable=line-too-long
-        media_resource_id='https://rest.media.azure.net',
-        ossrdbms_resource_id='https://ossrdbms-aad.database.windows.net'),
-    suffixes=CloudSuffixes(
-        storage_endpoint='core.windows.net',
-        keyvault_dns='.vault.azure.net',
-        sql_server_hostname='.database.windows.net',
-        azure_datalake_store_file_system_endpoint='azuredatalakestore.net',
-        azure_datalake_analytics_catalog_and_job_endpoint='azuredatalakeanalytics.net',
-        acr_login_server_endpoint='.azurecr.io'))
+try:
+    arm_cloud_dict = json.loads(urlretrieve(ARM_CLOUD_METADATA_URL))
+    cli_cloud_dict = convert_arm_to_cli(arm_cloud_dict)
+    AZURE_PUBLIC_CLOUD = cli_cloud_dict['AzureCloud']
+    AZURE_PUBLIC_CLOUD.CloudEndpoints.active_directory = 'https://login.microsoftonline.com'  # pylint: disable=line-too-long # change once active_directory is fixed in ARM for the public cloud
+    AZURE_CHINA_CLOUD = cli_cloud_dict['AzureChinaCloud']
+    AZURE_US_GOV_CLOUD = cli_cloud_dict['AzureUSGovernment']
+    AZURE_GERMAN_CLOUD = cli_cloud_dict['AzureGermanCloud']
+except Exception:  # pylint: disable=broad-except
+    AZURE_PUBLIC_CLOUD = Cloud(
+        'AzureCloud',
+        endpoints=CloudEndpoints(
+            management='https://management.core.windows.net/',
+            resource_manager='https://management.azure.com/',
+            sql_management='https://management.core.windows.net:8443/',
+            batch_resource_id='https://batch.core.windows.net/',
+            gallery='https://gallery.azure.com/',
+            active_directory='https://login.microsoftonline.com',
+            active_directory_resource_id='https://management.core.windows.net/',
+            active_directory_graph_resource_id='https://graph.windows.net/',
+            microsoft_graph_resource_id='https://graph.microsoft.com/',
+            active_directory_data_lake_resource_id='https://datalake.azure.net/',
+            vm_image_alias_doc='https://raw.githubusercontent.com/Azure/azure-rest-api-specs/master/arm-compute/quickstart-templates/aliases.json',  # pylint: disable=line-too-long
+            media_resource_id='https://rest.media.azure.net',
+            ossrdbms_resource_id='https://ossrdbms-aad.database.windows.net'),
+        suffixes=CloudSuffixes(
+            storage_endpoint='core.windows.net',
+            keyvault_dns='.vault.azure.net',
+            sql_server_hostname='.database.windows.net',
+            azure_datalake_store_file_system_endpoint='azuredatalakestore.net',
+            azure_datalake_analytics_catalog_and_job_endpoint='azuredatalakeanalytics.net',
+            acr_login_server_endpoint='.azurecr.io'))
 
-AZURE_CHINA_CLOUD = Cloud(
-    'AzureChinaCloud',
-    endpoints=CloudEndpoints(
-        management='https://management.core.chinacloudapi.cn/',
-        resource_manager='https://management.chinacloudapi.cn',
-        sql_management='https://management.core.chinacloudapi.cn:8443/',
-        batch_resource_id='https://batch.chinacloudapi.cn/',
-        gallery='https://gallery.chinacloudapi.cn/',
-        active_directory='https://login.chinacloudapi.cn',
-        active_directory_resource_id='https://management.core.chinacloudapi.cn/',
-        active_directory_graph_resource_id='https://graph.chinacloudapi.cn/',
-        microsoft_graph_resource_id='https://microsoftgraph.chinacloudapi.cn',
-        vm_image_alias_doc='https://raw.githubusercontent.com/Azure/azure-rest-api-specs/master/arm-compute/quickstart-templates/aliases.json',  # pylint: disable=line-too-long
-        media_resource_id='https://rest.media.chinacloudapi.cn',
-        ossrdbms_resource_id='https://ossrdbms-aad.database.chinacloudapi.cn'),
-    suffixes=CloudSuffixes(
-        storage_endpoint='core.chinacloudapi.cn',
-        keyvault_dns='.vault.azure.cn',
-        sql_server_hostname='.database.chinacloudapi.cn',
-        acr_login_server_endpoint='.azurecr.cn'))
+    AZURE_CHINA_CLOUD = Cloud(
+        'AzureChinaCloud',
+        endpoints=CloudEndpoints(
+            management='https://management.core.chinacloudapi.cn/',
+            resource_manager='https://management.chinacloudapi.cn',
+            sql_management='https://management.core.chinacloudapi.cn:8443/',
+            batch_resource_id='https://batch.chinacloudapi.cn/',
+            gallery='https://gallery.chinacloudapi.cn/',
+            active_directory='https://login.chinacloudapi.cn',
+            active_directory_resource_id='https://management.core.chinacloudapi.cn/',
+            active_directory_graph_resource_id='https://graph.chinacloudapi.cn/',
+            microsoft_graph_resource_id='https://microsoftgraph.chinacloudapi.cn',
+            vm_image_alias_doc='https://raw.githubusercontent.com/Azure/azure-rest-api-specs/master/arm-compute/quickstart-templates/aliases.json',  # pylint: disable=line-too-long
+            media_resource_id='https://rest.media.chinacloudapi.cn',
+            ossrdbms_resource_id='https://ossrdbms-aad.database.chinacloudapi.cn'),
+        suffixes=CloudSuffixes(
+            storage_endpoint='core.chinacloudapi.cn',
+            keyvault_dns='.vault.azure.cn',
+            sql_server_hostname='.database.chinacloudapi.cn',
+            acr_login_server_endpoint='.azurecr.cn'))
 
-AZURE_US_GOV_CLOUD = Cloud(
-    'AzureUSGovernment',
-    endpoints=CloudEndpoints(
-        management='https://management.core.usgovcloudapi.net/',
-        resource_manager='https://management.usgovcloudapi.net/',
-        sql_management='https://management.core.usgovcloudapi.net:8443/',
-        batch_resource_id='https://batch.core.usgovcloudapi.net/',
-        gallery='https://gallery.usgovcloudapi.net/',
-        active_directory='https://login.microsoftonline.us',
-        active_directory_resource_id='https://management.core.usgovcloudapi.net/',
-        active_directory_graph_resource_id='https://graph.windows.net/',
-        microsoft_graph_resource_id='https://graph.microsoft.us/',
-        vm_image_alias_doc='https://raw.githubusercontent.com/Azure/azure-rest-api-specs/master/arm-compute/quickstart-templates/aliases.json',  # pylint: disable=line-too-long
-        media_resource_id='https://rest.media.usgovcloudapi.net',
-        ossrdbms_resource_id='https://ossrdbms-aad.database.usgovcloudapi.net'),
-    suffixes=CloudSuffixes(
-        storage_endpoint='core.usgovcloudapi.net',
-        keyvault_dns='.vault.usgovcloudapi.net',
-        sql_server_hostname='.database.usgovcloudapi.net',
-        acr_login_server_endpoint='.azurecr.us'))
+    AZURE_US_GOV_CLOUD = Cloud(
+        'AzureUSGovernment',
+        endpoints=CloudEndpoints(
+            management='https://management.core.usgovcloudapi.net/',
+            resource_manager='https://management.usgovcloudapi.net/',
+            sql_management='https://management.core.usgovcloudapi.net:8443/',
+            batch_resource_id='https://batch.core.usgovcloudapi.net/',
+            gallery='https://gallery.usgovcloudapi.net/',
+            active_directory='https://login.microsoftonline.us',
+            active_directory_resource_id='https://management.core.usgovcloudapi.net/',
+            active_directory_graph_resource_id='https://graph.windows.net/',
+            microsoft_graph_resource_id='https://graph.microsoft.us/',
+            vm_image_alias_doc='https://raw.githubusercontent.com/Azure/azure-rest-api-specs/master/arm-compute/quickstart-templates/aliases.json',  # pylint: disable=line-too-long
+            media_resource_id='https://rest.media.usgovcloudapi.net',
+            ossrdbms_resource_id='https://ossrdbms-aad.database.usgovcloudapi.net'),
+        suffixes=CloudSuffixes(
+            storage_endpoint='core.usgovcloudapi.net',
+            keyvault_dns='.vault.usgovcloudapi.net',
+            sql_server_hostname='.database.usgovcloudapi.net',
+            acr_login_server_endpoint='.azurecr.us'))
 
-AZURE_GERMAN_CLOUD = Cloud(
-    'AzureGermanCloud',
-    endpoints=CloudEndpoints(
-        management='https://management.core.cloudapi.de/',
-        resource_manager='https://management.microsoftazure.de',
-        sql_management='https://management.core.cloudapi.de:8443/',
-        batch_resource_id='https://batch.cloudapi.de/',
-        gallery='https://gallery.cloudapi.de/',
-        active_directory='https://login.microsoftonline.de',
-        active_directory_resource_id='https://management.core.cloudapi.de/',
-        active_directory_graph_resource_id='https://graph.cloudapi.de/',
-        microsoft_graph_resource_id='https://graph.microsoft.de',
-        vm_image_alias_doc='https://raw.githubusercontent.com/Azure/azure-rest-api-specs/master/arm-compute/quickstart-templates/aliases.json',  # pylint: disable=line-too-long
-        media_resource_id='https://rest.media.cloudapi.de',
-        ossrdbms_resource_id='https://ossrdbms-aad.database.cloudapi.de'),
-    suffixes=CloudSuffixes(
-        storage_endpoint='core.cloudapi.de',
-        keyvault_dns='.vault.microsoftazure.de',
-        sql_server_hostname='.database.cloudapi.de'))
+    AZURE_GERMAN_CLOUD = Cloud(
+        'AzureGermanCloud',
+        endpoints=CloudEndpoints(
+            management='https://management.core.cloudapi.de/',
+            resource_manager='https://management.microsoftazure.de',
+            sql_management='https://management.core.cloudapi.de:8443/',
+            batch_resource_id='https://batch.cloudapi.de/',
+            gallery='https://gallery.cloudapi.de/',
+            active_directory='https://login.microsoftonline.de',
+            active_directory_resource_id='https://management.core.cloudapi.de/',
+            active_directory_graph_resource_id='https://graph.cloudapi.de/',
+            microsoft_graph_resource_id='https://graph.microsoft.de',
+            vm_image_alias_doc='https://raw.githubusercontent.com/Azure/azure-rest-api-specs/master/arm-compute/quickstart-templates/aliases.json',  # pylint: disable=line-too-long
+            media_resource_id='https://rest.media.cloudapi.de',
+            ossrdbms_resource_id='https://ossrdbms-aad.database.cloudapi.de'),
+        suffixes=CloudSuffixes(
+            storage_endpoint='core.cloudapi.de',
+            keyvault_dns='.vault.microsoftazure.de',
+            sql_server_hostname='.database.cloudapi.de'))
 
 
 KNOWN_CLOUDS = [AZURE_PUBLIC_CLOUD, AZURE_CHINA_CLOUD, AZURE_US_GOV_CLOUD, AZURE_GERMAN_CLOUD]
