@@ -363,6 +363,53 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('lease_break_period', type=int)
         c.argument('blob_name', arg_type=blob_name_type)
 
+    with self.argument_context('storage copy') as c:
+        c.argument('destination', options_list=['--destination', '-d'], help="The path/url of copy destination. \
+            It can be local path, an url to azure storage server. For more imformation, please refer to [link here]. \
+            If you provide destination parameter here, you do not need to provide arguments in copy \
+            destination arguments group and copy destination arguments will be deprecated  in future.")
+        c.argument('source', options_list=['--source', '-s'], help="The path/url of copy source. \
+            It can be local path, an url to azure storage server or AWS S3 buckets. For more imformation, please refer to [link here]. \
+            If you provide source parameter here, you do not need to provide arguments in copy source arguments group and copy source \
+            arguments will be deprecated in future.")
+        for item in ['destination', 'source']:
+            c.argument('{}_if_modified_since'.format(item), arg_group='Pre-condition', help='A DateTime value. \
+                        Azure expects the date value passed in to be UTC. If timezone is included, any non-UTC \
+                        datetimes will be converted to UTC. If a date is passed in without timezone info, \
+                        it is assumed to be UTC. Specify this conditional header to copy the blob only if the \
+                        source blob has been modified since the specified date/time.')
+            c.argument('{}_if_unmodified_since'.format(item), arg_group='Pre-condition', help='A DateTime value. \
+                        Azure expects the date value passed in to be UTC. If timezone is included, any non-UTC \
+                        datetimes will be converted to UTC. If a date is passed in without timezone info, \
+                        it is assumed to be UTC. Specify this conditional header to copy the blob only if \
+                        the source blob has not been modified since the specified date/time.')
+            c.argument('{}_if_match'.format(item), arg_group='Pre-condition', help='An ETag value, \
+                        or the wildcard character (*). Specify this conditional header to copy the \
+                        source blob only if its ETag matches the value specified. \
+                        If the ETag values do not match, the Blob service returns status code 412 (Precondition Failed). \
+                        This header cannot be specified if the source is an Azure File.')
+            c.argument('{}_if_none_match'.format(item), arg_group='Pre-condition', help='An ETag value, \
+                        or the wildcard character (*). Specify this conditional header to copy the blob only \
+                        if its ETag does not match the value specified. If the values are identical, \
+                        the Blob service returns status code 412 (Precondition Failed). \
+                        This header cannot be specified if the source is an Azure File.')
+            c.argument('{}_account_name'.format(item), arg_group='Copy {}'.format(item),
+                       help='Storage account name of copy {}'.format(item))
+            c.argument('{}_container'.format(item), arg_group='Copy {}'.format(item),
+                       help='Container name of copy {} storage account'.format(item))
+            c.argument('{}_blob'.format(item), arg_group='Copy {}'.format(item),
+                       help='Blob name in blob container of copy {} storage account'.format(item))
+            c.argument('{}_share'.format(item), arg_group='Copy {}'.format(item),
+                       help='File share name of copy {} storage account'.format(item))
+            c.argument('{}_file_path'.format(item), arg_group='Copy {}'.format(item),
+                       help='File path in file share of copy {} storage account'.format(item))
+            c.argument('{}_local_path'.format(item), arg_group='Copy {}'.format(item),
+                       help='Local file path')
+        c.argument('recursive', action='store_true', help='Look into sub-directories \
+                    recursively when uploading from local file system.')
+        c.argument('put_md5', action='store_true', help='Create an MD5 hash of each file, and save the hash \
+                    as the Content-MD5 property of the destination blob/file.Only available when uploading.')
+
     with self.argument_context('storage blob copy') as c:
         for item in ['destination', 'source']:
             c.argument('{}_if_modified_since'.format(item), arg_group='Pre-condition')
