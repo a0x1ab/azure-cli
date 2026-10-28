@@ -1407,17 +1407,12 @@ def disable_boot_diagnostics(cmd, resource_group_name, vm_name):
     set_vm(cmd, vm, ExtensionUpdateLongRunningOperation(cmd.cli_ctx, 'disabling boot diagnostics', 'done'))
 
 
-def enable_boot_diagnostics(cmd, resource_group_name, vm_name, storage):
+def enable_boot_diagnostics(cmd, resource_group_name, vm_name, storage=None):
     from azure.cli.command_modules.vm._vm_utils import get_storage_blob_uri
     vm = get_vm(cmd, resource_group_name, vm_name)
-    storage_uri = get_storage_blob_uri(cmd.cli_ctx, storage)
-
-    if (vm.diagnostics_profile and
-            vm.diagnostics_profile.boot_diagnostics and
-            vm.diagnostics_profile.boot_diagnostics.enabled and
-            vm.diagnostics_profile.boot_diagnostics.storage_uri and
-            vm.diagnostics_profile.boot_diagnostics.storage_uri.lower() == storage_uri.lower()):
-        return
+    storage_uri = None
+    if storage:
+        storage_uri = get_storage_blob_uri(cmd.cli_ctx, storage)
 
     DiagnosticsProfile, BootDiagnostics = cmd.get_models('DiagnosticsProfile', 'BootDiagnostics')
 
@@ -1496,6 +1491,12 @@ def get_boot_log(cmd, resource_group_name, vm_name):
 
     # our streamwriter not seekable, so no parallel.
     storage_client.get_blob_to_stream(container, blob, BootLogStreamWriter(sys.stdout), max_connections=1)
+
+
+def get_sas(cmd, resource_group_name, vm_name, expire=None):
+    client = _compute_client_factory(cmd.cli_ctx)
+    return client.virtual_machines.retrieve_boot_diagnostics_data(
+        resource_group_name, vm_name, sas_uri_expiration_time_in_minutes=expire)
 # endregion
 
 
