@@ -46,8 +46,8 @@ jobs:
       echo "Reject pull request directly to master branch"
       exit 1
 
-- job: CredScan
-  displayName: "Credential Scan"
+- job: SecurityTools
+  displayName: "Security Tools"
   pool:
     name: ${{ variables.windows_pool }}
   steps:
@@ -57,12 +57,20 @@ jobs:
       toolMajorVersion: V2
       suppressionsFile: './scripts/ci/credscan/CredScanSuppressions.json'
       toolVersionV2: '2.1.17'
+
+  - task: securedevelopmentteam.vss-secure-development-tools.build-task-policheck.PoliCheck@2
+    displayName: 'Run PoliCheck'
+    inputs:
+      targetType: F
+      result: PoliCheckResult.xml
+
   - task: ms-codeanalysis.vss-microsoft-security-code-analysis-devops.build-task-postanalysis.PostAnalysis@1
     displayName: 'Post Analysis'
     inputs:
       AllTools: false
       BinSkim: false
       CredScan: true
+      PoliCheck: true
       RoslynAnalyzers: false
       TSLint: false
       ToolLogsNotFoundAction: 'Standard'
