@@ -9213,9 +9213,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ]).get_output_in_json()
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableAPIServerVnetIntegrationPreview ' \
                      '--assign-identity {identity_id} ' \
                      '--enable-azure-keyvault-kms --azure-keyvault-kms-key-id={key_id} ' \
                      '--azure-keyvault-kms-key-vault-network-access=Private --azure-keyvault-kms-key-vault-resource-id {kv_resource_id} ' \
+                     '--enableVnetIntegration=true ' \
                      '--ssh-key-value={ssh_key_value} -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -9339,7 +9341,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ]).get_output_in_json()
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableAPIServerVnetIntegrationPreview ' \
                      '--assign-identity {identity_id} ' \
+                     '--enableVnetIntegration=true ' \
                      '--ssh-key-value={ssh_key_value} -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -9438,9 +9442,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ]).get_output_in_json()
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableAPIServerVnetIntegrationPreview ' \
                      '--assign-identity {identity_id} --enable-private-cluster ' \
                      '--enable-azure-keyvault-kms --azure-keyvault-kms-key-id={key_id} ' \
                      '--azure-keyvault-kms-key-vault-network-access=Private --azure-keyvault-kms-key-vault-resource-id {kv_resource_id} ' \
+                     '--enableVnetIntegration=true ' \
                      '--ssh-key-value={ssh_key_value} -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
