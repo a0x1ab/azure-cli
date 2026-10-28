@@ -9,7 +9,8 @@ from six.moves import configparser  # pylint: disable=redefined-builtin
 from adal.adal_error import AdalError
 
 import azure.cli.core.azlogging as azlogging
-from azure.cli.core._config import (GLOBAL_CONFIG_PATH, ENV_VAR_PREFIX, set_global_config)
+from azure.cli.core._config import (GLOBAL_CONFIG_PATH, ENV_VAR_PREFIX, set_global_config,
+                                    set_global_config_value)
 from azure.cli.core._util import CLIError
 from azure.cli.core.prompting import (prompt,
                                       prompt_y_n,
@@ -129,7 +130,24 @@ def _handle_global_configuration():
         global_config.set('logging', 'enable_log_file', 'yes' if enable_file_logging else 'no')
         set_global_config(global_config)
 
-def handle_configure():
+def handle_configure(setting=None, value=None):
+    '''
+    configure common settings
+    :param str setting: configuration variable, e.g. resource-group, appservice/webapp, compute/vm
+    :param str value:   configuration variable value
+    '''
+    if setting or value:
+        if bool(setting) != bool(value):
+            raise CLIError('usage error: --setting STRING --value STRING')
+        parts = setting.split('/', 1)
+        section = 'core' if len(parts) == 1 else parts[0]
+        name = parts[0] if len(parts) == 1 else parts[1]
+
+        set_global_config_value(section, name, _normalize_config_value(value))
+
+        return
+
+    # if nothing supplifed, we go interactively
     try:
         print(MSG_INTRO)
         _handle_global_configuration()
@@ -139,3 +157,10 @@ def handle_configure():
         raise CLIError('This command is interactive and no tty available.')
     except (EOFError, KeyboardInterrupt):
         print()
+
+
+def _normalize_config_value(value):
+    if value:
+        value = '' if value in ["''", '""'] else value
+    return value
+
