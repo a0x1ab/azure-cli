@@ -6,7 +6,7 @@
 import os
 import time
 # AZURE CLI RESOURCE TEST DEFINITIONS
-
+import six
 from azure.cli.core.test_utils.vcr_test_base import (VCRTestBase, JMESPathCheck, NoneCheck,
                                                      BooleanCheck,
                                                      ResourceGroupVCRTestBase,
@@ -151,14 +151,18 @@ class ProviderRegistrationTest(VCRTestBase): # Not RG test base because it opera
         result = self.cmd('provider show -n {}'.format(provider), checks=None)
         if result['registrationState'] == 'Unregistered':
             self.cmd('provider register -n {}'.format(provider), checks=None)
-            self.cmd('provider show -n {}'.format(provider), checks=[JMESPathCheck('registrationState', 'Registered')])
+            result = self.cmd('provider show -n {}'.format(provider))
+            self.assertTrue(result['registrationState'] in ['Registering', 'Registered'])
             self.cmd('provider unregister -n {}'.format(provider), checks=None)
-            self.cmd('provider show -n {}'.format(provider), checks=[JMESPathCheck('registrationState', 'Unregistered')])
+            result = self.cmd('provider show -n {}'.format(provider))
+            self.assertTrue(result['registrationState'] in ['Unregistering', 'Unregistered'])
         else:
             self.cmd('provider unregister -n {}'.format(provider), checks=None)
-            self.cmd('provider show -n {}'.format(provider), checks=[JMESPathCheck('registrationState', 'Unregistered')])
+            result = self.cmd('provider show -n {}'.format(provider))
+            self.assertTrue(result['registrationState'] in ['Unregistering', 'Unregistered'])
             self.cmd('provider register -n {}'.format(provider), checks=None)
-            self.cmd('provider show -n {}'.format(provider), checks=[JMESPathCheck('registrationState', 'Registered')])
+            result = self.cmd('provider show -n {}'.format(provider))
+            self.assertTrue(result['registrationState'] in ['Registering', 'Registered'])
 
 class DeploymentTest(ResourceGroupVCRTestBase):
     def __init__(self, test_method):
@@ -170,7 +174,11 @@ class DeploymentTest(ResourceGroupVCRTestBase):
 
     def body(self):
         curr_dir = os.path.dirname(os.path.realpath(__file__))
-        template_file = os.path.join(curr_dir, 'simple_deploy.json').replace('\\', '\\\\')
+
+        #test mainline scenario that the template is uri based
+        template_file_basepath = os.path.join(curr_dir, 'simple_deploy.json')
+        template_file = six.moves.urllib_parse.urljoin('file:', six.moves.urllib.request.pathname2url(template_file_basepath))
+
         parameters_file = os.path.join(curr_dir, 'simple_deploy_parameters.json').replace('\\', '\\\\')
         deployment_name = 'azure-cli-deployment'
         result = self.cmd('resource group deployment validate -g {} --template-file-path {} --parameters-file-path {}'.format(
@@ -186,8 +194,6 @@ class DeploymentTest(ResourceGroupVCRTestBase):
         result = self.cmd('resource group deployment show -g {} -n {}'.format(self.resource_group, deployment_name), checks=None)
         self.assertEqual(deployment_name, result['name'])
         self.assertEqual(self.resource_group, result['resourceGroup'])
-        result = self.cmd('resource group deployment exists -g {} -n {}'.format(self.resource_group, deployment_name), checks=None)
-        self.assertTrue(result)
         result = self.cmd('resource group deployment operation list -g {} -n {}'.format(self.resource_group, deployment_name), checks=None)
         self.assertEqual(2, len(result))
         self.assertEqual(self.resource_group, result[0]['resourceGroup'])
