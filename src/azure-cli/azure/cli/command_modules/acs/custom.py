@@ -124,6 +124,16 @@ def which(binary):
     return None
 
 
+def check_cmd_test_hook_file(filename):
+    curr_dir = os.path.dirname(os.path.realpath(__file__))
+    test_hook_file = os.path.join(curr_dir, 'tests/latest/data', filename)
+    if os.path.exists(test_hook_file):
+        with open(test_hook_file, "r") as f:
+            return json.load(f)
+    else:
+        return False
+
+
 def wait_then_open(url):
     """
     Waits for a bit then opens a URL.  Useful for waiting for a proxy to come up, and then open the URL.
@@ -1628,15 +1638,13 @@ def aks_check_acr(cmd, client, resource_group_name, name, acr):
         output = subprocess.check_output(
             cmd,
             universal_newlines=True,
+            stderr=subprocess.STDOUT,
         )
     except subprocess.CalledProcessError as err:
-        raise CLIError("Failed to check the ACR: {}".format(err))
+        raise CLIError("Failed to check the ACR: {} Command output: {}".format(err, err.output))
     if output:
-        print(output)
-        if os.getenv("PYTEST_CURRENT_TEST", None):
-            return output
-    else:
-        raise CLIError("Failed to check the ACR.")
+        return output
+    raise CLIError("Failed to check the ACR.")
 
 
 # pylint: disable=too-many-statements,too-many-branches
@@ -1696,9 +1704,11 @@ def _aks_browse(
         dashboard_pod = subprocess.check_output(
             ["kubectl", "get", "pods", "--kubeconfig", browse_path, "--namespace", "kube-system",
              "--output", "name", "--selector", "k8s-app=kubernetes-dashboard"],
-            universal_newlines=True)
+            universal_newlines=True,
+            stderr=subprocess.STDOUT,
+        )
     except subprocess.CalledProcessError as err:
-        raise CLIError('Could not find dashboard pod: {}'.format(err))
+        raise CLIError('Could not find dashboard pod: {} Command output: {}'.format(err, err.output))
     if dashboard_pod:
         # remove any "pods/" or "pod/" prefix from the name
         dashboard_pod = str(dashboard_pod).split('/')[-1].strip()
@@ -1710,12 +1720,14 @@ def _aks_browse(
         dashboard_port = subprocess.check_output(
             ["kubectl", "get", "pods", "--kubeconfig", browse_path, "--namespace", "kube-system",
              "--selector", "k8s-app=kubernetes-dashboard",
-             "--output", "jsonpath='{.items[0].spec.containers[0].ports[0].containerPort}'"]
+             "--output", "jsonpath='{.items[0].spec.containers[0].ports[0].containerPort}'"],
+            universal_newlines=True,
+            stderr=subprocess.STDOUT,
         )
-        # output format: b"'{port}'"
-        dashboard_port = int((dashboard_port.decode('utf-8').replace("'", "")))
+        # output format: "'{port}'"
+        dashboard_port = int((dashboard_port.replace("'", "")))
     except subprocess.CalledProcessError as err:
-        raise CLIError('Could not find dashboard port: {}'.format(err))
+        raise CLIError('Could not find dashboard port: {} Command output: {}'.format(err, err.output))
 
     # use https if dashboard container is using https
     if dashboard_port == 8443:
@@ -1744,17 +1756,23 @@ def _aks_browse(
         logger.warning('Proxy running on %s', proxy_url)
 
     timeout = None
-    if os.getenv("PYTEST_CURRENT_TEST", None):
+    test_hook = check_cmd_test_hook_file("test_aks_browse_legacy_hook.json")
+    if test_hook and test_hook == "enabled":
         timeout = 10
     logger.warning('Press CTRL+C to close the tunnel...')
     if not disable_browser:
         wait_then_open_async(dashboardURL)
     try:
         try:
-            subprocess.check_output(["kubectl", "--kubeconfig", browse_path, "proxy", "--address",
-                                     listen_address, "--port", listen_port], stderr=subprocess.STDOUT, timeout=timeout)
+            subprocess.check_output(
+                ["kubectl", "--kubeconfig", browse_path, "proxy", "--address",
+                 listen_address, "--port", listen_port],
+                universal_newlines=True,
+                stderr=subprocess.STDOUT,
+                timeout=timeout,
+            )
         except subprocess.CalledProcessError as err:
-            if err.output.find(b'unknown flag: --address'):
+            if err.output.find('unknown flag: --address'):
                 return_msg = "Test Invalid Address! "
                 if listen_address != '127.0.0.1':
                     logger.warning(
@@ -1768,6 +1786,10 @@ def _aks_browse(
                     logger.warning("Currently in a test environment, the proxy is closed due to a preset timeout!")
                     return_msg = return_msg if return_msg else ""
                     return_msg += "Test Passed!"
+                except subprocess.CalledProcessError as new_err:
+                    raise CLIError('Could not open proxy: {} Command output: {}'.format(new_err, new_err.output))
+            else:
+                raise CLIError('Could not open proxy: {} Command output: {}'.format(err, err.output))
         except subprocess.TimeoutExpired:
             logger.warning("Currently in a test environment, the proxy is closed due to a preset timeout!")
             return_msg = return_msg if return_msg else ""
