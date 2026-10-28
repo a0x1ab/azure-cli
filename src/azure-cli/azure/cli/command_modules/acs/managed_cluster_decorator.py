@@ -2223,16 +2223,18 @@ class AKSManagedClusterContext(BaseAKSContext):
                         "userDefinedRouting doesn't support basic load balancer sku"
                     )
 
-                if outbound_type in [
-                    CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
-                    CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
-                ]:
+                if outbound_type == CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING:
                     if self.get_vnet_subnet_id() in ["", None]:
                         raise RequiredArgumentMissingError(
                             "--vnet-subnet-id must be specified for userDefinedRouting and it must "
                             "be pre-configured with a route table with egress rules"
                         )
-
+                if outbound_type == CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY:
+                    if self.get_vnet_subnet_id() in ["", None]:
+                        raise RequiredArgumentMissingError(
+                            "--vnet-subnet-id must be specified for userAssignedNATGateway and it must "
+                            "be pre-configured with a NAT gateway with outbound ips"
+                        )
                 if outbound_type != CONST_OUTBOUND_TYPE_LOAD_BALANCER:
                     if (
                         self.get_load_balancer_managed_outbound_ip_count() or
@@ -2252,6 +2254,28 @@ class AKSManagedClusterContext(BaseAKSContext):
                             outbound_type + " doesn't support customizing "
                             "a standard nat gateway with IP addresses"
                         )
+                vnet_subnet_id = self.get_vnet_subnet_id()
+                if vnet_subnet_id is None and outbound_type not in [
+                    CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+                    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY
+                ]:
+                    raise InvalidArgumentValueError(
+                        "Invalid outbound type, supported values are loadBalancer and managedNATGateway "
+                        "Please refer to "
+                        "https://learn.microsoft.com/en-us/azure/aks/egress-outboundtype#updating-outboundtype-after-cluster-creation "  # pylint:disable=line-too-long
+                        "for more details."
+                    )
+                if vnet_subnet_id is not None and outbound_type not in [
+                    CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+                    CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+                    CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING
+                ]:
+                    raise InvalidArgumentValueError(
+                        "Invalid outbound type, supported values are loadBalancer, userAssignedNATGateway and "
+                        "userDefinedRouting. Please refer to "
+                        "https://learn.microsoft.com/en-us/azure/aks/egress-outboundtype#updating-outboundtype-after-cluster-creation "  # pylint:disable=line-too-long
+                        "for more details."
+                    )
         return outbound_type
 
     def get_outbound_type(
@@ -7189,29 +7213,6 @@ class AKSManagedClusterUpdateDecorator(BaseAKSManagedClusterDecorator):
 
         outboundType = self.context.get_outbound_type()
         if outboundType:
-            vnet_subnet_id = self.context.get_vnet_subnet_id()
-            if vnet_subnet_id is None and outboundType not in [
-                CONST_OUTBOUND_TYPE_LOAD_BALANCER,
-                CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
-                CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING
-            ]:
-                raise InvalidArgumentValueError(
-                    "Invalid outbound type, supported values are loadBalancer, managedNATGateway and "
-                    "userDefinedRouting. Please refer to "
-                    "https://learn.microsoft.com/en-us/azure/aks/egress-outboundtype#updating-outboundtype-after-cluster-creation "  # pylint:disable=line-too-long
-                    "for more details."
-                )
-            if vnet_subnet_id is not None and outboundType not in [
-                CONST_OUTBOUND_TYPE_LOAD_BALANCER,
-                CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
-                CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING
-            ]:
-                raise InvalidArgumentValueError(
-                    "Invalid outbound type, supported values are loadBalancer, userAssignedNATGateway and "
-                    "userDefinedRouting. Please refer to "
-                    "https://learn.microsoft.com/en-us/azure/aks/egress-outboundtype#updating-outboundtype-after-cluster-creation "  # pylint:disable=line-too-long
-                    "for more details."
-                )
             mc.network_profile.outbound_type = outboundType
         return mc
 
