@@ -64,7 +64,9 @@ def acr_connected_registry_create(cmd,  # pylint: disable=too-many-locals, too-m
         raise CLIError("usage error: you must provide either --sync-token-name or --repository, but not both.")
     # Check needed since the sync token gateway actions must be at least 5 characters long.
     if len(connected_registry_name) < 5:
-        raise CLIError("argument error: Connected registry name must be at least 5 characters long")
+        raise CLIError("argument error: Connected registry name must be at least 5 characters long.")
+    if connected_registry_name.isupper():
+        raise CLIError("argument error: Connected registry name must be only lowercase.")
     registry, resource_group_name = get_registry_by_name(cmd.cli_ctx, registry_name, resource_group_name)
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
@@ -275,7 +277,7 @@ def acr_connected_registry_delete(cmd,
                 "az acr token delete -n {} -r {} --yes\n\t".format(sync_token_name, registry_name) + \
                 "az acr scope-map delete -n {} -r {} --yes\n".format(sync_scope_map_name, registry_name) + \
                 "Run the following command on all ascendency to remove the deleted registry gateway access: \n\t" + \
-                "az acr scope-map update -n <scope-map-name> -r {} --remove-gateway {} --yes".format(
+                "az acr scope-map update -n <scope-map-name> -r {} --remove-gateway {}".format(
                     registry_name, " ".join([connected_registry_name] + DEFAULT_GATEWAY_SCOPE))
             logger.warning(msg)
         return result
