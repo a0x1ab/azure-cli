@@ -16,6 +16,7 @@ from azure.cli.command_modules.acs._consts import (
     CONST_GPU_INSTANCE_PROFILE_MIG1_G, CONST_GPU_INSTANCE_PROFILE_MIG2_G,
     CONST_GPU_INSTANCE_PROFILE_MIG3_G, CONST_GPU_INSTANCE_PROFILE_MIG4_G,
     CONST_GPU_INSTANCE_PROFILE_MIG7_G, CONST_LOAD_BALANCER_SKU_BASIC,
+    CONST_GPU_DRIVER_INSTALL, CONST_GPU_DRIVER_NONE,
     CONST_LOAD_BALANCER_SKU_STANDARD, CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD, CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
     CONST_NETWORK_DATAPLANE_AZURE, CONST_NETWORK_DATAPLANE_CILIUM,
@@ -187,6 +188,11 @@ gpu_instance_profiles = [
     CONST_GPU_INSTANCE_PROFILE_MIG3_G,
     CONST_GPU_INSTANCE_PROFILE_MIG4_G,
     CONST_GPU_INSTANCE_PROFILE_MIG7_G,
+]
+
+gpu_driver_install_modes = [
+    CONST_GPU_DRIVER_INSTALL,
+    CONST_GPU_DRIVER_NONE
 ]
 
 nrg_lockdown_restriction_levels = [
@@ -423,6 +429,7 @@ def load_arguments(self, _):
         c.argument('host_group_id', validator=validate_host_group_id)
         c.argument('crg_id', validator=validate_crg_id)
         c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
+        c.argument('gpu_driver', arg_type=get_enum_type(gpu_driver_install_modes))
         c.argument('nodepool_allowed_host_ports', nargs='+', validator=validate_allowed_host_ports, help="allowed host ports for agentpool")
         c.argument('nodepool_asg_ids', nargs='+', validator=validate_application_security_groups, help="application security groups for agentpool")
         c.argument("message_of_the_day")
@@ -799,6 +806,7 @@ def load_arguments(self, _):
         c.argument('enable_secure_boot', action='store_true')
         c.argument("if_match")
         c.argument("if_none_match")
+        c.argument('gpu_driver', arg_type=get_enum_type(gpu_driver_install_modes))
 
     with self.argument_context('aks nodepool update', resource_type=ResourceType.MGMT_CONTAINERSERVICE, operation_group='agent_pools') as c:
         c.argument('enable_cluster_autoscaler', options_list=[
