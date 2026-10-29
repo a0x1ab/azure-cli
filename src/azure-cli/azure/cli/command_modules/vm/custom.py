@@ -721,7 +721,7 @@ def create_vm(cmd, vm_name, resource_group_name, image=None, size='Standard_DS1_
               priority=None, max_price=None, eviction_policy=None, enable_agent=None, workspace=None, vmss=None,
               os_disk_encryption_set=None, data_disk_encryption_sets=None, specialized=None,
               encryption_at_host=None, enable_auto_update=None, patch_mode=None, ssh_key_name=None,
-              enable_hotpatching=None):
+              enable_hotpatching=None, count=None):
     from azure.cli.core.commands.client_factory import get_subscription_id
     from azure.cli.core.util import random_string, hash_string
     from azure.cli.core.commands.arm import ArmTemplateBuilder
@@ -732,6 +732,7 @@ def create_vm(cmd, vm_name, resource_group_name, image=None, size='Standard_DS1_
                                                                 build_msi_role_assignment,
                                                                 build_vm_linux_log_analytics_workspace_agent,
                                                                 build_vm_windows_log_analytics_workspace_agent)
+    from azure.cli.command_modules.vm._vm_utils import ArmTemplateBuilder20190401
     from msrestazure.tools import resource_id, is_valid_resource_id, parse_resource_id
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -765,7 +766,10 @@ def create_vm(cmd, vm_name, resource_group_name, image=None, size='Standard_DS1_
     storage_container_name = storage_container_name or 'vhds'
 
     # Build up the ARM template
-    master_template = ArmTemplateBuilder()
+    if count is None:
+        master_template = ArmTemplateBuilder()
+    else:
+        master_template = ArmTemplateBuilder20190401()
 
     vm_dependencies = []
     if storage_account_type == 'new':
@@ -778,7 +782,11 @@ def create_vm(cmd, vm_name, resource_group_name, image=None, size='Standard_DS1_
     nic_name = None
     if nic_type == 'new':
         nic_name = '{}VMNic'.format(vm_name)
-        vm_dependencies.append('Microsoft.Network/networkInterfaces/{}'.format(nic_name))
+        nic_full_name = 'Microsoft.Network/networkInterfaces/{}'.format(nic_name)
+        if count:
+            vm_dependencies.extend([nic_full_name + str(i) for i in range(count)])
+        else:
+            vm_dependencies.append(nic_full_name)
 
         nic_dependencies = []
         if vnet_type == 'new':
@@ -828,7 +836,7 @@ def create_vm(cmd, vm_name, resource_group_name, image=None, size='Standard_DS1_
             master_template.add_resource(build_public_ip_resource(cmd, public_ip_address, location, tags,
                                                                   public_ip_address_allocation,
                                                                   public_ip_address_dns_name,
-                                                                  public_ip_sku, zone))
+                                                                  public_ip_sku, zone, count))
 
         subnet_id = subnet if is_valid_resource_id(subnet) else \
             '{}/virtualNetworks/{}/subnets/{}'.format(network_id_template, vnet_name, subnet)
@@ -843,9 +851,17 @@ def create_vm(cmd, vm_name, resource_group_name, image=None, size='Standard_DS1_
             public_ip_address_id = public_ip_address if is_valid_resource_id(public_ip_address) \
                 else '{}/publicIPAddresses/{}'.format(network_id_template, public_ip_address)
 
-        nics = [
-            {'id': '{}/networkInterfaces/{}'.format(network_id_template, nic_name)}
-        ]
+        nics_id = '{}/networkInterfaces/{}'.format(network_id_template, nic_name)
+
+        if count:
+            nics = [
+                {'id': "[concat('{}', copyIndex())]".format(nics_id)}
+            ]
+        else:
+            nics = [
+                {'id': nics_id}
+            ]
+
         nic_resource = build_nic_resource(
             cmd, nic_name, location, tags, vm_name, subnet_id, private_ip_address, nsg_id,
             public_ip_address_id, application_security_groups, accelerated_networking=accelerated_networking)
@@ -893,7 +909,8 @@ def create_vm(cmd, vm_name, resource_group_name, image=None, size='Standard_DS1_
         enable_agent=enable_agent, vmss=vmss, os_disk_encryption_set=os_disk_encryption_set,
         data_disk_encryption_sets=data_disk_encryption_sets, specialized=specialized,
         encryption_at_host=encryption_at_host, dedicated_host_group=dedicated_host_group,
-        enable_auto_update=enable_auto_update, patch_mode=patch_mode, enable_hotpatching=enable_hotpatching)
+        enable_auto_update=enable_auto_update, patch_mode=patch_mode, enable_hotpatching=enable_hotpatching,
+        count=count)
 
     vm_resource['dependsOn'] = vm_dependencies
 

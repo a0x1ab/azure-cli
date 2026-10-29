@@ -77,7 +77,7 @@ def build_storage_account_resource(_, name, location, tags, sku):
     return storage_account
 
 
-def build_public_ip_resource(cmd, name, location, tags, address_allocation, dns_name, sku, zone):
+def build_public_ip_resource(cmd, name, location, tags, address_allocation, dns_name, sku, zone, count=None):
     public_ip_properties = {'publicIPAllocationMethod': address_allocation}
 
     if dns_name:
@@ -92,6 +92,13 @@ def build_public_ip_resource(cmd, name, location, tags, address_allocation, dns_
         'dependsOn': [],
         'properties': public_ip_properties
     }
+
+    if count:
+        public_ip['name'] = "[concat('{}', copyIndex())]".format(name)
+        public_ip['copy'] = {
+            'name': 'publicipcopy',
+            'count': count
+        }
 
     # when multiple zones are provided(through a x-zone scale set), we don't propagate to PIP becasue it doesn't
     # support x-zone; rather we will rely on the Standard LB to work with such scale sets
@@ -255,7 +262,7 @@ def build_vm_resource(  # pylint: disable=too-many-locals, too-many-statements
         computer_name=None, dedicated_host=None, priority=None, max_price=None, eviction_policy=None,
         enable_agent=None, vmss=None, os_disk_encryption_set=None, data_disk_encryption_sets=None, specialized=None,
         encryption_at_host=None, dedicated_host_group=None, enable_auto_update=None, patch_mode=None,
-        enable_hotpatching=None):
+        enable_hotpatching=None, count=None):
 
     os_caching = disk_info['os'].get('caching')
 
@@ -263,11 +270,17 @@ def build_vm_resource(  # pylint: disable=too-many-locals, too-many-statements
 
         special_chars = '`~!@#$%^&*()=+_[]{}\\|;:\'\",<>/?'
 
+        # 2 is used to avoid shadow names
+        computer_name2 = computer_name or ''.join(filter(lambda x: x not in special_chars, name))
+
         os_profile = {
             # Use name as computer_name if it's not provided. Remove special characters from name.
-            'computerName': computer_name or ''.join(filter(lambda x: x not in special_chars, name)),
+            'computerName': computer_name2,
             'adminUsername': admin_username
         }
+
+        if count:
+            os_profile['computerName'] = "[concat('{}', copyIndex())]".format(computer_name2)
 
         if admin_password:
             os_profile['adminPassword'] = "[parameters('adminPassword')]"
@@ -472,6 +485,12 @@ def build_vm_resource(  # pylint: disable=too-many-locals, too-many-statements
     }
     if zone:
         vm['zones'] = zone
+    if count:
+        vm['copy'] = {
+            'name': 'vmcopy',
+            'count': count
+        }
+        vm['name'] = "[concat('{}', copyIndex())]".format(name)
     return vm
 
 
