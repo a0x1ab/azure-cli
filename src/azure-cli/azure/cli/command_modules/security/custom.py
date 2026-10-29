@@ -291,7 +291,7 @@ def get_security_topology(client, resource_name, resource_group_name):
 
 
 # --------------------------------------------------------------------------------------------
-# Security Topology
+# Security Workspace
 # --------------------------------------------------------------------------------------------
 
 
@@ -458,6 +458,20 @@ def get_security_sub_assessment(client, resource_name, assessment_name, assessed
                       assessment_name=assessment_name,
                       scope=assessed_resource_id)
 
+
+# --------------------------------------------------------------------------------------------
+# Adaptive Application Controls
+# --------------------------------------------------------------------------------------------
+
+
+def list_security_adaptive_application_controls(client):
+
+    return client.list()
+
+
+def get_security_adaptive_application_controls(client, group_name):
+
+    return client.get(group_name)
 
 # --------------------------------------------------------------------------------------------
 # Security IoT Solution
