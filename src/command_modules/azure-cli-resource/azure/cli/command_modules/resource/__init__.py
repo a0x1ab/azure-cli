@@ -41,7 +41,6 @@ def list_groups(args):
                       'in <parent-type>/<parent-name> format'))
 def show_resource(args):
     rmc = get_mgmt_service_client(ResourceManagementClient, ResourceManagementClientConfiguration)
-
     full_type = args.get('resource-type').split('/')
     try:
         provider_namespace = full_type[0]
@@ -55,13 +54,15 @@ def show_resource(args):
             L('API version is required and could not be resolved for resource {}'
               .format(full_type)))
 
+    # TODO: Remove custom header when Python SDK fixed. (#116536429)
     results = rmc.resources.get(
         resource_group_name=args.get('resource-group'),
         resource_name=args.get('name'),
         resource_provider_namespace=provider_namespace,
         resource_type=resource_type,
         api_version=api_version,
-        parent_resource_path=args.get('parent', '')
+        parent_resource_path=args.get('parent', ''),
+        custom_headers={'Accept': 'application/json'}
     )
     return results
 
@@ -86,18 +87,12 @@ def _resolve_api_version(args, rmc):
             raise IncorrectUsageError('Parameter --parent must be in <type>/<name> format.')
 
         resource_type = "{}/{}".format(parent_type, resource_type)
-    else:
-        resource_type = resource_type
     provider = rmc.providers.get(provider_namespace)
-    for t in provider.resource_types:
-        if t.resource_type == resource_type:
-            # Return first non-preview version
-            for version in t.api_versions:
-                if not version.find('preview'):
-                    return version
-            # No non-preview version found. Take first preview version
-            try:
-                return t.api_versions[0]
-            except IndexError:
-                return None
+
+    rt = [t for t in provider.resource_types if t.resource_type == resource_type]
+    if not rt:
+        raise IncorrectUsageError('Resource type {} not found.'.format(full_type))
+    if len(rt) == 1 and rt[0].api_versions:
+        npv = [v for v in rt[0].api_versions if "preview" not in v]
+        return npv[0] if npv else rt[0].api_versions[0]
     return None
