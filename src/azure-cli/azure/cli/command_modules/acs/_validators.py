@@ -29,7 +29,6 @@ from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 from knack.log import get_logger
 
-
 logger = get_logger(__name__)
 
 
@@ -835,3 +834,10 @@ def validate_message_of_the_day(namespace):
         if namespace.os_type is not None and namespace.os_type != "Linux":
             raise ArgumentUsageError(
                 '--message-of-the-day can only be set for linux nodepools')
+
+def validate_custom_ca_trust_certificates(namespace):
+    """Validates Custom CA Trust Certificates can only be used on Linux."""
+    if namespace.custom_ca_trust_certificates is not None and namespace.custom_ca_trust_certificates != "":
+        if hasattr(namespace, 'os_type') and namespace.os_type != "Linux":
+            raise ArgumentUsageError(
+                '--custom-ca-trust-certificates can only be set for linux nodepools')
