@@ -2652,6 +2652,16 @@ def get_vmss(cmd, resource_group_name, name, instance_id=None):
     return client.virtual_machine_scale_sets.get(resource_group_name, name)
 
 
+def get_vmss_modified(cmd, resource_group_name, name, instance_id=None):
+    client = _compute_client_factory(cmd.cli_ctx)
+    if instance_id is not None:
+        return client.virtual_machine_scale_set_vms.get(resource_group_name, name, instance_id)
+    vmss = client.virtual_machine_scale_sets.get(resource_group_name, name)
+    # To avoid unnecessary permission check of image
+    vmss.virtual_machine_profile.storage_profile.image_reference = None
+    return vmss
+
+
 def get_vmss_instance_view(cmd, resource_group_name, vm_scale_set_name, instance_id=None):
     client = _compute_client_factory(cmd.cli_ctx)
     if instance_id:
@@ -2789,8 +2799,8 @@ def update_vmss(cmd, resource_group_name, name, license_type=None, no_wait=False
     if vmss and hasattr(vmss, 'virtual_machine_profile') and vmss.virtual_machine_profile and \
             vmss.virtual_machine_profile.storage_profile and \
             vmss.virtual_machine_profile.storage_profile.image_reference and \
-            vmss.virtual_machine_profile.storage_profile.image_reference.id:
-        aux_subscriptions = _parse_aux_subscriptions(vmss.virtual_machine_profile.storage_profile.image_reference.id)
+            'id' in vmss.virtual_machine_profile.storage_profile.image_reference:
+        aux_subscriptions = _parse_aux_subscriptions(vmss.virtual_machine_profile.storage_profile.image_reference['id'])
     client = _compute_client_factory(cmd.cli_ctx, aux_subscriptions=aux_subscriptions)
 
     VMProtectionPolicy = cmd.get_models('VirtualMachineScaleSetVMProtectionPolicy')
