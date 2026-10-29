@@ -1,0 +1,113 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "type": "string"
+    },
+    "dnsNameForPublicIP": {
+      "type": "string"
+    },
+    "VirtualMachineName": {
+      "type": "string"
+    },
+    "publicIPAddressName": {
+      "type": "string"
+    },
+    "publicIpAddressAllocation": {
+      "type": "string"
+    },
+    "privateIpAddress": {
+      "type": "string"
+    },
+    "nicName": {
+      "type": "string"
+    },
+    "subnetRef": {
+      "type": "string"
+    },
+    "privateIpAllocation": {
+      "type": "string"
+    },
+    "networkSecurityGroupName": {
+      "type": "string"
+    },
+    "networkSecurityGroupType": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "ipConfigProperties": {
+      "Dynamic": {
+        "privateIPAllocationMethod": "Dynamic",
+        "publicIPAddress": {
+          "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddressName'))]"
+        },
+        "subnet": {
+          "id": "[parameters('subnetRef')]"
+        }
+      },
+      "Static": {
+        "privateIPAllocationMethod": "Static",
+        "privateIPAddress": "[parameters('privateIpAddress')]",
+        "publicIPAddress": {
+          "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddressName'))]"
+        },
+        "subnet": {
+          "id": "[parameters('subnetRef')]"
+        }
+      }
+    },
+    "nsgProperties": {
+      "new": {
+        "ipConfigurations": [
+          {
+            "name": "[concat('ipconfig', parameters('VirtualMachineName'))]",
+            "properties": "[variables('ipConfigProperties')[parameters('privateIpAllocation')]]"
+          }
+        ],
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]"
+        }
+      },
+      "existing": {
+        "ipConfigurations": [
+          {
+            "name": "[concat('ipconfig', parameters('VirtualMachineName'))]",
+            "properties": "[variables('ipConfigProperties')[parameters('privateIpAllocation')]]"
+          }
+        ],
+      "networkSecurityGroup": {
+        "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]"
+      }
+      },
+      "none": {
+        "ipConfigurations": [
+          {
+            "name": "[concat('ipconfig', parameters('VirtualMachineName'))]",
+            "properties": "[variables('ipConfigProperties')[parameters('privateIpAllocation')]]"
+          }
+        ]
+      }
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[parameters('nicName')]",
+      "location": "[parameters('location')]",
+      "tags": {
+        "displayName": "NetworkInterface"
+      },
+      "dependsOn": [ ],
+      "properties": "[variables('nsgProperties')[parameters('networkSecurityGroupType')]]"
+    }
+  ],
+  "outputs": {
+    "VMNic": {
+      "type": "object",
+      "value": "[reference(parameters('nicName'))]"
+    }
+  }
+}
