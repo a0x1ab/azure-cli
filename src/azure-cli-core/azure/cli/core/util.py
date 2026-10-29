@@ -1049,17 +1049,22 @@ def is_guid(guid):
 
 
 def handle_version_update():
-    """Clean up information in local file that may be invalidated
+    """Clean up information in local files that may be invalidated
     because of a version update of Azure CLI
     """
     try:
-        from azure.cli.core._session import VERSIONS
+        from azure.cli.core._session import VERSIONS, CLOUD_ENDPOINTS
         from distutils.version import LooseVersion  # pylint: disable=import-error,no-name-in-module
         from azure.cli.core import __version__
         if not VERSIONS['versions']:
             get_cached_latest_versions()
         elif LooseVersion(VERSIONS['versions']['core']['local']) != LooseVersion(__version__):
+            logger.debug("Azure CLI has been updated.")
+            logger.debug("Clean up version and cloud endpoints information in local files.")
             VERSIONS['versions'] = {}
             VERSIONS['update_time'] = ''
+            CLOUD_ENDPOINTS['clouds'] = {}
+            from azure.cli.core.cloud import refresh_known_clouds
+            refresh_known_clouds()
     except Exception as ex:  # pylint: disable=broad-except
         logger.warning(ex)
