@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import struct
+import sys
 from knack.log import get_logger
 from knack.util import CLIError
 from msrestazure.tools import parse_resource_id
@@ -11,14 +12,14 @@ from azure.cli.core.azclierror import (
     AzureConnectionError,
     ValidationError
 )
-from azure.cli.core.extension.operations import _install_deps_for_psycopg2
+from azure.cli.core.extension.operations import _install_deps_for_psycopg2, _run_pip
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core._profile import Profile
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.util import random_string
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.arm import ArmTemplateBuilder
-from ._utils import run_cli_cmd, generate_random_string
+from ._utils import run_cli_cmd, generate_random_string, is_packaged_installed
 from ._resource_config import (
     RESOURCE,
 )
@@ -208,17 +209,14 @@ class MysqlFlexibleHandler(TargetHandler):
         #     run_cli_cmd('az mysql server update --public Disabled --ids {}'.format(target_id))
 
     def create_aad_user_in_mysql(self, connection_kwargs, query_list):
-        import pkg_resources
-        installed_packages = pkg_resources.working_set
-        # pylint: disable=not-an-iterable
-        pym_installed = any(('pymysql') in d.key.lower()
-                            for d in installed_packages)
-        if not pym_installed:
-            import pip
-            pip.main(['install', 'pymysql'])
+        if not is_packaged_installed('pymysql'):
+            _run_pip(["install", "pymysql"])
         # pylint: disable=import-error
-        import pymysql
-        from pymysql.constants import CLIENT
+        try:
+            import pymysql
+            from pymysql.constants import CLIENT
+        except ModuleNotFoundError:
+            raise CLIError("Dependency pymysql can't be installed, please install it manually with `" + sys.executable + " -m pip install pymysql`.")
 
         connection_kwargs['client_flag'] = CLIENT.MULTI_STATEMENTS
         try:
@@ -338,20 +336,20 @@ class SqlHandler(TargetHandler):
             return False
 
     def create_aad_user_in_sql(self, connection_args, query_list):
-        import pkg_resources
-        installed_packages = pkg_resources.working_set
-        # pylint: disable=not-an-iterable
-        psy_installed = any(('pyodbc') in d.key.lower()
-                            for d in installed_packages)
 
-        if not psy_installed:
-            import pip
-            pip.main(['install', 'pyodbc'])
-            logger.warning(
-                "Please manually install odbc 18 for SQL server, reference: https://docs.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server?view=sql-server-ver16 "
-                "and run 'pip install pyodbc'")
+        if not is_packaged_installed('pyodbc'):
+            _run_pip(["install", "pyodbc"])
+
         # pylint: disable=import-error, c-extension-no-member
-        import pyodbc
+        try:
+            import pyodbc
+        except ModuleNotFoundError:
+            raise CLIError(
+                "Dependency pyodbc can't be installed, please install it manually with `" + sys.executable + " -m pip install pyodbc`.")
+        drivers = [x for x in pyodbc.drivers() if x == 'ODBC Driver 18 for SQL Server']
+        if not drivers:
+            raise CLIError(
+                "Please manually install odbc 18 for SQL server, reference: https://docs.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server?view=sql-server-ver16")
         try:
             with pyodbc.connect(connection_args.get("connection_string"), attrs_before=connection_args.get("attrs_before")) as conn:
                 with conn.cursor() as cursor:
@@ -400,7 +398,10 @@ class PostgresFlexHandler(TargetHandler):
         self.dbname = target_segments.get('child_name_1')
 
     def enable_pg_extension(self):
-        run_cli_cmd('az postgres flexible-server parameter set -g {} -s {} --subscription {} --name azure.extensions --value uuid-ossp'.format(self.resource_group, self.db_server, self.subscription))
+        try:
+            run_cli_cmd('az postgres flexible-server parameter set -g {} -s {} --subscription {} --name azure.extensions --value uuid-ossp'.format(self.resource_group, self.db_server, self.subscription))
+        except Exception as e:  # pylint: disable=broad-except
+            logger.warning(e)
 
     def enable_target_aad_auth(self):
         self.enable_pg_extension()
@@ -534,17 +535,15 @@ class PostgresFlexHandler(TargetHandler):
         #     run_cli_cmd('az postgres server update --public Disabled --ids {}'.format(target_id))
 
     def create_aad_user_in_pg(self, conn_string, query_list):
-        import pkg_resources
-        installed_packages = pkg_resources.working_set
-        # pylint: disable=not-an-iterable
-        psy_installed = any(('psycopg2') in d.key.lower()
-                            for d in installed_packages)
-        if not psy_installed:
+        if not is_packaged_installed('psycopg2'):
             _install_deps_for_psycopg2()
-            import pip
-            pip.main(['install', 'psycopg2-binary'])
+            _run_pip(["install", "psycopg2-binary"])
         # pylint: disable=import-error
-        import psycopg2
+        try:
+            import psycopg2
+        except ModuleNotFoundError:
+            raise CLIError(
+                "Dependency psycopg2 can't be installed, please install it manually with `" + sys.executable + " -m pip install psycopg2-binary`.")
 
         # pylint: disable=protected-access
         try:
