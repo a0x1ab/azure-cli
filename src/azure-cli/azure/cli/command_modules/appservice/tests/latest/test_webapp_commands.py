@@ -2206,11 +2206,13 @@ class WebappNetworkConnectionTests(ScenarioTest):
         ])
         self.cmd(
             'webapp vnet-integration remove -g {} -n {}'.format(resource_group, webapp_name))
+        time.sleep(65)
         self.cmd('webapp vnet-integration list -g {} -n {}'.format(resource_group, webapp_name), checks=[
             JMESPathCheck('length(@)', 0)
         ])
         self.cmd(
             'webapp vnet-integration remove -g {} -n {} --slot {}'.format(resource_group, webapp_name, slot_webapp_name))
+        time.sleep(65)
         self.cmd('webapp vnet-integration list -g {} -n {} --slot {}'.format(resource_group, webapp_name, slot_webapp_name), checks=[
             JMESPathCheck('length(@)', 0)
         ])
@@ -2237,6 +2239,7 @@ class WebappNetworkConnectionTests(ScenarioTest):
         ])
         self.cmd(
             'webapp vnet-integration remove -g {} -n {}'.format(resource_group, webapp_name))
+        time.sleep(65)
         self.cmd('webapp vnet-integration list -g {} -n {}'.format(resource_group, webapp_name), checks=[
             JMESPathCheck('length(@)', 0)
         ])
@@ -2262,6 +2265,7 @@ class WebappNetworkConnectionTests(ScenarioTest):
         ])
         self.cmd(
             'webapp vnet-integration remove -g {} -n {}'.format(webapp_rg, webapp_name))
+        time.sleep(65)
         self.cmd('webapp vnet-integration list -g {} -n {}'.format(webapp_rg, webapp_name), checks=[
             JMESPathCheck('length(@)', 0)
         ])
@@ -2287,6 +2291,7 @@ class WebappNetworkConnectionTests(ScenarioTest):
         ])
         self.cmd(
             'webapp vnet-integration remove -g {} -n {}'.format(webapp_rg, webapp_name))
+        time.sleep(65)
         self.cmd('webapp vnet-integration list -g {} -n {}'.format(webapp_rg, webapp_name), checks=[
             JMESPathCheck('length(@)', 0)
         ])
@@ -2405,6 +2410,7 @@ class WebappNetworkConnectionTests(ScenarioTest):
         ])
         self.cmd(
             'webapp vnet-integration remove -g {} -n {}'.format(resource_group, webapp_name))
+        time.sleep(65)
         self.cmd('webapp vnet-integration list -g {} -n {}'.format(resource_group, webapp_name), checks=[
             JMESPathCheck('length(@)', 0)
         ])
@@ -2432,14 +2438,14 @@ class WebappNetworkConnectionTests(ScenarioTest):
         # Add vnet integration where theres two vnets of the same name. Chosen vnet should default to the one in the same RG
         self.cmd('webapp vnet-integration add -g {} -n {} --vnet {} --subnet {}'.format(
             resource_group, webapp_name, vnet_name, subnet_name))
-        time.sleep(5)
+        time.sleep(65)
         self.cmd('webapp vnet-integration list -g {} -n {}'.format(resource_group, webapp_name), checks=[
             JMESPathCheck('length(@)', 1),
             JMESPathCheck('[0].name', subnet_name)
         ])
         self.cmd(
             'webapp vnet-integration remove -g {} -n {}'.format(resource_group, webapp_name))
-        time.sleep(5)
+        time.sleep(65)
         self.cmd('webapp vnet-integration list -g {} -n {}'.format(resource_group, webapp_name), checks=[
             JMESPathCheck('length(@)', 0)
         ])
@@ -2447,13 +2453,14 @@ class WebappNetworkConnectionTests(ScenarioTest):
         # Add vnet integration using vnet resource ID
         self.cmd('webapp vnet-integration add -g {} -n {} --vnet {} --subnet {}'.format(
             resource_group, webapp_name, vnet['newVNet']['id'], subnet_name_2))
-        time.sleep(5)
+        time.sleep(65)
         self.cmd('webapp vnet-integration list -g {} -n {}'.format(resource_group, webapp_name), checks=[
             JMESPathCheck('length(@)', 1),
             JMESPathCheck('[0].name', subnet_name_2)
         ])
         # self.cmd(
         #     'webapp vnet-integration remove -g {} -n {}'.format(resource_group, webapp_name))
+        # time.sleep(65)
         # self.cmd('webapp vnet-integration list -g {} -n {}'.format(resource_group, webapp_name), checks=[
         #     JMESPathCheck('length(@)', 0)
         # ])
@@ -2482,6 +2489,7 @@ class WebappNetworkConnectionTests(ScenarioTest):
         ])
         self.cmd(
             'webapp vnet-integration remove -g {} -n {}'.format(resource_group, webapp_name))
+        time.sleep(65)
         self.cmd('webapp vnet-integration list -g {} -n {}'.format(resource_group, webapp_name), checks=[
             JMESPathCheck('length(@)', 0)
         ])
@@ -2507,7 +2515,7 @@ class WebappNetworkConnectionTests(ScenarioTest):
             JMESPathCheck('[0].name', subnet_name)
         ])
         self.cmd('webapp vnet-integration remove -g {} -n {}'.format(resource_group, webapp_name))
-
+        time.sleep(65)
         self.cmd('webapp vnet-integration list -g {} -n {}'.format(resource_group, webapp_name), checks=[
             JMESPathCheck('length(@)', 0)
         ])
