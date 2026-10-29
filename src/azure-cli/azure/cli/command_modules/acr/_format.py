@@ -93,6 +93,55 @@ def agentpool_output_format(result):
     return _output_format(result, _agentpool_format_group)
 
 
+def connected_registry_output_format(result):
+    return _output_format(result, _connected_registry_format_group)
+
+
+def connected_registry_list_output_format(result):
+    family_tree = {}
+    for reg in result:
+        parent_id = _get_value(reg, 'parent', 'id')
+        parent_name = '' if parent_id.isspace() else parent_id.split('/connectedRegistries/')[1]
+        name = ' ' + _get_value(reg, 'name')
+        family_tree[_get_value(reg, 'id')] = {
+            "name": name,
+            "id": _get_value(reg, 'id'),
+            "connectionState": _get_value(reg, 'connectionState'),
+            "parent_name": parent_name,
+            "parent_id": parent_id,
+            "loginServer_host": _get_value(reg, 'loginServer', 'host'),
+            "parent_syncProperties_lastSyncTime": _get_value(reg, 'parent', 'syncProperties', 'lastSyncTime'),
+            "mode": _get_value(reg, 'mode'),
+            "childs": []
+        }
+
+    parents = []
+    for reg in result:
+        parent_id = _get_value(reg, 'parent', 'id')
+        if parent_id.isspace() or parent_id not in family_tree:
+            parents.append(_get_value(reg, 'id'))
+        else:
+            family_tree[parent_id]["childs"].append(_get_value(reg, 'id'))
+
+    result_list_format = []
+    for parent_id in parents:
+        result_list_format.extend(_recursive_format_list_acr_childs(family_tree, parent_id))
+
+    return _output_format(result_list_format, _connected_registry_list_format_group)
+
+
+def _recursive_format_list_acr_childs(family_tree, parent_id, level=""):
+    connected_registry = family_tree[parent_id]
+    childs = connected_registry['childs']
+    if connected_registry['parent_id'] in family_tree:
+        level += "\t"
+        connected_registry['name'] = level + connected_registry['name']
+    result = [connected_registry]
+    for child_id in childs:
+        result.extend(_recursive_format_list_acr_childs(family_tree, child_id, level))
+    return result
+
+
 def helm_list_output_format(result):
     if isinstance(result, dict):
         obj_list = []
@@ -240,6 +289,33 @@ def _agentpool_format_group(item):
         ('STATE', _get_value(item, 'provisioningState')),
         ('VNET', _get_value(item, 'virtualNetworkSubnetResourceId')),
         ('OS', _get_value(item, 'os'))
+    ])
+
+
+def _connected_registry_format_group(item):
+    parent_id = _get_value(item, 'parent', 'id')
+    parent_name = '' if parent_id.isspace() else parent_id.split('/connectedRegistries/')[1]
+    return OrderedDict([
+        ('NAME', _get_value(item, 'name')),
+        ('MODE', _get_value(item, 'mode')),
+        ('CONNECTION STATE', _get_value(item, 'connectionState')),
+        ('PARENT', parent_name),
+        ('LOGIN SERVER', _get_value(item, 'loginServer', 'host')),
+        ('LAST ACTIVITY (UTC)', _get_value(item, 'lastActivityTime')),
+        ('LAST SYNC (UTC)', _get_value(item, 'parent', 'syncProperties', 'lastSyncTime')),
+        ('SYNC SCHEDULE', _get_value(item, 'parent', 'syncProperties', 'schedule')),
+        ('SYNC WINDOW', _get_value(item, 'parent', 'syncProperties', 'syncWindow'))
+    ])
+
+
+def _connected_registry_list_format_group(item):
+    return OrderedDict([
+        ('NAME', _get_value(item, 'name')),
+        ('MODE', _get_value(item, 'mode')),
+        ('CONNECTION STATE', _get_value(item, 'connectionState')),
+        ('PARENT', _get_value(item, 'parent_name')),
+        ('LOGIN SERVER', _get_value(item, 'loginServer_host')),
+        ('LAST SYNC (UTC)', _get_value(item, 'parent_syncProperties_lastSyncTime'))
     ])
 
 
