@@ -51,6 +51,8 @@ from azure.cli.core.azclierror import (ResourceNotFoundError, RequiredArgumentMi
 
 from .tunnel import TunnelServer
 
+from .utils import (_get_location_from_resource_group, _list_app, _rename_server_farm_props, _get_location_from_webapp)
+
 from ._params import AUTH_TYPES, MULTI_CONTAINER_TYPES
 from ._client_factory import web_client_factory, ex_handler_factory, providers_client_factory
 from ._appservice_utils import _generic_site_operation, _generic_settings_operation
@@ -719,17 +721,6 @@ def list_function_app(cmd, resource_group_name=None):
                        _list_app(cmd.cli_ctx, resource_group_name)))
 
 
-def _list_app(cli_ctx, resource_group_name=None):
-    client = web_client_factory(cli_ctx)
-    if resource_group_name:
-        result = list(client.web_apps.list_by_resource_group(resource_group_name))
-    else:
-        result = list(client.web_apps.list())
-    for webapp in result:
-        _rename_server_farm_props(webapp)
-    return result
-
-
 def _list_deleted_app(cli_ctx, resource_group_name=None, name=None, slot=None):
     client = web_client_factory(cli_ctx)
     locations = _get_deleted_apps_locations(cli_ctx)
@@ -937,13 +928,6 @@ def list_runtimes_hardcoded(linux=False):
     if linux:
         return [s['displayName'] for s in get_file_json(RUNTIME_STACKS)['linux']]
     return [s['displayName'] for s in get_file_json(RUNTIME_STACKS)['windows']]
-
-
-def _rename_server_farm_props(webapp):
-    # Should be renamed in SDK in a future release
-    setattr(webapp, 'app_service_plan_id', webapp.server_farm_id)
-    del webapp.server_farm_id
-    return webapp
 
 
 def delete_function_app(cmd, resource_group_name, name, slot=None):
@@ -1902,19 +1886,6 @@ def _parse_frequency(cmd, frequency):
         raise CLIError('Frequency must be positive')
 
     return frequency_num, frequency_unit
-
-
-def _get_location_from_resource_group(cli_ctx, resource_group_name):
-    client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
-    group = client.resource_groups.get(resource_group_name)
-    return group.location
-
-
-def _get_location_from_webapp(client, resource_group_name, webapp):
-    webapp = client.web_apps.get(resource_group_name, webapp)
-    if not webapp:
-        raise CLIError("'{}' app doesn't exist".format(webapp))
-    return webapp.location
 
 
 def _get_deleted_apps_locations(cli_ctx):
