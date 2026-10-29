@@ -3229,5 +3229,12 @@ class ResourceGroupLocalContextScenarioTest(LocalContextScenarioTest):
         self.cmd('group delete -n {group2} -y')
 
 
+class BicepScenarioTest(ScenarioTest):
+    def test_bicep_list_versions(self):
+        self.cmd('az bicep list-versions', checks=[
+            self.greater_than('length(@)', 0)
+        ])
+
+
 if __name__ == '__main__':
     unittest.main()
