@@ -1,0 +1,673 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - identity create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.45.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2023-02-24T00:48:14Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '310'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Feb 2023 00:48:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - identity create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.45.0 azsdk-python-azure-mgmt-msi/7.0.0 Python/3.10.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cliaciidentity000005?api-version=2023-01-31
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cliaciidentity000005","name":"cliaciidentity000005","type":"Microsoft.ManagedIdentity/userAssignedIdentities","location":"westus","tags":{},"properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","principalId":"2786aaea-0c51-46ce-a5a4-e531ca80189b","clientId":"c64db4ca-04a9-487d-8781-964e39a358f4"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '458'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Feb 2023 00:48:18 GMT
+      expires:
+      - '-1'
+      location:
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cliaciidentity000005
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - container create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --image --os-type --ip-address --assign-identity
+      User-Agent:
+      - AZURECLI/2.45.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2023-02-24T00:48:14Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '310'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Feb 2023 00:48:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "properties": {"containers": [{"name":
+      "clicontainer000002", "properties": {"image": "alpine:latest", "ports": [{"protocol":
+      "TCP", "port": 80}], "resources": {"requests": {"memoryInGB": 1.5, "cpu": 1.0}}}}],
+      "restartPolicy": "Always", "ipAddress": {"ports": [{"protocol": "TCP", "port":
+      80}], "type": "Public", "autoGeneratedDomainNameLabelScope": "Unsecure"}, "osType":
+      "Linux"}, "location": "westus", "tags": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - container create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '456'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --image --os-type --ip-address --assign-identity
+      User-Agent:
+      - AZURECLI/2.45.0 azsdk-python-mgmt-containerinstance/10.1.0b1 Python/3.10.10
+        (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerInstance/containerGroups/clicontainer000002?api-version=2022-10-01-preview
+  response:
+    body:
+      string: '{"properties":{"sku":"Standard","provisioningState":"Pending","containers":[{"name":"clicontainer000002","properties":{"image":"alpine:latest","ports":[{"protocol":"TCP","port":80}],"environmentVariables":[],"resources":{"requests":{"memoryInGB":1.5,"cpu":1.0}}}}],"initContainers":[],"restartPolicy":"Always","ipAddress":{"ports":[{"protocol":"TCP","port":80}],"type":"Public"},"osType":"Linux","instanceView":{"events":[],"state":"Pending"}},"identity":{"principalId":"5e311a9f-86f1-4bb5-a1ba-990d26110864","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerInstance/containerGroups/clicontainer000002","name":"clicontainer000002","type":"Microsoft.ContainerInstance/containerGroups","location":"westus","tags":{}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerInstance/locations/westus/operations/004ecfd7-9f8d-4de6-9fed-02607074c864?api-version=2018-06-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '859'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Feb 2023 00:48:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests-pt1h:
+      - '14996'
+      x-ms-ratelimit-remaining-subscription-resource-requests-pt5m:
+      - '1499'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - container create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --image --os-type --ip-address --assign-identity
+      User-Agent:
+      - AZURECLI/2.45.0 azsdk-python-mgmt-containerinstance/10.1.0b1 Python/3.10.10
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerInstance/locations/westus/operations/004ecfd7-9f8d-4de6-9fed-02607074c864?api-version=2018-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerInstance/containerGroups/clicontainer000002","status":"Succeeded","startTime":"2023-02-24T00:48:22.4529546Z","properties":{"events":[{"count":1,"firstTimestamp":"2023-02-24T00:48:27Z","lastTimestamp":"2023-02-24T00:48:27Z","name":"Pulling","message":"pulling
+        image \"alpine@sha256:e2e16842c9b54d985bf1ef9242a313f36b856181f188de21313820e177002501\"","type":"Normal"},{"count":1,"firstTimestamp":"2023-02-24T00:48:28Z","lastTimestamp":"2023-02-24T00:48:28Z","name":"Pulled","message":"Successfully
+        pulled image \"alpine@sha256:e2e16842c9b54d985bf1ef9242a313f36b856181f188de21313820e177002501\"","type":"Normal"}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '732'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Feb 2023 00:48:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - container create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --image --os-type --ip-address --assign-identity
+      User-Agent:
+      - AZURECLI/2.45.0 azsdk-python-mgmt-containerinstance/10.1.0b1 Python/3.10.10
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerInstance/containerGroups/clicontainer000002?api-version=2022-10-01-preview
+  response:
+    body:
+      string: '{"properties":{"sku":"Standard","provisioningState":"Succeeded","containers":[{"name":"clicontainer000002","properties":{"image":"alpine:latest","ports":[{"protocol":"TCP","port":80}],"environmentVariables":[],"instanceView":{"restartCount":2,"currentState":{"state":"Running","startTime":"2023-02-24T00:48:50.432Z","detailStatus":""},"previousState":{"state":"Terminated","startTime":"2023-02-24T00:48:44.484Z","exitCode":0,"finishTime":"2023-02-24T00:48:49.247Z","detailStatus":"Completed"},"events":[{"count":1,"firstTimestamp":"2023-02-24T00:48:27Z","lastTimestamp":"2023-02-24T00:48:27Z","name":"Pulling","message":"pulling
+        image \"alpine@sha256:e2e16842c9b54d985bf1ef9242a313f36b856181f188de21313820e177002501\"","type":"Normal"},{"count":1,"firstTimestamp":"2023-02-24T00:48:28Z","lastTimestamp":"2023-02-24T00:48:28Z","name":"Pulled","message":"Successfully
+        pulled image \"alpine@sha256:e2e16842c9b54d985bf1ef9242a313f36b856181f188de21313820e177002501\"","type":"Normal"},{"count":3,"firstTimestamp":"2023-02-24T00:48:38Z","lastTimestamp":"2023-02-24T00:48:50Z","name":"Started","message":"Started
+        container","type":"Normal"},{"count":2,"firstTimestamp":"2023-02-24T00:48:43Z","lastTimestamp":"2023-02-24T00:48:49Z","name":"Killing","message":"Killing
+        container with id d790a15ab48e13255c5ca9beb610124b5bcff5a547e5b446367e66cba3d85a8d.","type":"Normal"}]},"resources":{"requests":{"memoryInGB":1.5,"cpu":1.0}}}}],"initContainers":[],"restartPolicy":"Always","ipAddress":{"ports":[{"protocol":"TCP","port":80}],"ip":"20.66.63.224","type":"Public"},"osType":"Linux","instanceView":{"events":[],"state":"Running"}},"identity":{"principalId":"5e311a9f-86f1-4bb5-a1ba-990d26110864","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerInstance/containerGroups/clicontainer000002","name":"clicontainer000002","type":"Microsoft.ContainerInstance/containerGroups","location":"westus","tags":{}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2035'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Feb 2023 00:48:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - container create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --image --os-type --ip-address --assign-identity
+      User-Agent:
+      - AZURECLI/2.45.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2023-02-24T00:48:14Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '310'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Feb 2023 00:48:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "UserAssigned", "userAssignedIdentities": {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cliaciidentity000005":
+      {}}}, "properties": {"containers": [{"name": "clicontainer000003", "properties":
+      {"image": "alpine:latest", "ports": [{"protocol": "TCP", "port": 80}], "resources":
+      {"requests": {"memoryInGB": 1.5, "cpu": 1.0}}}}], "restartPolicy": "Always",
+      "ipAddress": {"ports": [{"protocol": "TCP", "port": 80}], "type": "Public",
+      "autoGeneratedDomainNameLabelScope": "Unsecure"}, "osType": "Linux"}, "location":
+      "westus", "tags": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - container create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '653'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --image --os-type --ip-address --assign-identity
+      User-Agent:
+      - AZURECLI/2.45.0 azsdk-python-mgmt-containerinstance/10.1.0b1 Python/3.10.10
+        (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerInstance/containerGroups/clicontainer000003?api-version=2022-10-01-preview
+  response:
+    body:
+      string: '{"properties":{"sku":"Standard","provisioningState":"Pending","containers":[{"name":"clicontainer000003","properties":{"image":"alpine:latest","ports":[{"protocol":"TCP","port":80}],"environmentVariables":[],"resources":{"requests":{"memoryInGB":1.5,"cpu":1.0}}}}],"initContainers":[],"restartPolicy":"Always","ipAddress":{"ports":[{"protocol":"TCP","port":80}],"type":"Public"},"osType":"Linux","instanceView":{"events":[],"state":"Pending"}},"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cliaciidentity000005":{"principalId":"2786aaea-0c51-46ce-a5a4-e531ca80189b","clientId":"c64db4ca-04a9-487d-8781-964e39a358f4"}},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"UserAssigned"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerInstance/containerGroups/clicontainer000003","name":"clicontainer000003","type":"Microsoft.ContainerInstance/containerGroups","location":"westus","tags":{}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerInstance/locations/westus/operations/f8ef84bc-a588-470c-9219-fb06ad0957d2?api-version=2018-06-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1102'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Feb 2023 00:48:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests-pt1h:
+      - '14980'
+      x-ms-ratelimit-remaining-subscription-resource-requests-pt5m:
+      - '1489'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - container create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --image --os-type --ip-address --assign-identity
+      User-Agent:
+      - AZURECLI/2.45.0 azsdk-python-mgmt-containerinstance/10.1.0b1 Python/3.10.10
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerInstance/locations/westus/operations/f8ef84bc-a588-470c-9219-fb06ad0957d2?api-version=2018-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerInstance/containerGroups/clicontainer000003","status":"Succeeded","startTime":"2023-02-24T00:48:56.8658123Z","properties":{"events":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '256'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Feb 2023 00:49:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - container create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --image --os-type --ip-address --assign-identity
+      User-Agent:
+      - AZURECLI/2.45.0 azsdk-python-mgmt-containerinstance/10.1.0b1 Python/3.10.10
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerInstance/containerGroups/clicontainer000003?api-version=2022-10-01-preview
+  response:
+    body:
+      string: '{"properties":{"sku":"Standard","provisioningState":"Succeeded","containers":[{"name":"clicontainer000003","properties":{"image":"alpine:latest","ports":[{"protocol":"TCP","port":80}],"environmentVariables":[],"instanceView":{"restartCount":2,"currentState":{"state":"Running","startTime":"2023-02-24T00:49:24.689Z","detailStatus":""},"previousState":{"state":"Terminated","startTime":"2023-02-24T00:49:18.69Z","exitCode":0,"finishTime":"2023-02-24T00:49:23.36Z","detailStatus":"Completed"}},"resources":{"requests":{"memoryInGB":1.5,"cpu":1.0}}}}],"initContainers":[],"restartPolicy":"Always","ipAddress":{"ports":[{"protocol":"TCP","port":80}],"ip":"20.245.29.108","type":"Public"},"osType":"Linux","instanceView":{"events":[],"state":"Running"}},"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cliaciidentity000005":{"principalId":"2786aaea-0c51-46ce-a5a4-e531ca80189b","clientId":"c64db4ca-04a9-487d-8781-964e39a358f4"}},"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"UserAssigned"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerInstance/containerGroups/clicontainer000003","name":"clicontainer000003","type":"Microsoft.ContainerInstance/containerGroups","location":"westus","tags":{}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1407'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Feb 2023 00:49:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - container create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --image --os-type --ip-address --assign-identity
+      User-Agent:
+      - AZURECLI/2.45.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2023-02-24T00:48:14Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '310'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Feb 2023 00:49:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned, UserAssigned", "userAssignedIdentities":
+      {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cliaciidentity000005":
+      {}}}, "properties": {"containers": [{"name": "clicontainer000004", "properties":
+      {"image": "alpine:latest", "ports": [{"protocol": "TCP", "port": 80}], "resources":
+      {"requests": {"memoryInGB": 1.5, "cpu": 1.0}}}}], "restartPolicy": "Always",
+      "ipAddress": {"ports": [{"protocol": "TCP", "port": 80}], "type": "Public",
+      "autoGeneratedDomainNameLabelScope": "Unsecure"}, "osType": "Linux"}, "location":
+      "westus", "tags": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - container create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '669'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --image --os-type --ip-address --assign-identity
+      User-Agent:
+      - AZURECLI/2.45.0 azsdk-python-mgmt-containerinstance/10.1.0b1 Python/3.10.10
+        (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerInstance/containerGroups/clicontainer000004?api-version=2022-10-01-preview
+  response:
+    body:
+      string: '{"properties":{"sku":"Standard","provisioningState":"Pending","containers":[{"name":"clicontainer000004","properties":{"image":"alpine:latest","ports":[{"protocol":"TCP","port":80}],"environmentVariables":[],"resources":{"requests":{"memoryInGB":1.5,"cpu":1.0}}}}],"initContainers":[],"restartPolicy":"Always","ipAddress":{"ports":[{"protocol":"TCP","port":80}],"type":"Public"},"osType":"Linux","instanceView":{"events":[],"state":"Pending"}},"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cliaciidentity000005":{"principalId":"2786aaea-0c51-46ce-a5a4-e531ca80189b","clientId":"c64db4ca-04a9-487d-8781-964e39a358f4"}},"principalId":"3aee71f7-379a-4ece-bb0a-0abec38e1d5a","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned,
+        UserAssigned"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerInstance/containerGroups/clicontainer000004","name":"clicontainer000004","type":"Microsoft.ContainerInstance/containerGroups","location":"westus","tags":{}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerInstance/locations/westus/operations/d6cdbe51-ee85-4326-8eac-bc542a856c27?api-version=2018-06-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1171'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Feb 2023 00:49:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests-pt1h:
+      - '14945'
+      x-ms-ratelimit-remaining-subscription-resource-requests-pt5m:
+      - '1497'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - container create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --image --os-type --ip-address --assign-identity
+      User-Agent:
+      - AZURECLI/2.45.0 azsdk-python-mgmt-containerinstance/10.1.0b1 Python/3.10.10
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerInstance/locations/westus/operations/d6cdbe51-ee85-4326-8eac-bc542a856c27?api-version=2018-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerInstance/containerGroups/clicontainer000004","status":"Succeeded","startTime":"2023-02-24T00:49:32.47798Z","properties":{"events":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '254'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Feb 2023 00:50:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - container create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --image --os-type --ip-address --assign-identity
+      User-Agent:
+      - AZURECLI/2.45.0 azsdk-python-mgmt-containerinstance/10.1.0b1 Python/3.10.10
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerInstance/containerGroups/clicontainer000004?api-version=2022-10-01-preview
+  response:
+    body:
+      string: '{"properties":{"sku":"Standard","provisioningState":"Succeeded","containers":[{"name":"clicontainer000004","properties":{"image":"alpine:latest","ports":[{"protocol":"TCP","port":80}],"environmentVariables":[],"instanceView":{"restartCount":1,"currentState":{"state":"Running","startTime":"2023-02-24T00:49:57.873Z","detailStatus":""},"previousState":{"state":"Terminated","startTime":"2023-02-24T00:49:52.63Z","exitCode":0,"finishTime":"2023-02-24T00:49:57.873Z","detailStatus":"Completed"}},"resources":{"requests":{"memoryInGB":1.5,"cpu":1.0}}}}],"initContainers":[],"restartPolicy":"Always","ipAddress":{"ports":[{"protocol":"TCP","port":80}],"ip":"20.245.230.125","type":"Public"},"osType":"Linux","instanceView":{"events":[],"state":"Running"}},"identity":{"userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cliaciidentity000005":{"principalId":"2786aaea-0c51-46ce-a5a4-e531ca80189b","clientId":"c64db4ca-04a9-487d-8781-964e39a358f4"}},"principalId":"3aee71f7-379a-4ece-bb0a-0abec38e1d5a","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","type":"SystemAssigned,
+        UserAssigned"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerInstance/containerGroups/clicontainer000004","name":"clicontainer000004","type":"Microsoft.ContainerInstance/containerGroups","location":"westus","tags":{}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1478'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 24 Feb 2023 00:50:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
