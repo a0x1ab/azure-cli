@@ -100,7 +100,8 @@ from azure.cli.command_modules.acs._validators import (
     validate_disable_windows_outbound_nat,
     validate_crg_id,
     validate_azure_service_mesh_revision,
-    validate_message_of_the_day)
+    validate_message_of_the_day,
+    validate_custom_ca_trust_certificates)
 from azure.cli.core.commands.parameters import (
     edge_zone_type, file_type, get_enum_type,
     get_resource_name_completion_list, get_three_state_flag, name_type,
@@ -366,6 +367,7 @@ def load_arguments(self, _):
         c.argument('enable_image_cleaner', action='store_true')
         c.argument('image_cleaner_interval_hours', type=int)
         c.argument('http_proxy_config')
+        c.argument('custom_ca_trust_certificates', options_list=["--custom-ca-trust-certificates", "--ca-certs"], help="path to file containing list of new line separated CAs")
         c.argument('enable_keda', action='store_true')
         c.argument('enable_vpa', action='store_true', help='enable vertical pod autoscaler for cluster')
         c.argument('enable_azure_service_mesh',
@@ -556,6 +558,7 @@ def load_arguments(self, _):
         c.argument('disable_image_cleaner', action='store_true', validator=validate_image_cleaner_enable_disable_mutually_exclusive)
         c.argument('image_cleaner_interval_hours', type=int)
         c.argument('http_proxy_config')
+        c.argument('custom_ca_trust_certificates', options_list=["--custom-ca-trust-certificates", "--ca-certs"], validator=validate_custom_ca_trust_certificates, help="path to file containing list of new line separated CAs")
         c.argument('enable_keda', action='store_true')
         c.argument('disable_keda', action='store_true')
         c.argument('enable_vpa', action='store_true', help='enable vertical pod autoscaler for cluster')
