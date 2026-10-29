@@ -114,6 +114,7 @@ class CloudSuffixes(object):  # pylint: disable=too-few-public-methods,too-many-
 
     def __init__(self,
                  storage_endpoint=None,
+                 storage_sync_endpoint=None,
                  keyvault_dns=None,
                  sql_server_hostname=None,
                  azure_datalake_store_file_system_endpoint=None,
@@ -124,6 +125,7 @@ class CloudSuffixes(object):  # pylint: disable=too-few-public-methods,too-many-
                  mariadb_server_endpoint=None):
         # Attribute names are significant. They are used when storing/retrieving clouds from config
         self.storage_endpoint = storage_endpoint
+        self.storage_sync_endpoint = storage_sync_endpoint
         self.keyvault_dns = keyvault_dns
         self.sql_server_hostname = sql_server_hostname
         self.mysql_server_endpoint = mysql_server_endpoint
@@ -191,6 +193,7 @@ def _arm_to_cli_mapper(arm_dict):
             log_analytics_resource_id=arm_dict['logAnalyticsResourceId'] if 'logAnalyticsResourceId' in arm_dict else None),  # pylint: disable=line-too-long
         suffixes=CloudSuffixes(
             storage_endpoint=arm_dict['suffixes']['storage'],
+            storage_sync_endpoint=arm_dict['suffix']['storageSyncEndpointSuffix'] if 'storageSyncEndpointSuffix' in arm_dict['suffixes'] else 'afs.azure.net',  # pylint: disable=line-too-long
             keyvault_dns=arm_dict['suffixes']['keyVaultDns'],
             sql_server_hostname=arm_dict['suffixes']['sqlServerHostname'],
             mysql_server_endpoint=arm_dict['suffixes']['mysqlServerEndpoint'],
@@ -248,6 +251,7 @@ AZURE_PUBLIC_CLOUD = Cloud(
         app_insights_telemetry_channel_resource_id='https://dc.applicationinsights.azure.com/v2/track'),
     suffixes=CloudSuffixes(
         storage_endpoint='core.windows.net',
+        storage_sync_endpoint='afs.azure.net',
         keyvault_dns='.vault.azure.net',
         sql_server_hostname='.database.windows.net',
         mysql_server_endpoint='.mysql.database.azure.com',
@@ -304,6 +308,7 @@ AZURE_US_GOV_CLOUD = Cloud(
         app_insights_telemetry_channel_resource_id='https://dc.applicationinsights.us/v2/track'),
     suffixes=CloudSuffixes(
         storage_endpoint='core.usgovcloudapi.net',
+        storage_sync_endpoint='afs.azure.net',
         keyvault_dns='.vault.usgovcloudapi.net',
         sql_server_hostname='.database.usgovcloudapi.net',
         mysql_server_endpoint='.mysql.database.usgovcloudapi.net',
