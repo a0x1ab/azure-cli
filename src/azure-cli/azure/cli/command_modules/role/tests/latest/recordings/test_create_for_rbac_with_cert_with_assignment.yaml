@@ -1,0 +1,1110 @@
+interactions:
+- request:
+    body: '{"location": "westus", "tags": {"product": "azurecli", "cause": "automation",
+      "date": "2019-06-15T16:19:28Z"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '110'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --location --name --tag
+      User-Agent:
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.0 resourcemanagementclient/2.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.66
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_create_rbac_sp_with_cert000001?api-version=2018-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_create_rbac_sp_with_cert000001","name":"cli_create_rbac_sp_with_cert000001","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2019-06-15T16:19:28Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '384'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 15 Jun 2019 16:19:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad sp create-for-rbac
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --scopes --create-cert
+      User-Agent:
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.0 azure-graphrbac/0.60.0
+        Azure-SDK-For-Python AZURECLI/2.0.66
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/servicePrincipals?$filter=servicePrincipalNames%2Fany%28x%3Ax%20eq%20%27http%3A%2F%2Fcli_create_rbac_sp_with_cert000001%27%29&api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '121'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Sat, 15 Jun 2019 16:19:30 GMT
+      duration:
+      - '821487'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - s2UwUVi+htM/n2YkhPwXRPeUZqg0DtftoAt5dzpH0b8=
+      ocp-aad-session-key:
+      - O7DBKmXZWZEtoL_eYmc8QZKJWocm2fwikx--KkqksRhcfQILlg_0qgpuAJY-N-iErAga3Va4_-Iw24H4SOoYJ-UAjOysty6MwhFsr7G5LLgM-LzY0M3MDV2pOUiphPSTtbGJicpAIDI7ud-xDh5WQg.53v61zdP05kiPwVfpdmSbBZHKEnRoHGfB9-eHd8biVs
+      pragma:
+      - no-cache
+      request-id:
+      - cb17504e-564d-4706-ae46-53f423407c1b
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad sp create-for-rbac
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --scopes --create-cert
+      User-Agent:
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.0 azure-graphrbac/0.60.0
+        Azure-SDK-For-Python AZURECLI/2.0.66
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/applications?$filter=startswith%28displayName%2C%27cli_create_rbac_sp_with_cert000001%27%29&api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '121'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Sat, 15 Jun 2019 16:19:31 GMT
+      duration:
+      - '757044'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - 8b/Ht2S1JqSnD0uF+3TSXMqw6CMlMu8U0UwicIuMm2g=
+      ocp-aad-session-key:
+      - FdqrXn7lUA_168TS54CPHpnhCF8ZU_JXevHMamN8dsm6lNkqOy2Q8x0omEnbbVcMYEEogjbbNq50YNXQh2kg3L8vF-3YHsKxpkdI9Z1gLjLHU0CtjImN3ey-iKNtx1wBO5lHMo24GUyMX5SxdLwzOA.PuC5v6Yt0yVEAzFeuh4nff7zC3-_Ne6GsEhO7MR_iNc
+      pragma:
+      - no-cache
+      request-id:
+      - b6aa7846-5002-486a-8d2d-136cb1e5d4fe
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'b''b\''{"availableToOtherTenants": false, "homepage": "https://cli_create_rbac_sp_with_cert000001",
+      "keyCredentials": [{"startDate": "2019-06-15T16:19:31.145441Z", "endDate": "2020-06-15T16:19:31.145441Z",
+      "value": "MIICoTCCAYkCAgPoMA0GCSqGSIb3DQEBBQUAMBQxEjAQBgNVBAMMCUNMSS1Mb2dp\\\\nbjAiGA8yMDE5MDYxNTE2MTkzMFoYDzIwMjAwNjE1MTYxOTMyWjAUMRIwEAYDVQQD\\\\nDAlDTEktTG9naW4wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC27428\\\\n7Ird5VXZcN2J9gtRxhTDAhF8foncLhAqrYC06LaGP2SPBNb53FPqevPbqrgwksdQ\\\\ngHzsoorlONJfQkIQKk67z/CMv2mHnTgfj3TBabsnYai5nIqKgH1uZc5Jq3f0K0Sj\\\\n16pLha4h+Cd2eoajsyd+Zp45TIyanyWPEeFV6GmchonFGZ4AxZfS7rXtHKLppfWl\\\\n062nY0bKEi7CkGrpBp9JzRC/3UwOAtZ1nYuMiqV01v36rn7sRe1gXm98ZvzUrclF\\\\nujp55HN8Lvyt8k7xl16/YC12iBfQ0IGuYWCNPEn/7TXvkQ3kCFKhEIik8VpQ9XO1\\\\nj2DJxpvOJpyrqaEdAgMBAAEwDQYJKoZIhvcNAQEFBQADggEBAIgXwAGDztiVXOie\\\\n/C8CxPisKvL+V+npXJM40SBTMJhkxand8UX6wr3Ruq1MnBTF0p6EBGloGCTpgnkq\\\\nJDhbKe76zDbjkJUcqQA51GD1RYMOq7sPFCHHzAQhGJijB9CbN4Di+bJGFJZ/BI45\\\\nDzvlEylOvgSDCbXS7s2Gt8UXdZmvan/bBdLAb5Q67m+4LarlNanvcvEdl30Z36HZ\\\\nKINJ2KycCCHnaxZkspUBteVY+BAGYDCxLjRTwKrQeLJSsupIyW3sWaxNxt0CZtZ1\\\\n1Yw+ugM5FzURJqxKJpKyRiu3wO9+rIMyTxFTIzVOOxkYPpdUgevuOHsg5kX3X7kD\\\\ndI9doYc=",
+      "keyId": "88888888-0000-0000-0000-000000000001", "usage": "Verify", "type":
+      "AsymmetricX509Cert"}], "displayName": "cli_create_rbac_sp_with_cert000001",
+      "identifierUris": ["http://cli_create_rbac_sp_with_cert000001"]}\'''''
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad sp create-for-rbac
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1484'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -n --scopes --create-cert
+      User-Agent:
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.0 azure-graphrbac/0.60.0
+        Azure-SDK-For-Python AZURECLI/2.0.66
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/applications?api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects/@Element","odata.type":"Microsoft.DirectoryServices.Application","objectType":"Application","objectId":"95ec56ad-fb2c-42d5-a9a5-21a018d09a2d","deletionTimestamp":null,"acceptMappedClaims":null,"addIns":[],"appId":"4b6656f3-6f02-4ad7-bd54-dfeb1f5a908c","applicationTemplateId":null,"appRoles":[],"availableToOtherTenants":false,"displayName":"cli_create_rbac_sp_with_cert000001","errorUrl":null,"groupMembershipClaims":null,"homepage":"https://cli_create_rbac_sp_with_cert000001","identifierUris":["http://cli_create_rbac_sp_with_cert000001"],"informationalUrls":{"termsOfService":null,"support":null,"privacy":null,"marketing":null},"isDeviceOnlyAuthSupported":null,"keyCredentials":[{"customKeyIdentifier":"48C4176F85B18C6E639056B7E125C660B53EA61B","endDate":"2020-06-15T16:19:31.145441Z","keyId":"88888888-0000-0000-0000-000000000001","startDate":"2019-06-15T16:19:31.145441Z","type":"AsymmetricX509Cert","usage":"Verify","value":null}],"knownClientApplications":[],"logoutUrl":null,"logo@odata.mediaEditLink":"directoryObjects/95ec56ad-fb2c-42d5-a9a5-21a018d09a2d/Microsoft.DirectoryServices.Application/logo","logo@odata.mediaContentType":"application/json;odata=minimalmetadata;
+        charset=utf-8","logoUrl":null,"mainLogo@odata.mediaEditLink":"directoryObjects/95ec56ad-fb2c-42d5-a9a5-21a018d09a2d/Microsoft.DirectoryServices.Application/mainLogo","oauth2AllowIdTokenImplicitFlow":true,"oauth2AllowImplicitFlow":false,"oauth2AllowUrlPathMatching":false,"oauth2Permissions":[{"adminConsentDescription":"Allow
+        the application to access cli_create_rbac_sp_with_cert000001 on behalf of
+        the signed-in user.","adminConsentDisplayName":"Access cli_create_rbac_sp_with_cert000001","id":"563d3d2d-40f9-4fb8-bb3a-73f8e3aa260f","isEnabled":true,"type":"User","userConsentDescription":"Allow
+        the application to access cli_create_rbac_sp_with_cert000001 on your behalf.","userConsentDisplayName":"Access
+        cli_create_rbac_sp_with_cert000001","value":"user_impersonation"}],"oauth2RequirePostResponse":false,"optionalClaims":null,"orgRestrictions":[],"parentalControlSettings":{"countriesBlockedForMinors":[],"legalAgeGroupRule":"Allow"},"passwordCredentials":[],"publicClient":null,"publisherDomain":"AzureSDKTeam.onmicrosoft.com","recordConsentConditions":null,"replyUrls":[],"requiredResourceAccess":[],"samlMetadataUrl":null,"signInAudience":"AzureADMyOrg","tokenEncryptionKeyId":null}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '2771'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Sat, 15 Jun 2019 16:19:31 GMT
+      duration:
+      - '3992743'
+      expires:
+      - '-1'
+      location:
+      - https://graph.windows.net/00000000-0000-0000-0000-000000000000/directoryObjects/95ec56ad-fb2c-42d5-a9a5-21a018d09a2d/Microsoft.DirectoryServices.Application
+      ocp-aad-diagnostics-server-name:
+      - TF7V9cFPmZmQJjy/0crfkRiCbrtTUG3VKT/zd0mx1Gc=
+      ocp-aad-session-key:
+      - hztHsHGPHChNWx7Z7Oe127Vpib5kj00VOohtJR_UHZN2aBbsUgcoI8RwIdqBw53mYP8CzeISgarGelTirzLVg276Dl4DQtvSsEIlUIKEOnasU5ukuUVLqsm3GeUtzmx7Ci9W6oAbvjIdnAzK2y9GeQ.2aB2OhjnP_axsvz4Zwg5FJABDdshjYxWiU2G5A5Qpr0
+      pragma:
+      - no-cache
+      request-id:
+      - 06b5641b-c5d2-4588-8591-880e3c85d737
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"accountEnabled": "True", "appId": "4b6656f3-6f02-4ad7-bd54-dfeb1f5a908c"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad sp create-for-rbac
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '75'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -n --scopes --create-cert
+      User-Agent:
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.0 azure-graphrbac/0.60.0
+        Azure-SDK-For-Python AZURECLI/2.0.66
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/servicePrincipals?api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects/@Element","odata.type":"Microsoft.DirectoryServices.ServicePrincipal","objectType":"ServicePrincipal","objectId":"5dc3a7f2-18dc-4c73-9d27-21c262e52c0f","deletionTimestamp":null,"accountEnabled":true,"addIns":[],"alternativeNames":[],"appDisplayName":"cli_create_rbac_sp_with_cert000001","appId":"4b6656f3-6f02-4ad7-bd54-dfeb1f5a908c","applicationTemplateId":null,"appOwnerTenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","appRoleAssignmentRequired":false,"appRoles":[],"displayName":"cli_create_rbac_sp_with_cert000001","errorUrl":null,"homepage":"https://cli_create_rbac_sp_with_cert000001","informationalUrls":{"termsOfService":null,"support":null,"privacy":null,"marketing":null},"keyCredentials":[],"logoutUrl":null,"notificationEmailAddresses":[],"oauth2Permissions":[{"adminConsentDescription":"Allow
+        the application to access cli_create_rbac_sp_with_cert000001 on behalf of
+        the signed-in user.","adminConsentDisplayName":"Access cli_create_rbac_sp_with_cert000001","id":"563d3d2d-40f9-4fb8-bb3a-73f8e3aa260f","isEnabled":true,"type":"User","userConsentDescription":"Allow
+        the application to access cli_create_rbac_sp_with_cert000001 on your behalf.","userConsentDisplayName":"Access
+        cli_create_rbac_sp_with_cert000001","value":"user_impersonation"}],"passwordCredentials":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyEndDateTime":null,"preferredTokenSigningKeyThumbprint":null,"publisherName":"AzureSDKTeam","replyUrls":[],"samlMetadataUrl":null,"samlSingleSignOnSettings":null,"servicePrincipalNames":["4b6656f3-6f02-4ad7-bd54-dfeb1f5a908c","http://cli_create_rbac_sp_with_cert000001"],"servicePrincipalType":"Application","signInAudience":"AzureADMyOrg","tags":[],"tokenEncryptionKeyId":null}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '2154'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Sat, 15 Jun 2019 16:19:32 GMT
+      duration:
+      - '2556883'
+      expires:
+      - '-1'
+      location:
+      - https://graph.windows.net/00000000-0000-0000-0000-000000000000/directoryObjects/5dc3a7f2-18dc-4c73-9d27-21c262e52c0f/Microsoft.DirectoryServices.ServicePrincipal
+      ocp-aad-diagnostics-server-name:
+      - DGINaJ3i+5SyHOHPqmgh7imYwy5/IDDbJ0mu/cXzqrE=
+      ocp-aad-session-key:
+      - ZXz8-0ZXYqoacLzMPd0djBXhrr_SwGlVYQU7_wi97eomaf5wucGG2pqwDt3XC_fhFQUyyDJuxpEQDpru5Q3CSOtxjvF6AT_gdF9KTQCvurUTqnNlQfxPe6M60cFWbLCJWmPkq4wQzL5QY7QR0LJuJQ.PrSzZCDLOV-q7C2ZmKk2oTd4IMRK8B5obRtxwCLooBo
+      pragma:
+      - no-cache
+      request-id:
+      - ecf0d150-8471-493b-a68f-168e50862fb1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad sp create-for-rbac
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --scopes --create-cert
+      User-Agent:
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.0 azure-mgmt-authorization/0.52.0
+        Azure-SDK-For-Python AZURECLI/2.0.66
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Contributor%27&api-version=2018-01-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"roleName":"Contributor","type":"BuiltInRole","description":"Lets
+        you manage everything except access to resources.","assignableScopes":["/"],"permissions":[{"actions":["*"],"notActions":["Microsoft.Authorization/*/Delete","Microsoft.Authorization/*/Write","Microsoft.Authorization/elevateAccess/Action","Microsoft.Blueprint/blueprintAssignments/write","Microsoft.Blueprint/blueprintAssignments/delete"],"dataActions":[],"notDataActions":[]}],"createdOn":"2015-02-02T21:55:09.8806423Z","updatedOn":"2019-02-05T21:24:38.4580610Z","createdBy":null,"updatedBy":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c","type":"Microsoft.Authorization/roleDefinitions","name":"b24988ac-6180-42a0-ab88-20f7382dd24c"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '832'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 15 Jun 2019 16:19:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-request-charge:
+      - '1'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c",
+      "principalId": "5dc3a7f2-18dc-4c73-9d27-21c262e52c0f"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad sp create-for-rbac
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '233'
+      Content-Type:
+      - application/json; charset=utf-8
+      Cookie:
+      - x-ms-gateway-slice=Production
+      ParameterSetName:
+      - -n --scopes --create-cert
+      User-Agent:
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.0 azure-mgmt-authorization/0.52.0
+        Azure-SDK-For-Python AZURECLI/2.0.66
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000002?api-version=2018-09-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"PrincipalNotFound","message":"Principal 5dc3a7f218dc4c739d2721c262e52c0f
+        does not exist in the directory 54826b22-38d6-4fb2-bad9-b7b93a3e9c5a."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '163'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 15 Jun 2019 16:19:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad sp create-for-rbac
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --scopes --create-cert
+      User-Agent:
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.0 azure-mgmt-authorization/0.52.0
+        Azure-SDK-For-Python AZURECLI/2.0.66
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Contributor%27&api-version=2018-01-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"roleName":"Contributor","type":"BuiltInRole","description":"Lets
+        you manage everything except access to resources.","assignableScopes":["/"],"permissions":[{"actions":["*"],"notActions":["Microsoft.Authorization/*/Delete","Microsoft.Authorization/*/Write","Microsoft.Authorization/elevateAccess/Action","Microsoft.Blueprint/blueprintAssignments/write","Microsoft.Blueprint/blueprintAssignments/delete"],"dataActions":[],"notDataActions":[]}],"createdOn":"2015-02-02T21:55:09.8806423Z","updatedOn":"2019-02-05T21:24:38.4580610Z","createdBy":null,"updatedBy":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c","type":"Microsoft.Authorization/roleDefinitions","name":"b24988ac-6180-42a0-ab88-20f7382dd24c"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '832'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 15 Jun 2019 16:19:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-request-charge:
+      - '1'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c",
+      "principalId": "5dc3a7f2-18dc-4c73-9d27-21c262e52c0f"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad sp create-for-rbac
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '233'
+      Content-Type:
+      - application/json; charset=utf-8
+      Cookie:
+      - x-ms-gateway-slice=Production
+      ParameterSetName:
+      - -n --scopes --create-cert
+      User-Agent:
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.0 azure-mgmt-authorization/0.52.0
+        Azure-SDK-For-Python AZURECLI/2.0.66
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000003?api-version=2018-09-01-preview
+  response:
+    body:
+      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c","principalId":"5dc3a7f2-18dc-4c73-9d27-21c262e52c0f","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","createdOn":"2019-06-15T16:19:39.9750008Z","updatedOn":"2019-06-15T16:19:39.9750008Z","createdBy":null,"updatedBy":"e7e158d3-7cdc-47cd-8825-5859d7ab2b55"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000003","type":"Microsoft.Authorization/roleAssignments","name":"88888888-0000-0000-0000-000000000003"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '721'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 15 Jun 2019 16:19:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-request-charge:
+      - '4'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad sp create-for-rbac
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --scopes --create-cert
+      User-Agent:
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.0 azure-mgmt-authorization/0.52.0
+        Azure-SDK-For-Python AZURECLI/2.0.66
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_create_rbac_sp_with_cert000001/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Contributor%27&api-version=2018-01-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"roleName":"Contributor","type":"BuiltInRole","description":"Lets
+        you manage everything except access to resources.","assignableScopes":["/"],"permissions":[{"actions":["*"],"notActions":["Microsoft.Authorization/*/Delete","Microsoft.Authorization/*/Write","Microsoft.Authorization/elevateAccess/Action","Microsoft.Blueprint/blueprintAssignments/write","Microsoft.Blueprint/blueprintAssignments/delete"],"dataActions":[],"notDataActions":[]}],"createdOn":"2015-02-02T21:55:09.8806423Z","updatedOn":"2019-02-05T21:24:38.4580610Z","createdBy":null,"updatedBy":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c","type":"Microsoft.Authorization/roleDefinitions","name":"b24988ac-6180-42a0-ab88-20f7382dd24c"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '832'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 15 Jun 2019 16:19:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-request-charge:
+      - '1'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c",
+      "principalId": "5dc3a7f2-18dc-4c73-9d27-21c262e52c0f"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad sp create-for-rbac
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '233'
+      Content-Type:
+      - application/json; charset=utf-8
+      Cookie:
+      - x-ms-gateway-slice=Production
+      ParameterSetName:
+      - -n --scopes --create-cert
+      User-Agent:
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.0 azure-mgmt-authorization/0.52.0
+        Azure-SDK-For-Python AZURECLI/2.0.66
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_create_rbac_sp_with_cert000001/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000004?api-version=2018-09-01-preview
+  response:
+    body:
+      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c","principalId":"5dc3a7f2-18dc-4c73-9d27-21c262e52c0f","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_create_rbac_sp_with_cert000001","createdOn":"2019-06-15T16:19:44.8996486Z","updatedOn":"2019-06-15T16:19:44.8996486Z","createdBy":null,"updatedBy":"e7e158d3-7cdc-47cd-8825-5859d7ab2b55"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_create_rbac_sp_with_cert000001/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000004","type":"Microsoft.Authorization/roleAssignments","name":"88888888-0000-0000-0000-000000000004"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '903'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 15 Jun 2019 16:19:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; HttpOnly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-ms-request-charge:
+      - '3'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad sp credential reset
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --create-cert
+      User-Agent:
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.0 azure-graphrbac/0.60.0
+        Azure-SDK-For-Python AZURECLI/2.0.66
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/servicePrincipals?$filter=servicePrincipalNames%2Fany%28x%3Ax%20eq%20%27http%3A%2F%2Fcli_create_rbac_sp_with_cert000001%27%29%20or%20displayName%20eq%20%27http%3A%2F%2Fcli_create_rbac_sp_with_cert000001%27&api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[{"odata.type":"Microsoft.DirectoryServices.ServicePrincipal","objectType":"ServicePrincipal","objectId":"5dc3a7f2-18dc-4c73-9d27-21c262e52c0f","deletionTimestamp":null,"accountEnabled":true,"addIns":[],"alternativeNames":[],"appDisplayName":"cli_create_rbac_sp_with_cert000001","appId":"4b6656f3-6f02-4ad7-bd54-dfeb1f5a908c","applicationTemplateId":null,"appOwnerTenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","appRoleAssignmentRequired":false,"appRoles":[],"displayName":"cli_create_rbac_sp_with_cert000001","errorUrl":null,"homepage":"https://cli_create_rbac_sp_with_cert000001","informationalUrls":{"termsOfService":null,"support":null,"privacy":null,"marketing":null},"keyCredentials":[],"logoutUrl":null,"notificationEmailAddresses":[],"oauth2Permissions":[{"adminConsentDescription":"Allow
+        the application to access cli_create_rbac_sp_with_cert000001 on behalf of
+        the signed-in user.","adminConsentDisplayName":"Access cli_create_rbac_sp_with_cert000001","id":"563d3d2d-40f9-4fb8-bb3a-73f8e3aa260f","isEnabled":true,"type":"User","userConsentDescription":"Allow
+        the application to access cli_create_rbac_sp_with_cert000001 on your behalf.","userConsentDisplayName":"Access
+        cli_create_rbac_sp_with_cert000001","value":"user_impersonation"}],"passwordCredentials":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyEndDateTime":null,"preferredTokenSigningKeyThumbprint":null,"publisherName":"AzureSDKTeam","replyUrls":[],"samlMetadataUrl":null,"samlSingleSignOnSettings":null,"servicePrincipalNames":["http://cli_create_rbac_sp_with_cert000001","4b6656f3-6f02-4ad7-bd54-dfeb1f5a908c"],"servicePrincipalType":"Application","signInAudience":"AzureADMyOrg","tags":[],"tokenEncryptionKeyId":null}]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '2157'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Sat, 15 Jun 2019 16:19:47 GMT
+      duration:
+      - '698089'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - 03tJtVtrK59o2WrrDjJFasNQO9BoGoGL+dG53QSLpQQ=
+      ocp-aad-session-key:
+      - DxqKrnhBI2jT1fcEomPSLYz8Xli8p9UhA-PZKbWzi_qodcCkkNSyX76UTBFnGDIv5ajLhaOvo4Dd_JwMuLluokZ_LPrtVDQIe9OXpmTqrW7TKdLQsLaZt9YKCA2jBjaA-tcrR5rmCYqjqqxdeWxcwg.5fgt9QvuKa3MeUjlCW5gKq0g5OuXHWZpa7A5nmSV8LI
+      pragma:
+      - no-cache
+      request-id:
+      - d2e6fb3a-baf7-4c2d-99f5-aad318fa9da8
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad sp credential reset
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --create-cert
+      User-Agent:
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.0 azure-graphrbac/0.60.0
+        Azure-SDK-For-Python AZURECLI/2.0.66
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/applications?$filter=identifierUris%2Fany%28s%3As%20eq%20%274b6656f3-6f02-4ad7-bd54-dfeb1f5a908c%27%29&api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '121'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Sat, 15 Jun 2019 16:19:48 GMT
+      duration:
+      - '640437'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - I4v0qcnOlje1nXMrnV4NRb3YM/2Yho5JJMkIV0jxR4s=
+      ocp-aad-session-key:
+      - qUG90o4lHiyGGgrNU7qWaXpXx5llXp6bkySJxI1ALOQPrKFmKQ2jF2PLUL6z1BOIhjIrX_5ixnKSQ-_mXfI8aCVLdAciCvAss94YkdXZlrNLi4yo_U4Ks6hcdZAL7pwQp9JDGBkuwntsg8nVdkX_ng.Kc6YLZrLnOSaGQi7O3iUFTElp4CI_CCa5uqDRKAy9BA
+      pragma:
+      - no-cache
+      request-id:
+      - b1640559-fa20-49cd-9f76-8a110a8f4072
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad sp credential reset
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --create-cert
+      User-Agent:
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.0 azure-graphrbac/0.60.0
+        Azure-SDK-For-Python AZURECLI/2.0.66
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/applications?$filter=appId%20eq%20%274b6656f3-6f02-4ad7-bd54-dfeb1f5a908c%27&api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[{"odata.type":"Microsoft.DirectoryServices.Application","objectType":"Application","objectId":"95ec56ad-fb2c-42d5-a9a5-21a018d09a2d","deletionTimestamp":null,"acceptMappedClaims":null,"addIns":[],"appId":"4b6656f3-6f02-4ad7-bd54-dfeb1f5a908c","applicationTemplateId":null,"appRoles":[],"availableToOtherTenants":false,"displayName":"cli_create_rbac_sp_with_cert000001","errorUrl":null,"groupMembershipClaims":null,"homepage":"https://cli_create_rbac_sp_with_cert000001","identifierUris":["http://cli_create_rbac_sp_with_cert000001"],"informationalUrls":{"termsOfService":null,"support":null,"privacy":null,"marketing":null},"isDeviceOnlyAuthSupported":null,"keyCredentials":[{"customKeyIdentifier":"48C4176F85B18C6E639056B7E125C660B53EA61B","endDate":"2020-06-15T16:19:31.145441Z","keyId":"88888888-0000-0000-0000-000000000001","startDate":"2019-06-15T16:19:31.145441Z","type":"AsymmetricX509Cert","usage":"Verify","value":null}],"knownClientApplications":[],"logoutUrl":null,"logo@odata.mediaEditLink":"directoryObjects/95ec56ad-fb2c-42d5-a9a5-21a018d09a2d/Microsoft.DirectoryServices.Application/logo","logoUrl":null,"mainLogo@odata.mediaEditLink":"directoryObjects/95ec56ad-fb2c-42d5-a9a5-21a018d09a2d/Microsoft.DirectoryServices.Application/mainLogo","oauth2AllowIdTokenImplicitFlow":true,"oauth2AllowImplicitFlow":false,"oauth2AllowUrlPathMatching":false,"oauth2Permissions":[{"adminConsentDescription":"Allow
+        the application to access cli_create_rbac_sp_with_cert000001 on behalf of
+        the signed-in user.","adminConsentDisplayName":"Access cli_create_rbac_sp_with_cert000001","id":"563d3d2d-40f9-4fb8-bb3a-73f8e3aa260f","isEnabled":true,"type":"User","userConsentDescription":"Allow
+        the application to access cli_create_rbac_sp_with_cert000001 on your behalf.","userConsentDisplayName":"Access
+        cli_create_rbac_sp_with_cert000001","value":"user_impersonation"}],"oauth2RequirePostResponse":false,"optionalClaims":null,"orgRestrictions":[],"parentalControlSettings":{"countriesBlockedForMinors":[],"legalAgeGroupRule":"Allow"},"passwordCredentials":[],"publicClient":null,"publisherDomain":"AzureSDKTeam.onmicrosoft.com","recordConsentConditions":null,"replyUrls":[],"requiredResourceAccess":[],"samlMetadataUrl":null,"signInAudience":"AzureADMyOrg","tokenEncryptionKeyId":null}]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '2688'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Sat, 15 Jun 2019 16:19:48 GMT
+      duration:
+      - '808164'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - WqKhWXvl1okXb47qljo0lPbR3WueJ7PneT8ez1L9elM=
+      ocp-aad-session-key:
+      - 4ds8uXjnpvXU6d6moeYfklr0OKJdmP5TsNFJ1MFMZ2CWFqAgYvlbq7jbaA5q6RGFQt5uHWTjbcbBVhZJr_lhBiPAvMG8ncy7BH9F3R77_tQR5HRzvl6Q5qoiaG44v1SL5ZIOtYCQq4vmmWTK8emKIQ.tR6n1guub8R9fhJ2l2d5nlXE6hIkFaAMGoIHGf2eJNY
+      pragma:
+      - no-cache
+      request-id:
+      - fd70f65d-8664-496a-b58c-2ba017cdff5b
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad sp credential reset
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --create-cert
+      User-Agent:
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.0 azure-graphrbac/0.60.0
+        Azure-SDK-For-Python AZURECLI/2.0.66
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/applications/95ec56ad-fb2c-42d5-a9a5-21a018d09a2d?api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects/@Element","odata.type":"Microsoft.DirectoryServices.Application","objectType":"Application","objectId":"95ec56ad-fb2c-42d5-a9a5-21a018d09a2d","deletionTimestamp":null,"acceptMappedClaims":null,"addIns":[],"appId":"4b6656f3-6f02-4ad7-bd54-dfeb1f5a908c","applicationTemplateId":null,"appRoles":[],"availableToOtherTenants":false,"displayName":"cli_create_rbac_sp_with_cert000001","errorUrl":null,"groupMembershipClaims":null,"homepage":"https://cli_create_rbac_sp_with_cert000001","identifierUris":["http://cli_create_rbac_sp_with_cert000001"],"informationalUrls":{"termsOfService":null,"support":null,"privacy":null,"marketing":null},"isDeviceOnlyAuthSupported":null,"keyCredentials":[{"customKeyIdentifier":"48C4176F85B18C6E639056B7E125C660B53EA61B","endDate":"2020-06-15T16:19:31.145441Z","keyId":"88888888-0000-0000-0000-000000000001","startDate":"2019-06-15T16:19:31.145441Z","type":"AsymmetricX509Cert","usage":"Verify","value":null}],"knownClientApplications":[],"logoutUrl":null,"logo@odata.mediaEditLink":"directoryObjects/95ec56ad-fb2c-42d5-a9a5-21a018d09a2d/Microsoft.DirectoryServices.Application/logo","logoUrl":null,"mainLogo@odata.mediaEditLink":"directoryObjects/95ec56ad-fb2c-42d5-a9a5-21a018d09a2d/Microsoft.DirectoryServices.Application/mainLogo","oauth2AllowIdTokenImplicitFlow":true,"oauth2AllowImplicitFlow":false,"oauth2AllowUrlPathMatching":false,"oauth2Permissions":[{"adminConsentDescription":"Allow
+        the application to access cli_create_rbac_sp_with_cert000001 on behalf of
+        the signed-in user.","adminConsentDisplayName":"Access cli_create_rbac_sp_with_cert000001","id":"563d3d2d-40f9-4fb8-bb3a-73f8e3aa260f","isEnabled":true,"type":"User","userConsentDescription":"Allow
+        the application to access cli_create_rbac_sp_with_cert000001 on your behalf.","userConsentDisplayName":"Access
+        cli_create_rbac_sp_with_cert000001","value":"user_impersonation"}],"oauth2RequirePostResponse":false,"optionalClaims":null,"orgRestrictions":[],"parentalControlSettings":{"countriesBlockedForMinors":[],"legalAgeGroupRule":"Allow"},"passwordCredentials":[],"publicClient":null,"publisherDomain":"AzureSDKTeam.onmicrosoft.com","recordConsentConditions":null,"replyUrls":[],"requiredResourceAccess":[],"samlMetadataUrl":null,"signInAudience":"AzureADMyOrg","tokenEncryptionKeyId":null}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '2685'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Sat, 15 Jun 2019 16:19:48 GMT
+      duration:
+      - '521956'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - HEPAm0tyongGpYycSw509UTFJ4dZAtir7lD0xyk+LYQ=
+      ocp-aad-session-key:
+      - k0I0CDNazVtppd4y8e4jlzaQ-dqIwz0UJVwYDs-iLJqYV4xPMbhMZPsAlF4vHfWmY3NxK5uJIoNwnc402lIQPKWUwrF5b_sl3hDPrh4pRJEaqCuEVuufjDEBsqIpJkWCTcwQEirIFbQi9d4xbPlmrg.SIIbMMnweCvyX-JXzRyRDMJ7P-sxSeU7xnr_f9kbrRM
+      pragma:
+      - no-cache
+      request-id:
+      - 0b5899a8-a5b5-4ec7-bf29-42c61cf8f079
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'b''{"keyCredentials": [{"startDate": "2019-06-15T16:19:47.981756Z", "endDate":
+      "2020-06-15T16:19:47.981756Z", "value": "MIICoTCCAYkCAgPoMA0GCSqGSIb3DQEBBQUAMBQxEjAQBgNVBAMMCUNMSS1Mb2dp\\nbjAiGA8yMDE5MDYxNTE2MTk0NloYDzIwMjAwNjE1MTYxOTQ4WjAUMRIwEAYDVQQD\\nDAlDTEktTG9naW4wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCloFLp\\njClE0+H8ZUtnEMu50aUdR7e8OkI1CYZXC0gWc0q5kNqa9SYJ0KYkiXGpl5SI1Qz1\\npgpoFbFjrgVDw4PSWEvwnLxi1NifdJkWt7MYM/szIl3i6nIAv+k6pfhvx5XFwaqK\\n11BXU2fcZG2x0fSt2lrW8OlMASGQTt4MeiAua7XGxXdQzrFplY4mcb+Wucu0aq1S\\nLvQbS5y6RYjXul24jcq+iVl0AEJ8QhlWQVFMOQuhYEN3GU78WGnlZCQ39Qo0thxq\\ntlLkIZW4smZfoUVrKFea4yJC0WFqQjlWlKtdlVnSx5eW9Ax9WNTCw3U2YdrY4mhY\\nzQqdvuewUtmG953DAgMBAAEwDQYJKoZIhvcNAQEFBQADggEBADypiBz06Q5+ZnjV\\nuWCQpRt/VZGe6VG1pL04lrns7Yg2uhFHS+qm6HqPJKD04mHhayAwXJSSNDr7eyBD\\n9vIpDs4eIvf0iglbYleyRSmpSmdEc2cHdfIHYNGYkAkcvHhnmVOEXgFlzwHraXLu\\nfyK5O4udu4FDz4l4CbI3GzieQn3Rxz1as0bptnzc2VkDCTM/fo8IpGrySLAhgP36\\naEF/n1eW6FLpZ8qzX6X1Wi1DLsExtCli/+SyzBPpTYqUMWCo0RMWns9zBNbGMSho\\nEDVOMxSlt0eByjW1QwMYqMKUKmQs2KOLMhontaMNtaG3bDBGCmQ3O4X8ag4LjROt\\ngPOZRp8=",
+      "keyId": "88888888-0000-0000-0000-000000000005", "usage": "Verify", "type":
+      "AsymmetricX509Cert"}]}'''
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad sp credential reset
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1151'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -n --create-cert
+      User-Agent:
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.0 azure-graphrbac/0.60.0
+        Azure-SDK-For-Python AZURECLI/2.0.66
+      accept-language:
+      - en-US
+    method: PATCH
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/applications/95ec56ad-fb2c-42d5-a9a5-21a018d09a2d?api-version=1.6
+  response:
+    body:
+      string: ''
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      date:
+      - Sat, 15 Jun 2019 16:19:49 GMT
+      duration:
+      - '3398515'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - WBvu8jP7GvGe2O2F+aZuMDfZG7V2TvhyRVdWPfSUkTU=
+      ocp-aad-session-key:
+      - CoHm1aZIsHADCSGub8P0pVTxnwGZm6XwXsxjH6i8iCBgcsuLcRmeOK4xykLBK-vmVnqiBgvK5bDtHLnvP6m6wtELWNLiUxWNPFH7qbEBxxfg1RWp6thfNIBOHKCFzRPlHhSCkJeUZxjQRvKIA7OHTg.WBG2A4gNW3bZfHvOisuBpZm9mUugpujaIhR0b4Mxq6M
+      pragma:
+      - no-cache
+      request-id:
+      - 0c85c85e-489b-4595-8ede-251bd75dabe6
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad app delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --id
+      User-Agent:
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.0 azure-graphrbac/0.60.0
+        Azure-SDK-For-Python AZURECLI/2.0.66
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/applications?$filter=identifierUris%2Fany%28s%3As%20eq%20%27http%3A%2F%2Fcli_create_rbac_sp_with_cert000001%27%29&api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[{"odata.type":"Microsoft.DirectoryServices.Application","objectType":"Application","objectId":"95ec56ad-fb2c-42d5-a9a5-21a018d09a2d","deletionTimestamp":null,"acceptMappedClaims":null,"addIns":[],"appId":"4b6656f3-6f02-4ad7-bd54-dfeb1f5a908c","applicationTemplateId":null,"appRoles":[],"availableToOtherTenants":false,"displayName":"cli_create_rbac_sp_with_cert000001","errorUrl":null,"groupMembershipClaims":null,"homepage":"https://cli_create_rbac_sp_with_cert000001","identifierUris":["http://cli_create_rbac_sp_with_cert000001"],"informationalUrls":{"termsOfService":null,"support":null,"privacy":null,"marketing":null},"isDeviceOnlyAuthSupported":null,"keyCredentials":[{"customKeyIdentifier":"765B8760CDC623316AC7A71F2401F82A53838E44","endDate":"2020-06-15T16:19:47.981756Z","keyId":"88888888-0000-0000-0000-000000000005","startDate":"2019-06-15T16:19:47.981756Z","type":"AsymmetricX509Cert","usage":"Verify","value":null}],"knownClientApplications":[],"logoutUrl":null,"logo@odata.mediaEditLink":"directoryObjects/95ec56ad-fb2c-42d5-a9a5-21a018d09a2d/Microsoft.DirectoryServices.Application/logo","logoUrl":null,"mainLogo@odata.mediaEditLink":"directoryObjects/95ec56ad-fb2c-42d5-a9a5-21a018d09a2d/Microsoft.DirectoryServices.Application/mainLogo","oauth2AllowIdTokenImplicitFlow":true,"oauth2AllowImplicitFlow":false,"oauth2AllowUrlPathMatching":false,"oauth2Permissions":[{"adminConsentDescription":"Allow
+        the application to access cli_create_rbac_sp_with_cert000001 on behalf of
+        the signed-in user.","adminConsentDisplayName":"Access cli_create_rbac_sp_with_cert000001","id":"563d3d2d-40f9-4fb8-bb3a-73f8e3aa260f","isEnabled":true,"type":"User","userConsentDescription":"Allow
+        the application to access cli_create_rbac_sp_with_cert000001 on your behalf.","userConsentDisplayName":"Access
+        cli_create_rbac_sp_with_cert000001","value":"user_impersonation"}],"oauth2RequirePostResponse":false,"optionalClaims":null,"orgRestrictions":[],"parentalControlSettings":{"countriesBlockedForMinors":[],"legalAgeGroupRule":"Allow"},"passwordCredentials":[],"publicClient":null,"publisherDomain":"AzureSDKTeam.onmicrosoft.com","recordConsentConditions":null,"replyUrls":[],"requiredResourceAccess":[],"samlMetadataUrl":null,"signInAudience":"AzureADMyOrg","tokenEncryptionKeyId":null}]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '2688'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Sat, 15 Jun 2019 16:19:49 GMT
+      duration:
+      - '814640'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - LIsvepV0yWsv17jftCrqPcUrT8/sKGPKtFREgCo1I3k=
+      ocp-aad-session-key:
+      - jrZ4G24NoD34qRdYe2RP5NgKEbLdcSRqkFwalupTcwIBUxr1gd1ilAq1BuER2zNncDy8hhVEr75TRxUJxcuP3Ho3_USPB8N2gvFjXV2Gdf3vRPwNMePH65a0gitFE3TUKnpQ1VMHng-LY6IhKDORKw.zvvIzYZX8webQVFARkbmB1KjB55SqCpMsuzWg81kJ5A
+      pragma:
+      - no-cache
+      request-id:
+      - 15e78550-9f9c-4612-9160-17535a2856ff
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - ad app delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --id
+      User-Agent:
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.0 azure-graphrbac/0.60.0
+        Azure-SDK-For-Python AZURECLI/2.0.66
+      accept-language:
+      - en-US
+    method: DELETE
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/applications/95ec56ad-fb2c-42d5-a9a5-21a018d09a2d?api-version=1.6
+  response:
+    body:
+      string: ''
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      date:
+      - Sat, 15 Jun 2019 16:19:49 GMT
+      duration:
+      - '2754055'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - BaUpzbcpe8CsfbLiSVe623GjwTzlV5c+gfKgkBtBCJY=
+      ocp-aad-session-key:
+      - c7-28jhnFCb7WVnLjqHX2xDFpMOl80nnVNFU3eIszUyjajpIyOQaO0Oi2sfCkwlWfK4dNHnP7XENopE_QwfLMuuLNBH4GtpZ-kPZIpFGsx8igMz7bTge441mLLqrq6wbHxttN6jqUxO2TtYCaexV2A.3EG2h6rvi5_e1GLk8vd1J95O59Nz6trcN14cmA0-p6E
+      pragma:
+      - no-cache
+      request-id:
+      - a1da802f-9958-4bfc-80e8-5596bb245db7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - group delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --yes --no-wait
+      User-Agent:
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.0 resourcemanagementclient/2.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.66
+      accept-language:
+      - en-US
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_create_rbac_sp_with_cert000001?api-version=2018-05-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Sat, 15 Jun 2019 16:19:50 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTEk6NUZDUkVBVEU6NUZSQkFDOjVGU1A6NUZXSVRIOjVGQ0VSVEJWNTU0TzdMVHw0MzJBQkQ3RDVDM0ZEMUFFLVdFU1RVUyIsImpvYkxvY2F0aW9uIjoid2VzdHVzIn0?api-version=2018-05-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+version: 1
