@@ -7,10 +7,9 @@ import re
 import sys
 import time
 from distutils.version import StrictVersion
-from typing import Any, Dict, List, Tuple, TypeVar, Union
+from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
 from azure.cli.command_modules.acs._consts import (
-    ADDONS,
     CONST_ACC_SGX_QUOTE_HELPER_ENABLED,
     CONST_AZURE_POLICY_ADDON_NAME,
     CONST_CONFCOM_ADDON_NAME,
@@ -22,15 +21,11 @@ from azure.cli.command_modules.acs._consts import (
     CONST_INGRESS_APPGW_SUBNET_ID,
     CONST_INGRESS_APPGW_WATCH_NAMESPACE,
     CONST_KUBE_DASHBOARD_ADDON_NAME,
-    CONST_MONITORING_ADDON_NAME,
-    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID,
     CONST_OPEN_SERVICE_MESH_ADDON_NAME,
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
     CONST_PRIVATE_DNS_ZONE_NONE,
     CONST_PRIVATE_DNS_ZONE_SYSTEM,
-    CONST_VIRTUAL_NODE_ADDON_NAME,
-    CONST_VIRTUAL_NODE_SUBNET_NAME,
     DecoratorMode,
 )
 from azure.cli.command_modules.acs._loadbalancer import (
@@ -2378,6 +2373,72 @@ class AKSContext:
                 )
         return pod_cidr, service_cidr, dns_service_ip, docker_bridge_address, network_policy
 
+    # pylint: disable=no-self-use
+    def get_addon_consts(self) -> Dict[str, str]:
+        """Helper function to obtain the constants used by addons.
+
+        Note: This is not a parameter of aks commands.
+
+        :return: dict
+        """
+        from azure.cli.command_modules.acs._consts import (
+            ADDONS,
+            CONST_MONITORING_ADDON_NAME,
+            CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID,
+            CONST_VIRTUAL_NODE_ADDON_NAME,
+            CONST_VIRTUAL_NODE_SUBNET_NAME,
+        )
+
+        addon_consts = {}
+        addon_consts["ADDONS"] = ADDONS
+        addon_consts[
+            "CONST_ACC_SGX_QUOTE_HELPER_ENABLED"
+        ] = CONST_ACC_SGX_QUOTE_HELPER_ENABLED
+        addon_consts[
+            "CONST_AZURE_POLICY_ADDON_NAME"
+        ] = CONST_AZURE_POLICY_ADDON_NAME
+        addon_consts["CONST_CONFCOM_ADDON_NAME"] = CONST_CONFCOM_ADDON_NAME
+        addon_consts[
+            "CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME"
+        ] = CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME
+        addon_consts[
+            "CONST_INGRESS_APPGW_ADDON_NAME"
+        ] = CONST_INGRESS_APPGW_ADDON_NAME
+        addon_consts[
+            "CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID"
+        ] = CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID
+        addon_consts[
+            "CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME"
+        ] = CONST_INGRESS_APPGW_APPLICATION_GATEWAY_NAME
+        addon_consts[
+            "CONST_INGRESS_APPGW_SUBNET_CIDR"
+        ] = CONST_INGRESS_APPGW_SUBNET_CIDR
+        addon_consts[
+            "CONST_INGRESS_APPGW_SUBNET_ID"
+        ] = CONST_INGRESS_APPGW_SUBNET_ID
+        addon_consts[
+            "CONST_INGRESS_APPGW_WATCH_NAMESPACE"
+        ] = CONST_INGRESS_APPGW_WATCH_NAMESPACE
+        addon_consts[
+            "CONST_KUBE_DASHBOARD_ADDON_NAME"
+        ] = CONST_KUBE_DASHBOARD_ADDON_NAME
+        addon_consts[
+            "CONST_MONITORING_ADDON_NAME"
+        ] = CONST_MONITORING_ADDON_NAME
+        addon_consts[
+            "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID"
+        ] = CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID
+        addon_consts[
+            "CONST_OPEN_SERVICE_MESH_ADDON_NAME"
+        ] = CONST_OPEN_SERVICE_MESH_ADDON_NAME
+        addon_consts[
+            "CONST_VIRTUAL_NODE_ADDON_NAME"
+        ] = CONST_VIRTUAL_NODE_ADDON_NAME
+        addon_consts[
+            "CONST_VIRTUAL_NODE_SUBNET_NAME"
+        ] = CONST_VIRTUAL_NODE_SUBNET_NAME
+        return addon_consts
+
     # pylint: disable=unused-argument
     def _get_enable_addons(self, enable_validation: bool = False, **kwargs) -> List[str]:
         """Internal function to obtain the value of enable_addons.
@@ -2395,6 +2456,10 @@ class AKSContext:
 
         :return: empty list or list of strings
         """
+        # determine the value of constants
+        addon_consts = self.get_addon_consts()
+        valid_addon_keys = addon_consts.get("ADDONS").keys()
+
         # read the original value passed by the command
         enable_addons = self.raw_param.get("enable_addons")
 
@@ -2417,7 +2482,7 @@ class AKSContext:
 
             # check unrecognized addons
             enable_addons_set = set(enable_addons)
-            invalid_addons_set = enable_addons_set.difference(ADDONS.keys())
+            invalid_addons_set = enable_addons_set.difference(valid_addon_keys)
             if len(invalid_addons_set) != 0:
                 raise InvalidArgumentValueError(
                     "'{}' {} not recognized by the --enable-addons argument.".format(
@@ -2476,6 +2541,13 @@ class AKSContext:
 
         :return: string or None
         """
+        # determine the value of constants
+        addon_consts = self.get_addon_consts()
+        CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = addon_consts.get(
+            "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID"
+        )
+
         # read the original value passed by the command
         workspace_resource_id = self.raw_param.get("workspace_resource_id")
         # try to read the property value corresponding to the parameter from the `mc` object
@@ -2548,6 +2620,11 @@ class AKSContext:
 
         :return: string or None
         """
+        # determine the value of constants
+        addon_consts = self.get_addon_consts()
+        CONST_VIRTUAL_NODE_ADDON_NAME = addon_consts.get("CONST_VIRTUAL_NODE_ADDON_NAME")
+        CONST_VIRTUAL_NODE_SUBNET_NAME = addon_consts.get("CONST_VIRTUAL_NODE_SUBNET_NAME")
+
         # read the original value passed by the command
         aci_subnet_name = self.raw_param.get("aci_subnet_name")
         # try to read the property value corresponding to the parameter from the `mc` object
@@ -4118,7 +4195,7 @@ class AKSCreateDecorator:
         return mc
 
     # pylint: disable=too-many-statements
-    def set_up_addon_profiles(self, mc: ManagedCluster) -> ManagedCluster:
+    def set_up_addon_profiles(self, mc: ManagedCluster, skip_addons: Optional[List[str]] = None) -> ManagedCluster:
         """Set up addon profiles for the ManagedCluster object.
 
         This function will store following intermediates: monitoring, enable_virtual_node and
@@ -4129,12 +4206,33 @@ class AKSCreateDecorator:
         When workspace_resource_id is not assigned, function "_ensure_default_log_analytics_workspace_for_monitoring"
         will be called to create a workspace, which internally used ResourceManagementClient to send the request.
 
+        This function supports the option of skip_addons. When provided, it will skip processing specified addons
+        (will be handled by aks-preview).
+
         :return: the ManagedCluster object
         """
+        # replace empty default value
+        if skip_addons is None:
+            skip_addons = []
         if not isinstance(mc, self.models.ManagedCluster):
             raise CLIInternalError(
                 "Unexpected mc object with type '{}'.".format(type(mc))
             )
+
+        # determine the value of constants
+        addon_consts = self.context.get_addon_consts()
+        CONST_MONITORING_ADDON_NAME = addon_consts.get(
+            "CONST_MONITORING_ADDON_NAME"
+        )
+        CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID = addon_consts.get(
+            "CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID"
+        )
+        CONST_VIRTUAL_NODE_ADDON_NAME = addon_consts.get(
+            "CONST_VIRTUAL_NODE_ADDON_NAME"
+        )
+        CONST_VIRTUAL_NODE_SUBNET_NAME = addon_consts.get(
+            "CONST_VIRTUAL_NODE_SUBNET_NAME"
+        )
 
         ManagedClusterAddonProfile = self.models.ManagedClusterAddonProfile
         addon_profiles = {}
@@ -4142,6 +4240,8 @@ class AKSCreateDecorator:
         # error out if '--enable-addons=monitoring' isn't set but workspace_resource_id is
         # error out if '--enable-addons=virtual-node' is set but aci_subnet_name and vnet_subnet_id are not
         addons = self.context.get_enable_addons()
+        # skip processing specified addons (will be handled by aks-preview)
+        addons = [x for x in addons if x not in skip_addons]
         if 'http_application_routing' in addons:
             addon_profiles[CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME] = ManagedClusterAddonProfile(
                 enabled=True)
