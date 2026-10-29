@@ -3,6 +3,14 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+
+def cf_resource_groups(cli_ctx, subscription_id=None):
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    from azure.cli.core.profiles import ResourceType
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
+                                   subscription_id=subscription_id).resource_groups
+
+
 def cf_synapse(cli_ctx, *_):
 
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -12,6 +20,10 @@ def cf_synapse(cli_ctx, *_):
 
 def cf_synapse_client_workspace_factory(cli_ctx, *_):
     return cf_synapse(cli_ctx).workspaces
+
+
+def cf_synapse_client_workspace_aad_admins_factory(cli_ctx, *_):
+    return cf_synapse(cli_ctx).workspace_aad_admins
 
 
 def cf_synapse_client_bigdatapool_factory(cli_ctx, *_):
@@ -40,6 +52,10 @@ def cf_synapse_client_sqlpool_security_alert_policies_factory(cli_ctx, *_):
 
 def cf_synapse_client_sqlpool_blob_auditing_policies_factory(cli_ctx, *_):
     return cf_synapse(cli_ctx).sql_pool_blob_auditing_policies
+
+
+def cf_synapse_client_sqlserver_blob_auditing_policies_factory(cli_ctx, *_):
+    return cf_synapse(cli_ctx).workspace_managed_sql_server_blob_auditing_policies
 
 
 def cf_synapse_client_ipfirewallrules_factory(cli_ctx, *_):
