@@ -444,35 +444,3 @@ def cli_appgroup_create(cmd, client, resource_group_name, namespace_name, applic
         ApplicationGroup.is_enabled = is_enabled
 
     return client.create_or_update_application_group(resource_group_name, namespace_name, application_group_name, appGroup)
-
-
-def cli_appgroup_update(client, resource_group_name, namespace_name, application_group_name, is_enabled=None):
-    appGroup = client.get(resource_group_name, namespace_name, application_group_name)
-
-    if is_enabled is not None:
-        appGroup.is_enabled = is_enabled
-
-    return client.create_or_update_application_group(resource_group_name, namespace_name, application_group_name, appGroup)
-
-
-def cli_add_appgroup_policy(client, resource_group_name, namespace_name, application_group_name, throttling_policy_config):
-    appGroup = client.get(resource_group_name, namespace_name, application_group_name)
-    appGroup.policies.extend(throttling_policy_config)
-    return client.create_or_update_application_group(resource_group_name, namespace_name, application_group_name, appGroup)
-
-
-def cli_remove_appgroup_policy(client, resource_group_name, namespace_name, application_group_name, throttling_policy_config):
-    from azure.cli.core import CLIError
-
-    appGroup = client.get(resource_group_name, namespace_name, application_group_name)
-    logger.warning(
-        'This operation will do removals based on policy name. Will not accept metric-id,rate-limit-threshold in the future in future release.'
-        'Also throttling_policy_config parameter will replace with "policy" in same future release.')
-    if appGroup.policies:
-        for policy_object in throttling_policy_config:
-            if policy_object in appGroup.policies:
-                appGroup.policies.remove(policy_object)
-            else:
-                raise CLIError('The following policy was not found: Name: ' + policy_object.name + ', RateLimitThreshold: ' + str(policy_object.rate_limit_threshold) + ', MetricId: ' + policy_object.metric_id)
-
-    return client.create_or_update_application_group(resource_group_name, namespace_name, application_group_name, appGroup)
