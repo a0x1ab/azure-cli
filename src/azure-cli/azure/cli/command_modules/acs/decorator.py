@@ -5,7 +5,7 @@
 
 from knack.prompting import NoTTYException, prompt, prompt_pass, prompt_y_n
 from knack.log import get_logger
-from typing import Any, List, Dict, Tuple, Union
+from typing import Any, List, Dict, Tuple, TypeVar, Union
 
 from azure.cli.core import AzCommandsLoader
 from azure.cli.core.azclierror import (
@@ -18,7 +18,11 @@ from azure.cli.core.azclierror import (
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 
-from .custom import (
+from azure.cli.command_modules.acs._consts import (
+    CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+    CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+)
+from azure.cli.command_modules.acs.custom import (
     _get_rg_location,
     _validate_ssh_key,
     _get_default_dns_prefix,
@@ -30,9 +34,15 @@ from .custom import (
     subnet_role_assignment_exists,
     _add_role_assignment,
     _ensure_aks_acr,
+    create_load_balancer_profile,
 )
 
 logger = get_logger(__name__)
+
+# type variables
+ManagedCluster = TypeVar("ManagedCluster")
+ContainerServiceClient = TypeVar("ContainerServiceClient")
+ResourceReference = TypeVar("ResourceReference")
 
 
 def safe_list_get(li: List, idx: int, default: Any = None) -> Any:
@@ -49,6 +59,16 @@ def safe_list_get(li: List, idx: int, default: Any = None) -> Any:
         except IndexError:
             return default
     return None
+
+
+def safe_lower(obj: Any) -> Any:
+    """Return lowercase string if the provided obj is a string, otherwise return the object itself.
+
+    :return: Any
+    """
+    if isinstance(obj, str):
+        return obj.lower()
+    return obj
 
 
 # pylint: disable=too-many-instance-attributes,too-few-public-methods
@@ -152,6 +172,52 @@ class AKSCreateModels:
             resource_type=self.resource_type,
             operation_group="managed_clusters",
         )
+        # init load balancer models
+        self.init_lb_models()
+
+    def init_lb_models(self) -> None:
+        """Initialize models used by load balancer.
+
+        The models are stored in a dictionary, the key is the model name and the value is the model type.
+
+        :return: None
+        """
+        lb_models = {}
+        lb_models["ManagedClusterLoadBalancerProfile"] = self.__cmd.get_models(
+            "ManagedClusterLoadBalancerProfile",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        lb_models[
+            "ManagedClusterLoadBalancerProfileManagedOutboundIPs"
+        ] = self.__cmd.get_models(
+            "ManagedClusterLoadBalancerProfileManagedOutboundIPs",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        lb_models[
+            "ManagedClusterLoadBalancerProfileOutboundIPs"
+        ] = self.__cmd.get_models(
+            "ManagedClusterLoadBalancerProfileOutboundIPs",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        lb_models[
+            "ManagedClusterLoadBalancerProfileOutboundIPPrefixes"
+        ] = self.__cmd.get_models(
+            "ManagedClusterLoadBalancerProfileOutboundIPPrefixes",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        lb_models["ResourceReference"] = self.__cmd.get_models(
+            "ResourceReference",
+            resource_type=self.resource_type,
+            operation_group="managed_clusters",
+        )
+        self.lb_models = lb_models
+        # uncomment the followings to add these models as class attributes
+        # for model_name, model_type in lb_models.items():
+        #     setattr(self, model_name, model_type)
 
 
 # pylint: disable=too-many-public-methods
@@ -186,7 +252,7 @@ class AKSCreateContext:
         self.intermediates = dict()
         self.mc = None
 
-    def attach_mc(self, mc):
+    def attach_mc(self, mc: ManagedCluster) -> None:
         """Attach the ManagedCluster object to the context.
 
         The `mc` object is only allowed to be attached once, and attaching again will raise a CLIInternalError.
@@ -203,7 +269,7 @@ class AKSCreateContext:
                 )
             )
 
-    def get_intermediate(self, variable_name: str, default_value: Any = None):
+    def get_intermediate(self, variable_name: str, default_value: Any = None) -> Any:
         """Get the value of an intermediate by its name.
 
         Get the value from the intermediates dictionary with variable_name as the key. If variable_name does not exist,
@@ -220,7 +286,7 @@ class AKSCreateContext:
 
     def set_intermediate(
         self, variable_name: str, value: Any, overwrite_exists: bool = False
-    ):
+    ) -> None:
         """Set the value of an intermediate by its name.
 
         In the case that the intermediate value already exists, if overwrite_exists is enabled, the value will be
@@ -237,7 +303,7 @@ class AKSCreateContext:
                 logger.debug(msg)
                 self.intermediates[variable_name] = value
             elif self.intermediates.get(variable_name) != value:
-                msg = "The intermediate '{}' already exists, but overwrite is not enabled." \
+                msg = "The intermediate '{}' already exists, but overwrite is not enabled. " \
                     "Original value: '{}', candidate value: '{}'.".format(
                         variable_name,
                         self.intermediates.get(variable_name),
@@ -248,7 +314,7 @@ class AKSCreateContext:
         else:
             self.intermediates[variable_name] = value
 
-    def remove_intermediate(self, variable_name: str):
+    def remove_intermediate(self, variable_name: str) -> None:
         """Remove the value of an intermediate by its name.
 
         No exception will be raised if the intermediate does not exist,
@@ -357,9 +423,8 @@ class AKSCreateContext:
 
         :return: string or None
         """
-        parameter_name = "dns_name_prefix"
         # read the original value passed by the command
-        raw_value = self.raw_param.get(parameter_name)
+        raw_value = self.raw_param.get("dns_name_prefix")
         # try to read the property value corresponding to the parameter from the `mc` object
         value_obtained_from_mc = None
         if self.mc:
@@ -408,11 +473,12 @@ class AKSCreateContext:
         to get the location of the provided resource group, which internally used ResourceManagementClient to send
         the request.
 
+        This function supports the option of read_only. When enabled, it will skip dynamic completion and validation.
+
         :return: string
         """
-        parameter_name = "location"
         # read the original value passed by the command
-        raw_value = self.raw_param.get(parameter_name)
+        raw_value = self.raw_param.get("location")
         # try to read the property value corresponding to the parameter from the `mc` object
         value_obtained_from_mc = None
         if self.mc:
@@ -425,6 +491,10 @@ class AKSCreateContext:
             read_from_mc = True
         else:
             location = raw_value
+
+        # skip dynamic completion & validation if option read_only is specified
+        if kwargs.get("read_only"):
+            return location
 
         dynamic_completion = False
         # check whether the parameter meet the conditions of dynamic completion
@@ -469,8 +539,6 @@ class AKSCreateContext:
 
         Note: no_ssh_key will not be decorated into the `mc` object.
 
-        This function supports the option of enable_validation. When enabled, it will check if both dns_name_prefix and
-        fqdn_subdomain are assigend, if so, raise the MutuallyExclusiveArgumentError.
         This function supports the option of enable_validation. When enabled, it will call "_validate_ssh_key" to
         verify the validity of ssh_key_value. If parameter no_ssh_key is set to True, verification will be skipped;
         otherwise, a CLIError will be raised when the value of ssh_key_value is invalid.
@@ -501,9 +569,8 @@ class AKSCreateContext:
 
         :return: string
         """
-        parameter_name = "vm_set_type"
         # read the original value passed by the command
-        raw_value = self.raw_param.get(parameter_name)
+        raw_value = self.raw_param.get("vm_set_type")
         # try to read the property value corresponding to the parameter from the `mc` object
         value_obtained_from_mc = None
         if self.mc and self.mc.agent_pool_profiles:
@@ -525,8 +592,7 @@ class AKSCreateContext:
         if kwargs.get("read_only"):
             return vm_set_type
 
-        # the value verified by the validator may have case problems, and the
-        # "_set_vm_set_type" function will adjust it
+        # the value verified by the validator may have case problems, and function "_set_vm_set_type" will adjust it
         dynamic_completion = True
         # disable dynamic completion if the value is read from `mc`
         dynamic_completion = dynamic_completion and not read_from_mc
@@ -542,8 +608,10 @@ class AKSCreateContext:
     # pylint: disable=unused-argument
     def get_load_balancer_sku(
         self, enable_validation: bool = False, **kwargs
-    ) -> str:
+    ) -> Union[str, None]:
         """Dynamically obtain the value of load_balancer_sku according to the context.
+
+        Note: Return lowercase string.
 
         When load_balancer_sku is not assigned, dynamic completion will be triggerd. Function "set_load_balancer_sku"
         will be called and the corresponding load balancer sku will be returned according to the value of
@@ -553,11 +621,10 @@ class AKSCreateContext:
         to "basic" when api_server_authorized_ip_ranges is assigned, if so, raise the MutuallyExclusiveArgumentError.
         This function supports the option of read_only. When enabled, it will skip dynamic completion and validation.
 
-        :return: string
+        :return: string or None
         """
-        parameter_name = "load_balancer_sku"
         # read the original value passed by the command
-        raw_value = self.raw_param.get(parameter_name)
+        raw_value = self.raw_param.get("load_balancer_sku")
         # try to read the property value corresponding to the parameter from the `mc` object
         value_obtained_from_mc = None
         if self.mc and self.mc.network_profile:
@@ -566,10 +633,10 @@ class AKSCreateContext:
         # set default value
         read_from_mc = False
         if value_obtained_from_mc is not None:
-            load_balancer_sku = value_obtained_from_mc
+            load_balancer_sku = safe_lower(value_obtained_from_mc)
             read_from_mc = True
         else:
-            load_balancer_sku = raw_value
+            load_balancer_sku = safe_lower(raw_value)
 
         # skip dynamic completion & validation if option read_only is specified
         if kwargs.get("read_only"):
@@ -582,9 +649,11 @@ class AKSCreateContext:
         # disable dynamic completion if the value is read from `mc`
         dynamic_completion = dynamic_completion and not read_from_mc
         if dynamic_completion:
-            load_balancer_sku = set_load_balancer_sku(
-                sku=load_balancer_sku,
-                kubernetes_version=self.get_kubernetes_version(),
+            load_balancer_sku = safe_lower(
+                set_load_balancer_sku(
+                    sku=load_balancer_sku,
+                    kubernetes_version=self.get_kubernetes_version(),
+                )
             )
 
         # validation
@@ -609,9 +678,8 @@ class AKSCreateContext:
 
         :return: string, empty list or list of strings, or None
         """
-        parameter_name = "api_server_authorized_ip_ranges"
         # read the original value passed by the command
-        raw_value = self.raw_param.get(parameter_name)
+        raw_value = self.raw_param.get("api_server_authorized_ip_ranges")
         # try to read the property value corresponding to the parameter from the `mc` object
         value_obtained_from_mc = None
         if self.mc and self.mc.api_server_access_profile:
@@ -1482,19 +1550,17 @@ class AKSCreateContext:
         When service_principal is given but client_secret is not, function "_ensure_aks_service_principal" would raise
         CLIError.
 
+        This function supports the option of read_only. When enabled, it will skip dynamic completion and validation.
+
         :return: a tuple containing two elements of string or None
         """
         # service_principal
-        sp_parameter_name = "service_principal"
-        sp_property_name_in_mc = "client_id"
         # read the original value passed by the command
-        sp_raw_value = self.raw_param.get(sp_parameter_name)
+        sp_raw_value = self.raw_param.get("service_principal")
         # try to read the property value corresponding to the parameter from the `mc` object
         sp_value_obtained_from_mc = None
         if self.mc and self.mc.service_principal_profile:
-            sp_value_obtained_from_mc = getattr(
-                self.mc.service_principal_profile, sp_property_name_in_mc
-            )
+            sp_value_obtained_from_mc = self.mc.service_principal_profile.client_id
         # set default value
         sp_read_from_mc = False
         if sp_value_obtained_from_mc is not None:
@@ -1504,16 +1570,12 @@ class AKSCreateContext:
             service_principal = sp_raw_value
 
         # client_secret
-        secret_parameter_name = "client_secret"
-        secret_property_name_in_mc = "secret"
         # read the original value passed by the command
-        secret_raw_value = self.raw_param.get(secret_parameter_name)
+        secret_raw_value = self.raw_param.get("client_secret")
         # try to read the property value corresponding to the parameter from the `mc` object
         secret_value_obtained_from_mc = None
         if self.mc and self.mc.service_principal_profile:
-            secret_value_obtained_from_mc = getattr(
-                self.mc.service_principal_profile, secret_property_name_in_mc
-            )
+            secret_value_obtained_from_mc = self.mc.service_principal_profile.secret
         # set default value
         secret_read_from_mc = False
         if secret_value_obtained_from_mc is not None:
@@ -1577,6 +1639,8 @@ class AKSCreateContext:
 
         When both service_principal and client_secret are assigned and enable_managed_identity is True, dynamic
         completion will be triggered. The value of enable_managed_identity will be set to False.
+
+        This function supports the option of read_only. When enabled, it will skip dynamic completion and validation.
 
         :return: bool
         """
@@ -1727,12 +1791,444 @@ class AKSCreateContext:
         # this parameter does not need validation
         return no_wait
 
+    # pylint: disable=unused-argument
+    def get_load_balancer_managed_outbound_ip_count(self, **kwargs) -> Union[int, None]:
+        """Obtain the value of load_balancer_managed_outbound_ip_count.
+
+        :return: int or None
+        """
+        # read the original value passed by the command
+        raw_value = self.raw_param.get(
+            "load_balancer_managed_outbound_ip_count"
+        )
+        # try to read the property value corresponding to the parameter from the `mc` object
+        value_obtained_from_mc = None
+        if (
+            self.mc and
+            self.mc.network_profile and
+            self.mc.network_profile.load_balancer_profile and
+            self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps
+        ):
+            value_obtained_from_mc = (
+                self.mc.network_profile.load_balancer_profile.managed_outbound_i_ps.count
+            )
+
+        # set default value
+        if value_obtained_from_mc is not None:
+            load_balancer_managed_outbound_ip_count = value_obtained_from_mc
+        else:
+            load_balancer_managed_outbound_ip_count = raw_value
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return load_balancer_managed_outbound_ip_count
+
+    # pylint: disable=unused-argument
+    def get_load_balancer_outbound_ips(self, **kwargs) -> Union[str, List[ResourceReference], None]:
+        """Obtain the value of load_balancer_outbound_ips.
+
+        :return: string, list of ResourceReference, or None
+        """
+        # read the original value passed by the command
+        raw_value = self.raw_param.get(
+            "load_balancer_outbound_ips"
+        )
+        # try to read the property value corresponding to the parameter from the `mc` object
+        value_obtained_from_mc = None
+        if (
+            self.mc and
+            self.mc.network_profile and
+            self.mc.network_profile.load_balancer_profile and
+            self.mc.network_profile.load_balancer_profile.outbound_i_ps
+        ):
+            value_obtained_from_mc = (
+                self.mc.network_profile.load_balancer_profile.outbound_i_ps.public_i_ps
+            )
+
+        # set default value
+        if value_obtained_from_mc is not None:
+            load_balancer_outbound_ips = value_obtained_from_mc
+        else:
+            load_balancer_outbound_ips = raw_value
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return load_balancer_outbound_ips
+
+    # pylint: disable=unused-argument
+    def get_load_balancer_outbound_ip_prefixes(self, **kwargs) -> Union[str, List[ResourceReference], None]:
+        """Obtain the value of load_balancer_outbound_ip_prefixes.
+
+        :return: string, list of ResourceReference, or None
+        """
+        # read the original value passed by the command
+        raw_value = self.raw_param.get(
+            "load_balancer_outbound_ip_prefixes"
+        )
+        # try to read the property value corresponding to the parameter from the `mc` object
+        value_obtained_from_mc = None
+        if (
+            self.mc and
+            self.mc.network_profile and
+            self.mc.network_profile.load_balancer_profile and
+            self.mc.network_profile.load_balancer_profile.outbound_ip_prefixes
+        ):
+            value_obtained_from_mc = (
+                self.mc.network_profile.load_balancer_profile.outbound_ip_prefixes.public_ip_prefixes
+            )
+
+        # set default value
+        if value_obtained_from_mc is not None:
+            load_balancer_outbound_ip_prefixes = value_obtained_from_mc
+        else:
+            load_balancer_outbound_ip_prefixes = raw_value
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return load_balancer_outbound_ip_prefixes
+
+    # pylint: disable=unused-argument
+    def get_load_balancer_outbound_ports(self, **kwargs) -> Union[int, None]:
+        """Obtain the value of load_balancer_outbound_ports.
+
+        :return: int or None
+        """
+        # read the original value passed by the command
+        raw_value = self.raw_param.get(
+            "load_balancer_outbound_ports"
+        )
+        # try to read the property value corresponding to the parameter from the `mc` object
+        value_obtained_from_mc = None
+        if (
+            self.mc and
+            self.mc.network_profile and
+            self.mc.network_profile.load_balancer_profile
+        ):
+            value_obtained_from_mc = (
+                self.mc.network_profile.load_balancer_profile.allocated_outbound_ports
+            )
+
+        # set default value
+        if value_obtained_from_mc is not None:
+            load_balancer_outbound_ports = value_obtained_from_mc
+        else:
+            load_balancer_outbound_ports = raw_value
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return load_balancer_outbound_ports
+
+    # pylint: disable=unused-argument
+    def get_load_balancer_idle_timeout(self, **kwargs) -> Union[int, None]:
+        """Obtain the value of load_balancer_idle_timeout.
+
+        :return: int or None
+        """
+        # read the original value passed by the command
+        raw_value = self.raw_param.get(
+            "load_balancer_idle_timeout"
+        )
+        # try to read the property value corresponding to the parameter from the `mc` object
+        value_obtained_from_mc = None
+        if (
+            self.mc and
+            self.mc.network_profile and
+            self.mc.network_profile.load_balancer_profile
+        ):
+            value_obtained_from_mc = (
+                self.mc.network_profile.load_balancer_profile.idle_timeout_in_minutes
+            )
+
+        # set default value
+        if value_obtained_from_mc is not None:
+            load_balancer_idle_timeout = value_obtained_from_mc
+        else:
+            load_balancer_idle_timeout = raw_value
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return load_balancer_idle_timeout
+
+    # pylint: disable=unused-argument
+    def get_outbound_type(self, enable_validation: bool = False, **kwargs) -> Union[str, None]:
+        """Obtain the value of outbound_type.
+
+        Note: The parameters involved in the validation are not verified in their own getters.
+
+        When outbound_type is not assigned, dynamic completion will be triggerd. By default, the value is set to
+        CONST_OUTBOUND_TYPE_LOAD_BALANCER.
+
+        This function supports the option of load_balancer_profile, if provided, when verifying loadbalancer-related
+        parameters, the value in load_balancer_profile will be used for validation.
+        This function supports the option of enable_validation. When enabled, if the value of outbound_type is
+        userDefinedRouting (CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING), the following checks will be performed. If
+        load_balancer_sku is set to basic, an InvalidArgumentValueError will be raised. If vnet_subnet_id is not
+        assigned, a RequiredArgumentMissingError will be raised. If any of load_balancer_managed_outbound_ip_count,
+        load_balancer_outbound_ips or load_balancer_outbound_ip_prefixes is assigned, a MutuallyExclusiveArgumentError
+        will be raised.
+        This function supports the option of read_only. When enabled, it will skip dynamic completion and validation.
+
+        :return: string or None
+        """
+        # read the original value passed by the command
+        raw_value = self.raw_param.get(
+            "outbound_type"
+        )
+        # try to read the property value corresponding to the parameter from the `mc` object
+        value_obtained_from_mc = None
+        if (
+            self.mc and
+            self.mc.network_profile
+        ):
+            value_obtained_from_mc = (
+                self.mc.network_profile.outbound_type
+            )
+
+        # set default value
+        read_from_mc = False
+        if value_obtained_from_mc is not None:
+            outbound_type = value_obtained_from_mc
+            read_from_mc = True
+        else:
+            outbound_type = raw_value
+
+        # skip dynamic completion & validation if option read_only is specified
+        if kwargs.get("read_only"):
+            return outbound_type
+
+        dynamic_completion = False
+        # check whether the parameter meet the conditions of dynamic completion
+        if outbound_type != CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING:
+            dynamic_completion = True
+        # disable dynamic completion if the value is read from `mc`
+        dynamic_completion = dynamic_completion and not read_from_mc
+        if dynamic_completion:
+            outbound_type = CONST_OUTBOUND_TYPE_LOAD_BALANCER
+
+        # validation
+        # Note: The parameters involved in the validation are not verified in their own getters.
+        if enable_validation:
+            if outbound_type == CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING:
+                # Should not enable read_only for get_load_balancer_sku, since its default value is None, and it has
+                # not been decorated into the mc object at this time, only the value after dynamic completion is
+                # meaningful here.
+                if self.get_load_balancer_sku() == "basic":
+                    raise InvalidArgumentValueError(
+                        "userDefinedRouting doesn't support basic load balancer sku"
+                    )
+
+                if self.get_vnet_subnet_id() in ["", None]:
+                    raise RequiredArgumentMissingError(
+                        "--vnet-subnet-id must be specified for userDefinedRouting and it must "
+                        "be pre-configured with a route table with egress rules"
+                    )
+
+                load_balancer_profile = kwargs.get("load_balancer_profile")
+                if load_balancer_profile:
+                    if (
+                        load_balancer_profile.managed_outbound_i_ps or
+                        load_balancer_profile.outbound_i_ps or
+                        load_balancer_profile.outbound_ip_prefixes
+                    ):
+                        raise MutuallyExclusiveArgumentError(
+                            "userDefinedRouting doesn't support customizing a standard load balancer with IP addresses"
+                        )
+                else:
+                    if (
+                        self.get_load_balancer_managed_outbound_ip_count() or
+                        self.get_load_balancer_outbound_ips() or
+                        self.get_load_balancer_outbound_ip_prefixes()
+                    ):
+                        raise MutuallyExclusiveArgumentError(
+                            "userDefinedRouting doesn't support customizing a standard load balancer with IP addresses"
+                        )
+
+        return outbound_type
+
+    # pylint: disable=unused-argument
+    def get_network_plugin(self, enable_validation: bool = False, **kwargs) -> Union[str, None]:
+        # read the original value passed by the command
+        raw_value = self.raw_param.get("network_plugin")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        value_obtained_from_mc = None
+        if self.mc and self.mc.network_profile:
+            value_obtained_from_mc = self.mc.network_profile.network_plugin
+
+        # set default value
+        if value_obtained_from_mc is not None:
+            network_plugin = value_obtained_from_mc
+        else:
+            network_plugin = raw_value
+
+        # this parameter does not need dynamic completion
+
+        # validation
+        if enable_validation:
+            if network_plugin:
+                if network_plugin == "azure" and self.get_pod_cidr():
+                    raise MutuallyExclusiveArgumentError(
+                        "Please use kubenet as the network plugin type when pod_cidr is specified"
+                    )
+            else:
+                if (
+                    self.get_pod_cidr() or
+                    self.get_service_cidr() or
+                    self.get_dns_service_ip() or
+                    self.get_docker_bridge_address() or
+                    self.get_network_policy()
+                ):
+                    raise RequiredArgumentMissingError(
+                        "Please explicitly specify the network plugin type"
+                    )
+        return network_plugin
+
+    # pylint: disable=unused-argument
+    def get_pod_cidr(self, enable_validation: bool = False, **kwargs) -> Union[str, None]:
+        # read the original value passed by the command
+        raw_value = self.raw_param.get("pod_cidr")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        value_obtained_from_mc = None
+        if self.mc and self.mc.network_profile:
+            value_obtained_from_mc = self.mc.network_profile.pod_cidr
+
+        # set default value
+        if value_obtained_from_mc is not None:
+            pod_cidr = value_obtained_from_mc
+        else:
+            pod_cidr = raw_value
+
+        # this parameter does not need dynamic completion
+
+        # validation
+        if enable_validation:
+            if pod_cidr:
+                network_plugin = self.get_network_plugin()
+                if network_plugin == "azure":
+                    raise MutuallyExclusiveArgumentError(
+                        "Please use kubenet as the network plugin type when pod_cidr is specified"
+                    )
+                elif network_plugin in ["", None]:
+                    raise RequiredArgumentMissingError(
+                        "Please explicitly specify the network plugin type"
+                    )
+        return pod_cidr
+
+    # pylint: disable=unused-argument
+    def get_service_cidr(self, enable_validation: bool = False, **kwargs) -> Union[str, None]:
+        # read the original value passed by the command
+        raw_value = self.raw_param.get("service_cidr")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        value_obtained_from_mc = None
+        if self.mc and self.mc.network_profile:
+            value_obtained_from_mc = self.mc.network_profile.service_cidr
+
+        # set default value
+        if value_obtained_from_mc is not None:
+            service_cidr = value_obtained_from_mc
+        else:
+            service_cidr = raw_value
+
+        # this parameter does not need dynamic completion
+
+        # validation
+        if enable_validation:
+            if service_cidr:
+                network_plugin = self.get_network_plugin()
+                if network_plugin in ["", None]:
+                    raise RequiredArgumentMissingError(
+                        "Please explicitly specify the network plugin type"
+                    )
+        return service_cidr
+
+    # pylint: disable=unused-argument
+    def get_dns_service_ip(self, enable_validation: bool = False, **kwargs) -> Union[str, None]:
+        # read the original value passed by the command
+        raw_value = self.raw_param.get("dns_service_ip")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        value_obtained_from_mc = None
+        if self.mc and self.mc.network_profile:
+            value_obtained_from_mc = self.mc.network_profile.dns_service_ip
+
+        # set default value
+        if value_obtained_from_mc is not None:
+            dns_service_ip = value_obtained_from_mc
+        else:
+            dns_service_ip = raw_value
+
+        # this parameter does not need dynamic completion
+
+        # validation
+        if enable_validation:
+            if dns_service_ip:
+                network_plugin = self.get_network_plugin()
+                if network_plugin in ["", None]:
+                    raise RequiredArgumentMissingError(
+                        "Please explicitly specify the network plugin type"
+                    )
+        return dns_service_ip
+
+    # pylint: disable=unused-argument
+    def get_docker_bridge_address(self, enable_validation: bool = False, **kwargs) -> Union[str, None]:
+        # read the original value passed by the command
+        raw_value = self.raw_param.get("docker_bridge_address")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        value_obtained_from_mc = None
+        if self.mc and self.mc.network_profile:
+            value_obtained_from_mc = self.mc.network_profile.docker_bridge_cidr
+
+        # set default value
+        if value_obtained_from_mc is not None:
+            docker_bridge_address = value_obtained_from_mc
+        else:
+            docker_bridge_address = raw_value
+
+        # this parameter does not need dynamic completion
+
+        # validation
+        if enable_validation:
+            if docker_bridge_address:
+                network_plugin = self.get_network_plugin()
+                if network_plugin in ["", None]:
+                    raise RequiredArgumentMissingError(
+                        "Please explicitly specify the network plugin type"
+                    )
+
+        return docker_bridge_address
+
+    # pylint: disable=unused-argument
+    def get_network_policy(self, enable_validation: bool = False, **kwargs) -> Union[str, None]:
+        # read the original value passed by the command
+        raw_value = self.raw_param.get("network_policy")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        value_obtained_from_mc = None
+        if self.mc and self.mc.network_profile:
+            value_obtained_from_mc = self.mc.network_profile.network_policy
+
+        # set default value
+        if value_obtained_from_mc is not None:
+            network_policy = value_obtained_from_mc
+        else:
+            network_policy = raw_value
+
+        # this parameter does not need dynamic completion
+
+        # validation
+        if enable_validation:
+            if network_policy:
+                network_plugin = self.get_network_plugin()
+                if network_plugin in ["", None]:
+                    raise RequiredArgumentMissingError(
+                        "Please explicitly specify the network plugin type"
+                    )
+
+        return network_policy
+
 
 class AKSCreateDecorator:
     def __init__(
         self,
         cmd: AzCliCommand,
-        client,
+        client: ContainerServiceClient,
         models: AKSCreateModels,
         raw_parameters: Dict,
         resource_type: ResourceType = ResourceType.MGMT_CONTAINERSERVICE,
@@ -1758,7 +2254,7 @@ class AKSCreateDecorator:
         # `_populate_api_server_access_profile` defined in `_helpers.py`
         self.resource_type = resource_type
 
-    def init_mc(self):
+    def init_mc(self) -> ManagedCluster:
         """Initialize the ManagedCluster object with required parameter location.
 
         The function "get_subscription_id" will be called, which depends on "az login" in advance, the returned
@@ -1776,7 +2272,7 @@ class AKSCreateDecorator:
         mc = self.models.ManagedCluster(location=self.context.get_location())
         return mc
 
-    def set_up_agent_pool_profiles(self, mc):
+    def set_up_agent_pool_profiles(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up agent pool profiles for the ManagedCluster object.
 
         :return: the ManagedCluster object
@@ -1815,7 +2311,7 @@ class AKSCreateDecorator:
         mc.agent_pool_profiles = [agent_pool_profile]
         return mc
 
-    def set_up_linux_profile(self, mc):
+    def set_up_linux_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up linux profile for the ManagedCluster object.
 
         Linux profile is just used for SSH access to VMs, so it will be omitted if --no-ssh-key option was specified.
@@ -1843,7 +2339,7 @@ class AKSCreateDecorator:
             mc.linux_profile = linux_profile
         return mc
 
-    def set_up_windows_profile(self, mc):
+    def set_up_windows_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up windows profile for the ManagedCluster object.
 
         :return: the ManagedCluster object
@@ -1870,12 +2366,9 @@ class AKSCreateDecorator:
             )
 
             mc.windows_profile = windows_profile
-            # clean up intermediate after `mc` is decorated
-            self.context.remove_intermediate("windows_admin_username")
-            self.context.remove_intermediate("windows_admin_password")
         return mc
 
-    def set_up_service_principal_profile(self, mc):
+    def set_up_service_principal_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up service principal profile for the ManagedCluster object.
 
         The function "_ensure_aks_service_principal" will be called if the user provides an incomplete sp and secret
@@ -1907,12 +2400,9 @@ class AKSCreateDecorator:
                 )
             )
             mc.service_principal_profile = service_principal_profile
-            # clean up intermediates after `mc` is decorated
-            self.context.remove_intermediate("service_principal")
-            self.context.remove_intermediate("client_secret")
         return mc
 
-    def process_add_role_assignment_for_vnet_subnet(self, mc) -> None:
+    def process_add_role_assignment_for_vnet_subnet(self, mc: ManagedCluster) -> None:
         """Add role assignment for vent subnet.
 
         The function "subnet_role_assignment_exists" will be called to verfiy if the role assignment already exists for
@@ -1992,7 +2482,7 @@ class AKSCreateDecorator:
             overwrite_exists=True,
         )
 
-    def process_attach_acr(self, mc):
+    def process_attach_acr(self, mc: ManagedCluster) -> None:
         """Attach acr for the cluster.
 
         The function "_ensure_aks_acr" will be called to create an AcrPull role assignment for the acr, which
@@ -2033,7 +2523,92 @@ class AKSCreateDecorator:
                     subscription_id=subscription_id,
                 )
 
-    def construct_default_mc(self):
+    def set_up_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up network profile for the ManagedCluster object.
+
+        Build load balancer profile, verify outbound type and load balancer sku first, then set up network profile.
+
+        :return: the ManagedCluster object
+        """
+        if not isinstance(mc, self.models.ManagedCluster):
+            raise CLIInternalError(
+                "Unexpected mc object with type '{}'.".format(type(mc))
+            )
+        # build load balancer profile, which is part of the network profile
+        load_balancer_profile = create_load_balancer_profile(
+            self.cmd,
+            self.context.get_load_balancer_managed_outbound_ip_count(),
+            self.context.get_load_balancer_outbound_ips(),
+            self.context.get_load_balancer_outbound_ip_prefixes(),
+            self.context.get_load_balancer_outbound_ports(),
+            self.context.get_load_balancer_idle_timeout(),
+            models=self.models.lb_models,
+        )
+
+        # verify outbound type, which is part of the network profile
+        # Note: Validation internally depends on load_balancer_sku, which is a temporary value that is
+        # dynamically completed.
+        outbound_type = self.context.get_outbound_type(
+            enable_validation=True, load_balancer_profile=load_balancer_profile
+        )
+
+        # verify load balancer sku, which is part of the network profile
+        load_balancer_sku = self.context.get_load_balancer_sku(
+            enable_validation=True
+        )
+
+        network_plugin = self.context.get_network_plugin(enable_validation=True)
+        pod_cidr = self.context.get_pod_cidr(enable_validation=True)
+        service_cidr = self.context.get_service_cidr(enable_validation=True)
+        dns_service_ip = self.context.get_dns_service_ip(enable_validation=True)
+        docker_bridge_address = self.context.get_docker_bridge_address(
+            enable_validation=True
+        )
+        network_policy = self.context.get_network_policy(enable_validation=True)
+
+        network_profile = None
+        if any(
+            [
+                network_plugin,
+                pod_cidr,
+                service_cidr,
+                dns_service_ip,
+                docker_bridge_address,
+                network_policy,
+            ]
+        ):
+            # Attention: RP would return UnexpectedLoadBalancerSkuForCurrentOutboundConfiguration internal server error
+            # if load_balancer_sku is set to basic and load_balancer_profile is assigned.
+            # Attention: SDK provides default values for pod_cidr, service_cidr, dns_service_ip, docker_bridge_cidr
+            # and outbound_type, and they might be overwritten to None.
+            network_profile = self.models.ContainerServiceNetworkProfile(
+                network_plugin=network_plugin,
+                pod_cidr=pod_cidr,
+                service_cidr=service_cidr,
+                dns_service_ip=dns_service_ip,
+                docker_bridge_cidr=docker_bridge_address,
+                network_policy=network_policy,
+                load_balancer_sku=load_balancer_sku,
+                load_balancer_profile=load_balancer_profile,
+                outbound_type=outbound_type,
+            )
+        else:
+            if load_balancer_sku == "standard" or load_balancer_profile:
+                network_profile = self.models.ContainerServiceNetworkProfile(
+                    network_plugin="kubenet",
+                    load_balancer_sku=load_balancer_sku,
+                    load_balancer_profile=load_balancer_profile,
+                    outbound_type=outbound_type,
+                )
+            if load_balancer_sku == "basic":
+                # load balancer sku must be standard when load balancer profile is provided
+                network_profile = self.models.ContainerServiceNetworkProfile(
+                    load_balancer_sku=load_balancer_sku,
+                )
+        mc.network_profile = network_profile
+        return mc
+
+    def construct_default_mc(self) -> ManagedCluster:
         """The overall control function used to construct the default ManagedCluster object.
 
         Note: To reduce the risk of regression introduced by refactoring, this function is not complete
@@ -2058,6 +2633,8 @@ class AKSCreateDecorator:
         self.process_add_role_assignment_for_vnet_subnet(mc)
         # attach acr (add role assignment for acr)
         self.process_attach_acr(mc)
+        # set up network profile
+        mc = self.set_up_network_profile(mc)
 
         # TODO: set up other profiles
         return mc
