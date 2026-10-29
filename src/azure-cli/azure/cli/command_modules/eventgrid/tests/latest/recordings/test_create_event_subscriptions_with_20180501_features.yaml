@@ -1,0 +1,876 @@
+interactions:
+- request:
+    body: '{"properties": {"destination": {"endpointType": "StorageQueue", "properties":
+      {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Storage/storageAccounts/devexpstg",
+      "queueName": "stogqueuedestination"}}, "filter": {"subjectBeginsWith": "SomeRandomText1",
+      "subjectEndsWith": "SomeRandomText2", "isSubjectCaseSensitive": false}, "eventDeliverySchema":
+      "CloudEventSchemaV1_0", "retryPolicy": {"maxDeliveryAttempts": 30, "eventTimeToLiveInMinutes":
+      1440}, "deadLetterDestination": {"endpointType": "StorageBlob", "properties":
+      {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Storage/storageAccounts/devexpstg",
+      "blobContainerName": "dlq"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '762'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --source-resource-id --name --endpoint-type --endpoint --event-delivery-schema
+        --deadletter-endpoint --subject-begins-with --subject-ends-with
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-eventgrid/9.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription1?api-version=2020-10-15-preview
+  response:
+    body:
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Creating","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Storage/storageAccounts/devexpstg","queueName":"stogqueuedestination"},"endpointType":"StorageQueue"},"filter":{"subjectBeginsWith":"SomeRandomText1","subjectEndsWith":"SomeRandomText2","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"CloudEventSchemaV1_0","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440},"deadLetterDestination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Storage/storageAccounts/devexpstg","blobContainerName":"dlq"},"endpointType":"StorageBlob"}},"systemData":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription1","name":"CliTestEventsubscription1","type":"Microsoft.EventGrid/eventSubscriptions"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/89B32EE9-375A-4467-B0B6-49A15A55CD95?api-version=2020-10-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1320'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 24 Mar 2022 07:01:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '899'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name --endpoint-type --endpoint --event-delivery-schema
+        --deadletter-endpoint --subject-begins-with --subject-ends-with
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-eventgrid/9.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/89B32EE9-375A-4467-B0B6-49A15A55CD95?api-version=2020-10-15-preview
+  response:
+    body:
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/89B32EE9-375A-4467-B0B6-49A15A55CD95?api-version=2020-10-15-preview","name":"89b32ee9-375a-4467-b0b6-49a15a55cd95","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '294'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 24 Mar 2022 07:01:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name --endpoint-type --endpoint --event-delivery-schema
+        --deadletter-endpoint --subject-begins-with --subject-ends-with
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-eventgrid/9.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription1?api-version=2020-10-15-preview
+  response:
+    body:
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Storage/storageAccounts/devexpstg","queueName":"stogqueuedestination"},"endpointType":"StorageQueue"},"filter":{"subjectBeginsWith":"SomeRandomText1","subjectEndsWith":"SomeRandomText2","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"CloudEventSchemaV1_0","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440},"deadLetterDestination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Storage/storageAccounts/devexpstg","blobContainerName":"dlq"},"endpointType":"StorageBlob"}},"systemData":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription1","name":"CliTestEventsubscription1","type":"Microsoft.EventGrid/eventSubscriptions"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1321'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 24 Mar 2022 07:01:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-eventgrid/9.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription1?api-version=2020-10-15-preview
+  response:
+    body:
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Storage/storageAccounts/devexpstg","queueName":"stogqueuedestination"},"endpointType":"StorageQueue"},"filter":{"subjectBeginsWith":"SomeRandomText1","subjectEndsWith":"SomeRandomText2","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"CloudEventSchemaV1_0","retryPolicy":{"maxDeliveryAttempts":30,"eventTimeToLiveInMinutes":1440},"deadLetterDestination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Storage/storageAccounts/devexpstg","blobContainerName":"dlq"},"endpointType":"StorageBlob"}},"systemData":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription1","name":"CliTestEventsubscription1","type":"Microsoft.EventGrid/eventSubscriptions"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1321'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 24 Mar 2022 07:01:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"destination": {"endpointType": "HybridConnection", "properties":
+      {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Relay/namespaces/DevExpRelayNamespace/hybridConnections/hydbridconnectiondestination"}},
+      "filter": {"subjectBeginsWith": "SomeRandomText1", "subjectEndsWith": "SomeRandomText2",
+      "isSubjectCaseSensitive": false}, "retryPolicy": {"maxDeliveryAttempts": 20,
+      "eventTimeToLiveInMinutes": 1000}, "deadLetterDestination": {"endpointType":
+      "StorageBlob", "properties": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Storage/storageAccounts/devexpstg",
+      "blobContainerName": "dlq"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '733'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --source-resource-id --name --endpoint-type --endpoint --deadletter-endpoint
+        --max-delivery-attempts --event-ttl --subject-begins-with --subject-ends-with
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-eventgrid/9.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription2?api-version=2020-10-15-preview
+  response:
+    body:
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Creating","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Relay/namespaces/DevExpRelayNamespace/hybridConnections/hydbridconnectiondestination"},"endpointType":"HybridConnection"},"filter":{"subjectBeginsWith":"SomeRandomText1","subjectEndsWith":"SomeRandomText2","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"retryPolicy":{"maxDeliveryAttempts":20,"eventTimeToLiveInMinutes":1000},"deadLetterDestination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Storage/storageAccounts/devexpstg","blobContainerName":"dlq"},"endpointType":"StorageBlob"}},"systemData":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription2","name":"CliTestEventsubscription2","type":"Microsoft.EventGrid/eventSubscriptions"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/F442635D-FDD1-4317-8226-F24CD2CF857D?api-version=2020-10-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1295'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 24 Mar 2022 07:01:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '899'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name --endpoint-type --endpoint --deadletter-endpoint
+        --max-delivery-attempts --event-ttl --subject-begins-with --subject-ends-with
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-eventgrid/9.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/F442635D-FDD1-4317-8226-F24CD2CF857D?api-version=2020-10-15-preview
+  response:
+    body:
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/F442635D-FDD1-4317-8226-F24CD2CF857D?api-version=2020-10-15-preview","name":"f442635d-fdd1-4317-8226-f24cd2cf857d","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '294'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 24 Mar 2022 07:02:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name --endpoint-type --endpoint --deadletter-endpoint
+        --max-delivery-attempts --event-ttl --subject-begins-with --subject-ends-with
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-eventgrid/9.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription2?api-version=2020-10-15-preview
+  response:
+    body:
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Relay/namespaces/DevExpRelayNamespace/hybridConnections/hydbridconnectiondestination"},"endpointType":"HybridConnection"},"filter":{"subjectBeginsWith":"SomeRandomText1","subjectEndsWith":"SomeRandomText2","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":20,"eventTimeToLiveInMinutes":1000},"deadLetterDestination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Storage/storageAccounts/devexpstg","blobContainerName":"dlq"},"endpointType":"StorageBlob"}},"systemData":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription2","name":"CliTestEventsubscription2","type":"Microsoft.EventGrid/eventSubscriptions"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1336'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 24 Mar 2022 07:02:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-eventgrid/9.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription2?api-version=2020-10-15-preview
+  response:
+    body:
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Relay/namespaces/DevExpRelayNamespace/hybridConnections/hydbridconnectiondestination"},"endpointType":"HybridConnection"},"filter":{"subjectBeginsWith":"SomeRandomText1","subjectEndsWith":"SomeRandomText2","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":20,"eventTimeToLiveInMinutes":1000},"deadLetterDestination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Storage/storageAccounts/devexpstg","blobContainerName":"dlq"},"endpointType":"StorageBlob"}},"systemData":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription2","name":"CliTestEventsubscription2","type":"Microsoft.EventGrid/eventSubscriptions"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1336'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 24 Mar 2022 07:02:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"destination": {"endpointType": "ServiceBusQueue", "properties":
+      {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.ServiceBus/namespaces/devexpservicebus/queues/devexpdestination"}},
+      "filter": {"subjectBeginsWith": "SomeRandomText1", "subjectEndsWith": "SomeRandomText2",
+      "isSubjectCaseSensitive": false}, "retryPolicy": {"maxDeliveryAttempts": 10,
+      "eventTimeToLiveInMinutes": 1200}, "deadLetterDestination": {"endpointType":
+      "StorageBlob", "properties": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Storage/storageAccounts/devexpstg",
+      "blobContainerName": "dlq"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '711'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --source-resource-id --name --endpoint-type --endpoint --deadletter-endpoint
+        --max-delivery-attempts --event-ttl --subject-begins-with --subject-ends-with
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-eventgrid/9.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription3?api-version=2020-10-15-preview
+  response:
+    body:
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Creating","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.ServiceBus/namespaces/devexpservicebus/queues/devexpdestination"},"endpointType":"ServiceBusQueue"},"filter":{"subjectBeginsWith":"SomeRandomText1","subjectEndsWith":"SomeRandomText2","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"retryPolicy":{"maxDeliveryAttempts":10,"eventTimeToLiveInMinutes":1200},"deadLetterDestination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Storage/storageAccounts/devexpstg","blobContainerName":"dlq"},"endpointType":"StorageBlob"}},"systemData":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription3","name":"CliTestEventsubscription3","type":"Microsoft.EventGrid/eventSubscriptions"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/6D5198AC-9503-4576-9DBD-58EE6F02C2F1?api-version=2020-10-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1273'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 24 Mar 2022 07:02:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '899'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name --endpoint-type --endpoint --deadletter-endpoint
+        --max-delivery-attempts --event-ttl --subject-begins-with --subject-ends-with
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-eventgrid/9.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/6D5198AC-9503-4576-9DBD-58EE6F02C2F1?api-version=2020-10-15-preview
+  response:
+    body:
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/6D5198AC-9503-4576-9DBD-58EE6F02C2F1?api-version=2020-10-15-preview","name":"6d5198ac-9503-4576-9dbd-58ee6f02c2f1","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '294'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 24 Mar 2022 07:02:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name --endpoint-type --endpoint --deadletter-endpoint
+        --max-delivery-attempts --event-ttl --subject-begins-with --subject-ends-with
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-eventgrid/9.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription3?api-version=2020-10-15-preview
+  response:
+    body:
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.ServiceBus/namespaces/devexpservicebus/queues/devexpdestination"},"endpointType":"ServiceBusQueue"},"filter":{"subjectBeginsWith":"SomeRandomText1","subjectEndsWith":"SomeRandomText2","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":10,"eventTimeToLiveInMinutes":1200},"deadLetterDestination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Storage/storageAccounts/devexpstg","blobContainerName":"dlq"},"endpointType":"StorageBlob"}},"systemData":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription3","name":"CliTestEventsubscription3","type":"Microsoft.EventGrid/eventSubscriptions"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1314'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 24 Mar 2022 07:02:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-eventgrid/9.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription3?api-version=2020-10-15-preview
+  response:
+    body:
+      string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.storage/storageaccounts/clieventgrid000002","provisioningState":"Succeeded","destination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.ServiceBus/namespaces/devexpservicebus/queues/devexpdestination"},"endpointType":"ServiceBusQueue"},"filter":{"subjectBeginsWith":"SomeRandomText1","subjectEndsWith":"SomeRandomText2","includedEventTypes":["Microsoft.Storage.BlobCreated","Microsoft.Storage.BlobDeleted"]},"labels":null,"eventDeliverySchema":"EventGridSchema","retryPolicy":{"maxDeliveryAttempts":10,"eventTimeToLiveInMinutes":1200},"deadLetterDestination":{"properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DevExpRg/providers/Microsoft.Storage/storageAccounts/devexpstg","blobContainerName":"dlq"},"endpointType":"StorageBlob"}},"systemData":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription3","name":"CliTestEventsubscription3","type":"Microsoft.EventGrid/eventSubscriptions"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1314'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 24 Mar 2022 07:02:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --source-resource-id --name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-eventgrid/9.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription1?api-version=2020-10-15-preview
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/53440B83-32AE-49D9-8392-1BD0B4812684?api-version=2020-10-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 24 Mar 2022 07:02:17 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationResults/53440B83-32AE-49D9-8392-1BD0B4812684?api-version=2020-10-15-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-eventgrid/9.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/53440B83-32AE-49D9-8392-1BD0B4812684?api-version=2020-10-15-preview
+  response:
+    body:
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/53440B83-32AE-49D9-8392-1BD0B4812684?api-version=2020-10-15-preview","name":"53440b83-32ae-49d9-8392-1bd0b4812684","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '294'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 24 Mar 2022 07:02:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --source-resource-id --name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-eventgrid/9.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription2?api-version=2020-10-15-preview
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/584E05D3-B1C6-4A78-B137-9C448EE6A73F?api-version=2020-10-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 24 Mar 2022 07:02:29 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationResults/584E05D3-B1C6-4A78-B137-9C448EE6A73F?api-version=2020-10-15-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-eventgrid/9.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/584E05D3-B1C6-4A78-B137-9C448EE6A73F?api-version=2020-10-15-preview
+  response:
+    body:
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/584E05D3-B1C6-4A78-B137-9C448EE6A73F?api-version=2020-10-15-preview","name":"584e05d3-b1c6-4a78-b137-9c448ee6a73f","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '294'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 24 Mar 2022 07:02:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --source-resource-id --name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-eventgrid/9.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clieventgrid000002/providers/Microsoft.EventGrid/eventSubscriptions/CliTestEventsubscription3?api-version=2020-10-15-preview
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/3D017A49-F847-4934-A480-9422249FA144?api-version=2020-10-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Thu, 24 Mar 2022 07:02:41 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationResults/3D017A49-F847-4934-A480-9422249FA144?api-version=2020-10-15-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - eventgrid event-subscription delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --source-resource-id --name
+      User-Agent:
+      - AZURECLI/2.34.1 azsdk-python-mgmt-eventgrid/9.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/3D017A49-F847-4934-A480-9422249FA144?api-version=2020-10-15-preview
+  response:
+    body:
+      string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/centraluseuap/operationsStatus/3D017A49-F847-4934-A480-9422249FA144?api-version=2020-10-15-preview","name":"3d017a49-f847-4934-a480-9422249fa144","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '294'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 24 Mar 2022 07:02:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
