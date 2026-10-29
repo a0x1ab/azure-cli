@@ -1,0 +1,165 @@
+trigger:
+  branches:
+    exclude:
+    - '*'
+
+schedules:
+- cron: "0 18 * * 5"
+  displayName: Weekly Friday test
+  branches:
+    include:
+    - CLITest
+  always: true
+
+jobs:
+- job: LiveTestPython38
+  displayName: Live Test Python 3.8
+  timeoutInMinutes: 9999
+  strategy:
+    maxParallel: 20
+    matrix:
+      acr:
+        Target: acr
+      acs:
+        Target: acs
+      advisor:
+        Target: advisor
+      ams:
+        Target: ams
+      apim:
+        Target: apim
+      appconfig:
+        Target: appconfig
+      appservice:
+        Target: appservice
+      backup:
+        Target: backup
+      batch:
+        Target: batch
+      batchai:
+        Target: batchai
+      billing:
+        Target: billing
+      botservice:
+        Target: botservice
+      cdn:
+        Target: cdn
+      cloud:
+        Target: cloud
+      cognitiveservices:
+        Target: cognitiveservices
+      configure:
+        Target: configure
+      consumption:
+        Target: consumption
+      container:
+        Target: container
+      cosmosdb:
+        Target: cosmosdb
+      deploymentmanager:
+        Target: deploymentmanager
+      dla:
+        Target: dla
+      dls:
+        Target: dls
+      dms:
+        Target: dms
+      eventgrid:
+        Target: eventgrid
+      eventhubs:
+        Target: eventhubs
+      extension:
+        Target: extension
+      feedback:
+        Target: feedback
+      find:
+        Target: find
+      hdinsight:
+        Target: hdinsight
+      interactive:
+        Target: interactive
+      iot:
+        Target: iot
+      iotcentral:
+        Target: iotcentral
+      keyvault:
+        Target: keyvault
+      kusto:
+        Target: kusto
+      lab:
+        Target: lab
+      managedservices:
+        Target: managedservices
+      maps:
+        Target: maps
+      monitor:
+        Target: monitor
+      natgateway:
+        Target: natgateway
+      netappfiles:
+        Target: netappfiles
+      network:
+        Target: network
+      policyinsights:
+        Target: policyinsights
+      privatedns:
+        Target: privatedns
+      profile:
+        Target: profile
+      rdbms:
+        Target: rdbms
+      redis:
+        Target: redis
+      relay:
+        Target: relay
+      reservations:
+        Target: reservations
+      resource:
+        Target: resource
+      role:
+        Target: role
+      search:
+        Target: search
+      security:
+        Target: security
+      servicebus:
+        Target: servicebus
+      servicefabric:
+        Target: servicefabric
+      signalr:
+        Target: signalr
+      sql:
+        Target: sql
+      sqlvm:
+        Target: sqlvm
+      storage:
+        Target: storage
+      vm:
+        Target: vm
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.8'
+        addToPath: true
+        architecture: 'x64'
+    - bash: |
+        cd ..
+        pwd
+        ls
+        git clone https://github.com/Azure/azure-cli.git
+        git clone https://github.com/Azure/azure-cli-extensions.git
+        python -m venv env
+        source env/bin/activate
+        pip install azdev
+        azdev setup -c azure-cli -r azure-cli-extensions
+        az login --service-principal --username $(APP_ID) --password $(PASSWORD) --tenant $(TENANT_ID)
+        azdev test $(Target) --live -a "-n 16"
+    - task: PublishTestResults@2
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFiles: '/home/vsts/.azdev/env_config/home/vsts/work/1/env/test_results.xml'
+        testRunTitle: 'Azure CLI live test results of $(Target)'
+        # mergeTestResults: true
+        # testResultsFormat: 'JUnit'
