@@ -1,0 +1,143 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "enableBgp": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enable BGP (Border Gateway Protocol)."
+      }
+    },
+    "gatewayType": {
+      "type": "string",
+      "defaultValue": "Vpn",
+      "allowedValues": [
+        "Vpn",
+        "ExpressRoute"
+      ],
+      "metadata": {
+        "description": "Gateway type."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for resources."
+      }
+    },
+    "publicIpAddress": {
+      "type": "string",
+      "metadata": {
+        "description": "Name or ID of public IP address to use."
+      }
+    },
+    "publicIpAddressType": {
+      "type": "string",
+      "defaultValue": "existingId",
+      "allowedValues": [
+        "existingName",
+        "existingId"
+      ],
+      "metadata": {
+        "description": "Type of Public IP Address to associate with the VPN gateway."
+      }
+    },
+    "sku": {
+      "type": "string",
+      "defaultValue": "Basic",
+      "allowedValues": [
+        "Basic",
+        "Standard",
+        "HighPerformance"
+      ],
+      "metadata": {
+        "description": "VPN Gateway SKU."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": { },
+      "metadata": {
+        "description": "Tags object."
+      }
+    },
+    "virtualNetworkGatewayName": {
+      "type": "string",
+      "metadata": {
+        "description": "Gateway name."
+      }
+    },
+    "virtualNetwork": {
+      "type": "string",
+      "metadata": {
+        "description": "Name or ID of a virtual network that contains a subnet named 'GatewaySubnet'."
+      }
+    },
+    "virtualNetworkType": {
+      "type": "string",
+      "defaultValue": "existingId",
+      "allowedValues": [
+        "existingId",
+        "existingName"
+      ],
+      "metadata": {
+        "description": "Type of virtual network to supply to the VPN gateway."
+      }
+    },
+    "vpnType": {
+      "type": "string",
+      "metadata": {
+        "description": "VPN gateway type."
+      },
+      "defaultValue": "RouteBased",
+      "allowedValues": [
+        "RouteBased",
+        "PolicyBased"
+      ]
+    }
+  },
+  "variables": {
+    "pubIpIds": {
+      "existingName": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/publicIPAddresses/', parameters('publicIpAddress'))]",
+      "existingId": "[parameters('publicIpAddress')]"
+    },
+    "subnetIds": {
+      "existingName": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', parameters('virtualNetwork'), '/subnets/GatewaySubnet')]",
+      "existingId": "[concat(parameters('virtualNetwork'), '/subnets/GatewaySubnet')]"
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "2016-03-30",
+      "type": "Microsoft.Network/virtualNetworkGateways",
+      "name": "[parameters('virtualNetworkGatewayName')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('subnetIds')[parameters('virtualNetworkType')]]"
+              },
+              "publicIPAddress": {
+                "id": "[variables('pubIpIds')[parameters('publicIpAddressType')]]"
+              }
+            },
+            "name": "vnetGatewayConfig"
+          }
+        ],
+        "sku": {
+          "name": "[parameters('sku')]",
+          "tier": "[parameters('sku')]"
+        },
+        "gatewayType": "[parameters('gatewayType')]",
+        "vpnType": "[parameters('vpnType')]",
+        "enableBgp": "[parameters('enableBgp')]"
+      }
+    }
+  ]
+}
