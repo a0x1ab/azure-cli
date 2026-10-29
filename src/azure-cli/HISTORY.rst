@@ -12,7 +12,12 @@ Release History
 * Fix issue #11100: AttributeError for az webapp up when create service plan
 
 **Compute**
+
 * Upgrade API version of compute, disks, snapshots to 2019-07-01
+
+**IOT**
+
+* Fix #2531: Add convenience arguments for hub update.
 
 **Packaging**
 
@@ -32,6 +37,15 @@ Release History
 
 * Fix #2902: Avoid setting memory configs while updating Basic SKU cache
 
+**Reservations**
+
+* Upgrading SDK Version to 0.6.0
+* Add billingplan details info after calling Get-Gatalogs
+
+**Storage**
+
+* storage account create: Add --enable-hierarchical-namespace to support filesystem semantics in blob service.
+
 2.0.76
 ++++++
 
@@ -41,10 +55,6 @@ Release History
 * Support enabling auditing on creating a registry
 * Support Repository-scoped RBAC
 
-**Reservations**
-
-* Upgrading SDK Version to 0.6.0
-* Add billingplan details info after calling Get-Gatalogs
 
 **AKS**
 
@@ -101,7 +111,6 @@ Release History
 * Add new routing source type: DigitalTwinChangeEvents
 * Fix #2826: Missing features in "az iot hub create"
 * Bug Fixed: Return more descriptive message on raised exception.
-* Fix #2531: Add convenience arguments for hub update.
 
 **Key Vault**
 
