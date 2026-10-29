@@ -291,7 +291,7 @@ def get_security_topology(client, resource_name, resource_group_name):
 
 
 # --------------------------------------------------------------------------------------------
-# Security Topology
+# Security Workspace
 # --------------------------------------------------------------------------------------------
 
 
@@ -458,6 +458,34 @@ def get_security_sub_assessment(client, resource_name, assessment_name, assessed
                       assessment_name=assessment_name,
                       scope=assessed_resource_id)
 
+
+# --------------------------------------------------------------------------------------------
+# Adaptive Network Hardenings
+# --------------------------------------------------------------------------------------------
+
+def get_security_adaptive_network_hardenings(client,
+                                             adaptive_network_hardenings_resource_name,
+                                             resource_name,
+                                             resource_type,
+                                             resource_namespace,
+                                             resource_group):
+
+    return client.get(resource_group,
+                      resource_namespace,
+                      resource_type,
+                      resource_name,
+                      adaptive_network_hardenings_resource_name)
+
+def list_security_adaptive_network_hardenings(client,
+                                              resource_name,
+                                              resource_type,
+                                              resource_namespace,
+                                              resource_group):
+
+    return client.list_by_extended_resource(resource_group,
+                                            resource_namespace,
+                                            resource_type,
+                                            resource_name)
 
 # --------------------------------------------------------------------------------------------
 # Security IoT Solution
