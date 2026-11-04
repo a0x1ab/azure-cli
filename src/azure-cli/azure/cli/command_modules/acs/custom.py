@@ -2378,6 +2378,7 @@ def aks_update(cmd, client, resource_group_name, name,
                disable_secret_rotation=False,
                rotation_poll_interval=None,
                tags=None,
+               nodepool_labels=None,
                aks_custom_headers=None):
     ManagedClusterSKU = cmd.get_models('ManagedClusterSKU',
                                        resource_type=ResourceType.MGMT_CONTAINERSERVICE,
@@ -2727,6 +2728,9 @@ def aks_update(cmd, client, resource_group_name, name,
             raise ArgumentUsageError(
                 '--rotation-poll-interval can only be specified when azure-keyvault-secrets-provider is enabled')
         azure_keyvault_secrets_provider_addon_profile.config[CONST_ROTATION_POLL_INTERVAL] = rotation_poll_interval
+    
+    if nodepool_labels is not None:
+        instance.node_labels = nodepool_labels
 
     # normalize user-provided header
     # usually the purpose is to enable (preview) features through AKSHTTPCustomFeatures
@@ -3871,6 +3875,7 @@ def aks_agentpool_update(cmd, client, resource_group_name, cluster_name, nodepoo
                          tags=None,
                          max_surge=None,
                          mode=None,
+                         labels=None,
                          no_wait=False):
     AgentPoolUpgradeSettings = cmd.get_models('AgentPoolUpgradeSettings',
                                               resource_type=ResourceType.MGMT_CONTAINERSERVICE,
@@ -3931,6 +3936,9 @@ def aks_agentpool_update(cmd, client, resource_group_name, cluster_name, nodepoo
 
     if mode is not None:
         instance.mode = mode
+    
+    if labels is not None:
+        instance.node_labels = labels
 
     return sdk_no_wait(
         no_wait,
