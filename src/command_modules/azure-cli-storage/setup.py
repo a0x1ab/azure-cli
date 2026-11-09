@@ -14,7 +14,7 @@ except ImportError:
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
     cmdclass = {}
 
-VERSION = "2.4.1"
+VERSION = "2.4.2"
 CLASSIFIERS = [
     'Development Status :: 5 - Production/Stable',
     'Intended Audience :: Developers',
@@ -50,11 +50,15 @@ setup(
     author_email='azpycli@microsoft.com',
     url='https://github.com/Azure/azure-cli',
     classifiers=CLASSIFIERS,
+    package_data={
+        'azcopy': ['azcopy/*/*']
+    },
     packages=[
         'azure',
         'azure.cli',
         'azure.cli.command_modules',
         'azure.cli.command_modules.storage',
+        'azure.cli.command_modules.storage.azcopy',
         'azure.cli.command_modules.storage.operations'
     ],
     install_requires=DEPENDENCIES,
