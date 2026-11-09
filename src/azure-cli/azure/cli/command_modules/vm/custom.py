@@ -3724,3 +3724,49 @@ def set_disk_access(cmd, client, parameters, resource_group_name, disk_access_na
                        resource_group_name, disk_access_name, disk_access)
 
 # endregion
+
+def ios8601Compaliant(duration):
+    import re
+    return re.match('^P(\d+Y)?(\d+M)?(\d+D)?(T(\d+H)?(\d+M)?(\d+S)?)?$', duration)
+
+# region install patches
+def install_vm_patches(cmd, resource_group_name, vm_name, maximum_duration, reboot_setting, classifications_to_include=None, kb_numbers_to_include=None, kb_numbers_to_exclude=None,
+                       exclude_kbs_requiring_reboot=None, package_name_masks_to_include=None, package_name_masks_to_exclude=None):
+    from azure.mgmt.compute.models import VirtualMachineInstallPatchesParameters, WindowsParameters, LinuxParameters, VMGuestPatchRebootSetting, VMGuestPatchClassificationWindows, VMGuestPatchClassificationLinux
+    if not ios8601Compaliant(maximum_duration):
+        raise CLIError('maximum_duration value should be an ISO 8601-compliant duration string')
+    if reboot_setting not in VMGuestPatchRebootSetting._value2member_map_:
+        raise CLIError('rebootSetting value should be IfRequired/Never/Always')
+    ccf = _compute_client_factory(cmd.cli_ctx)
+    vm = ccf.virtual_machines.get(resource_group_name, vm_name)
+    if not vm:
+        raise CLIError("Can't get the vm named {} in resource group {}".format(vm_name, resource_group_name))
+    osType = vm.storage_profile.os_disk.os_type
+    if osType == 'Windows':
+        if classifications_to_include:
+            for cti in classifications_to_include:
+                if cti not in VMGuestPatchClassificationWindows._value2member_map_:
+                    raise CLIError('classifications_to_include value for Windows VM should be Critical/Security/UpdateRollUp/FeaturePack/ServicePack/Definition/Tools/Updates')
+        windows_parameters = WindowsParameters(classifications_to_include=classifications_to_include,
+                                               kb_numbers_to_include=kb_numbers_to_include,
+                                               kb_numbers_to_exclude=kb_numbers_to_exclude,
+                                               exclude_kbs_requiring_reboot=exclude_kbs_requiring_reboot)
+        install_patches_input = VirtualMachineInstallPatchesParameters(maximum_duration=maximum_duration, reboot_setting=reboot_setting,
+                                                                       windows_parameters=windows_parameters)
+    elif osType == 'Linux':
+        if classifications_to_include:
+            for cti in classifications_to_include:
+                if cti not in VMGuestPatchClassificationLinux._value2member_map_:
+                    raise CLIError('classifications_to_include value for Windows VM should be Critical/Security/Other')
+        linux_parameters = LinuxParameters(classifications_to_include=classifications_to_include,
+                                           package_name_masks_to_include=package_name_masks_to_include,
+                                           package_name_masks_to_exclude=package_name_masks_to_exclude)
+        install_patches_input = VirtualMachineInstallPatchesParameters(maximum_duration=maximum_duration, reboot_setting=reboot_setting,
+                                                                       linux_parameters=linux_parameters)
+    else:
+        raise CLIError('osType {} of the vm is not allowed'.format(osType))
+
+
+    return ccf.virtual_machines.begin_install_patches(resource_group_name=resource_group_name, vm_name=vm_name, install_patches_input=install_patches_input)
+
+# endregion

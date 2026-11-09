@@ -820,6 +820,15 @@ examples:
     text: az vm assess-patches -g MyResourceGroup -n MyVm
 """
 
+helps['vm install-patches'] = """
+type: command
+short-summary: Install patches on a VM.
+examples:
+  - name: Install patches on a VM.
+    text: az vm install-patches -g MyResourceGroup -n MyVm --maximum-duration PT4H --reboot-setting IfRequired --classifications-to-include Critical Security --exclude-kbs-requiring-reboot true
+"""
+
+
 helps['vm auto-shutdown'] = """
 type: command
 short-summary: Manage auto-shutdown for VM.

@@ -237,3 +237,4 @@ def _get_latest_image_version(cli_ctx, location, publisher, offer, sku):
     if not top_one:
         raise CLIError("Can't resolve the version of '{}:{}:{}'".format(publisher, offer, sku))
     return top_one[0].name
+
