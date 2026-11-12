@@ -237,6 +237,9 @@ register_cli_argument('vmss create', 'disable_overprovision', help='Overprovisio
 register_cli_argument('vmss create', 'upgrade_policy_mode', help=None, **enum_choice_list(UpgradeMode))
 register_cli_argument('vmss create', 'vm_sku', help='Size of VMs in the scale set.  See https://azure.microsoft.com/en-us/pricing/details/virtual-machines/ for size info.')
 
+register_cli_argument('vm encrypt', 'volume_type', help='Type of volume that the encryption operation is performed on', **enum_choice_list(['DATA', 'OS', 'ALL']))
+register_cli_argument('vm encrypt', 'force', action='store_true', help='continue with encryption operations regardless of the warnings')
+
 existing_disk_name = CliArgumentType(overrides=name_arg_type, help='The name of the managed disk', completer=get_resource_name_completion_list('Microsoft.Compute/disks'), id_part='name')
 register_cli_argument('disk', 'disk_name', existing_disk_name, completer=get_resource_name_completion_list('Microsoft.Compute/disks'))
 register_cli_argument('disk', 'name', arg_type=name_arg_type)
