@@ -322,13 +322,13 @@ def _is_linux_os(vm):
 
 def _is_linux_os_by_aaz(vm):
     os_type = None
-    if vm.get("storage_profile", {}).get("os_disk", {}).get("os_type", None) is not None:
-        os_type = vm["storage_profile"]["os_disk"]["os_type"]
+    if vm.get("storageProfile", {}).get("osDisk", {}).get("osType", None) is not None:
+        os_type = vm["storageProfile"]["osDisk"]["osType"]
     if os_type:
         return os_type.lower() == 'linux'
     # the os_type could be None for VM scaleset, let us check out os configurations
-    if vm.get("os_profile", {}).get("linux_configuration", None) is not None:
-        return bool(vm["os_profile"]["linux_configuration"])
+    if vm.get("osProfile", {}).get("linuxConfiguration", None) is not None:
+        return bool(vm["osProfile"]["linuxConfiguration"])
     return False
 
 
@@ -1413,12 +1413,12 @@ def get_vm_to_update_by_aaz(cmd, resource_group_name, vm_name):
     from .operations.vm import VMShow
 
     vm = VMShow(cli_ctx=cmd.cli_ctx)(command_args={
-        'resource_group': resource_group_name,
+        "resource_group": resource_group_name,
         "vm_name": vm_name
     })
 
     # To avoid unnecessary permission check of image
-    storage_profile = vm.get('storageProfile', {})
+    storage_profile = vm.get("storageProfile", {})
     storage_profile["imageReference"] = None
 
     return vm
@@ -1719,6 +1719,46 @@ def set_vm(cmd, instance, lro_operation=None, no_wait=False):
         return lro_operation(poller)
 
     return LongRunningOperation(cmd.cli_ctx)(poller)
+
+
+def set_vm_by_aaz(cmd, vm, no_wait=False):
+    from .aaz.latest.vm import Update as _VMUpdate
+
+    parsed_id = _parse_rg_name(vm['id'])
+
+    class SetVM(_VMUpdate):
+        def pre_operations(self):
+            args = self.ctx.args
+            args.no_wait = no_wait
+
+        def pre_instance_update(self, instance):
+            instance.properties.os_profile.secrets = vm.get('osProfile', {}).get('secrets', [])
+
+        def _output(self, *args, **kwargs):
+            from azure.cli.core.aaz import AAZUndefined, has_value
+
+            # Resolve flatten conflict
+            # When the type field conflicts, the type in inner layer is ignored and the outer layer is applied
+            if has_value(self.ctx.vars.instance.resources):
+                for resource in self.ctx.vars.instance.resources:
+                    if has_value(resource.type):
+                        resource.type = AAZUndefined
+
+            result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+            if result.get('osProfile', {}).get('secrets', []):
+                for secret in result['osProfile']['secrets']:
+                    for cert in secret.get('vaultCertificates', []):
+                        if not cert.get('certificateStore'):
+                            cert['certificateStore'] = None
+            return result
+
+    vm = LongRunningOperation(cmd.cli_ctx)(
+        SetVM(cli_ctx=cmd.cli_ctx)(command_args={
+            'resource_group': parsed_id[0],
+            "vm_name": parsed_id[1]
+        }))
+
+    return vm
 
 
 def patch_vm(cmd, resource_group_name, vm_name, vm):
@@ -3270,9 +3310,7 @@ def get_vm_format_secret(cmd, secrets, certificate_store=None, keyvault=None, re
 def add_vm_secret(cmd, resource_group_name, vm_name, keyvault, certificate, certificate_store=None):
     from azure.mgmt.core.tools import parse_resource_id
     from ._vm_utils import create_data_plane_keyvault_certificate_client, get_key_vault_base_url
-    VaultSecretGroup, SubResource, VaultCertificate = cmd.get_models(
-        'VaultSecretGroup', 'SubResource', 'VaultCertificate')
-    vm = get_vm_to_update(cmd, resource_group_name, vm_name)
+    vm = get_vm_to_update_by_aaz(cmd, resource_group_name, vm_name)
 
     if '://' not in certificate:  # has a cert name rather a full url?
         keyvault_client = create_data_plane_keyvault_certificate_client(
@@ -3280,41 +3318,62 @@ def add_vm_secret(cmd, resource_group_name, vm_name, keyvault, certificate, cert
         cert_info = keyvault_client.get_certificate(certificate)
         certificate = cert_info.secret_id
 
-    if not _is_linux_os(vm):
+    if not _is_linux_os_by_aaz(vm):
         certificate_store = certificate_store or 'My'
     elif certificate_store:
         raise CLIError('Usage error: --certificate-store is only applicable on Windows VM')
-    vault_cert = VaultCertificate(certificate_url=certificate, certificate_store=certificate_store)
-    vault_secret_group = next((x for x in vm.os_profile.secrets
-                               if x.source_vault and x.source_vault.id.lower() == keyvault.lower()), None)
+    vault_cert = {
+        'certificateStore': certificate_store,
+        'certificateUrl': certificate
+    }
+    vault_secret_group = next((x for x in vm.get('osProfile', {}).get('secrets', [])
+                               if x.get('sourceVault', {}).get('id', '').lower() == keyvault.lower()), None)
     if vault_secret_group:
-        vault_secret_group.vault_certificates.append(vault_cert)
+        vault_secret_group.get('vaultCertificates', []).append(vault_cert)
     else:
-        vault_secret_group = VaultSecretGroup(source_vault=SubResource(id=keyvault), vault_certificates=[vault_cert])
-        vm.os_profile.secrets.append(vault_secret_group)
-    vm = set_vm(cmd, vm)
-    return vm.os_profile.secrets
+        vault_secret_group = {
+            'sourceVault': {
+                'id': keyvault
+            },
+            'vaultCertificates': [vault_cert]
+        }
+
+        if not vm.get('osProfile'):
+            vm['osProfile'] = {'secret': []}
+
+        if not vm.get('osProfile').get('secrets'):
+            vm['osProfile']['secrets'] = []
+
+        vm['osProfile']['secrets'].append(vault_secret_group)
+
+    vm = set_vm_by_aaz(cmd, vm)
+    return vm.get('osProfile', {}).get('secrets', [])
 
 
 def list_vm_secrets(cmd, resource_group_name, vm_name):
-    vm = get_vm(cmd, resource_group_name, vm_name)
-    if vm.os_profile:
-        return vm.os_profile.secrets
-    return []
+    vm = get_vm_by_aaz(cmd, resource_group_name, vm_name)
+
+    if vm.get('osProfile', {}).get('secrets', []):
+        for secret in vm['osProfile']['secrets']:
+            for cert in secret.get('vaultCertificates', []):
+                if not cert.get('certificateStore'):
+                    cert['certificateStore'] = None
+
+    return vm.get('osProfile', {}).get('secrets', [])
 
 
 def remove_vm_secret(cmd, resource_group_name, vm_name, keyvault, certificate=None):
-    vm = get_vm_to_update(cmd, resource_group_name, vm_name)
+    vm = get_vm_to_update_by_aaz(cmd, resource_group_name, vm_name)
 
     # support 2 kinds of filter:
     # a. if only keyvault is supplied, we delete its whole vault group.
     # b. if both keyvault and certificate are supplied, we only delete the specific cert entry.
 
-    to_keep = vm.os_profile.secrets
+    to_keep = vm.get('osProfile', {}).get('secrets', [])
     keyvault_matched = []
     if keyvault:
         keyvault = keyvault.lower()
-        keyvault_matched = [x for x in to_keep if x.source_vault and x.source_vault.id.lower() == keyvault]
+        keyvault_matched = [x for x in to_keep if x.get('sourceVault', {}).get('id', '').lower() == keyvault]
 
     if keyvault and not certificate:
         to_keep = [x for x in to_keep if x not in keyvault_matched]
@@ -3324,13 +3383,14 @@ def remove_vm_secret(cmd, resource_group_name, vm_name, keyvault, certificate=No
         if '://' not in cert_url_pattern:  # just a cert name?
             cert_url_pattern = '/' + cert_url_pattern + '/'
         for x in temp:
-            x.vault_certificates = ([v for v in x.vault_certificates
-                                     if not (v.certificate_url and cert_url_pattern in v.certificate_url.lower())])
-        to_keep = [x for x in to_keep if x.vault_certificates]  # purge all groups w/o any cert entries
+            x['vaultCertificates'] = [v for v in x.get('vaultCertificates')
+                                      if not (v.get('certificateUrl') and
+                                              cert_url_pattern in v.get('certificateUrl', '').lower())]
+        to_keep = [x for x in to_keep if x.get('vaultCertificates')]  # purge all groups w/o any cert entries
 
-    vm.os_profile.secrets = to_keep
-    vm = set_vm(cmd, vm)
-    return vm.os_profile.secrets
+    vm['osProfile']['secrets'] = to_keep
+    vm = set_vm_by_aaz(cmd, vm)
+    return vm.get('osProfile', {}).get('secrets', [])
 # endregion
 
 
