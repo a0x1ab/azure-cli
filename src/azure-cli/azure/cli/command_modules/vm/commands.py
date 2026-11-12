@@ -7,7 +7,7 @@ from azure.cli.command_modules.vm._client_factory import (cf_vm,
                                                           cf_vm_ext, cf_vm_ext_image,
                                                           cf_vm_image_term, cf_usage,
                                                           cf_vmss,
-                                                          cf_galleries, cf_gallery_images, cf_gallery_image_versions,
+                                                          cf_galleries, cf_gallery_images,
                                                           cf_proximity_placement_groups,
                                                           cf_dedicated_hosts,
                                                           cf_log_analytics_data_plane,
@@ -109,11 +109,6 @@ def load_command_table(self, _):
     compute_gallery_images_sdk = CliCommandType(
         operations_tmpl='azure.mgmt.compute.operations#GalleryImagesOperations.{}',
         client_factory=cf_gallery_images,
-    )
-
-    compute_gallery_image_versions_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.compute.operations#GalleryImageVersionsOperations.{}',
-        client_factory=cf_gallery_image_versions,
     )
 
     compute_gallery_application_profile = CliCommandType(
@@ -467,7 +462,7 @@ def load_command_table(self, _):
         from .operations.sig_image_definition import SigImageDefinitionListShared
         self.command_table['sig image-definition list-shared'] = SigImageDefinitionListShared(loader=self)
 
-    with self.command_group('sig image-version', compute_gallery_image_versions_sdk, operation_group='gallery_image_versions', min_api='2018-06-01') as g:
+    with self.command_group('sig image-version') as g:
         g.custom_command('create', 'create_image_version', supports_no_wait=True, validator=process_image_version_create_namespace)
         g.custom_command('undelete', 'undelete_image_version', supports_no_wait=True, validator=process_image_version_undelete_namespace, is_preview=True)
         g.generic_update_command('update', getter_name='get_image_version_to_update', setter_arg_name='gallery_image_version', setter_name='update_image_version', setter_type=compute_custom, command_type=compute_custom, supports_no_wait=True, validator=process_image_version_update_namespace)
