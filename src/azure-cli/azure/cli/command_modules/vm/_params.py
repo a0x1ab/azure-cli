@@ -164,7 +164,7 @@ def load_arguments(self, _):
     # endregion
 
     # region Disks
-    with self.argument_context('disk', resource_type=ResourceType.MGMT_COMPUTE, operation_group='disks') as c:
+    with self.argument_context('disk', operation_group='disks') as c:
         # The `Standard` is used for backward compatibility to allow customers to keep their current behavior after changing the default values to Trusted Launch VMs in the future.
         t_disk_security = [x.value for x in self.get_models('DiskSecurityTypes', operation_group='disks') or []] + [COMPATIBLE_SECURITY_TYPE_VALUE]
 
@@ -198,7 +198,7 @@ def load_arguments(self, _):
     # endregion
 
     # region Disks
-    with self.argument_context('disk create', resource_type=ResourceType.MGMT_COMPUTE, operation_group='disks') as c:
+    with self.argument_context('disk create', operation_group='disks') as c:
         c.argument('security_data_uri', min_api='2022-03-02', help='Please specify the blob URI of VHD to be imported into VM guest state')
         c.argument('for_upload', arg_type=get_three_state_flag(), min_api='2018-09-30',
                    deprecate_info=c.deprecate(target='--for-upload', redirect='--upload-type Upload', hide=True),
@@ -212,7 +212,7 @@ def load_arguments(self, _):
     # endregion
 
     # region Snapshots
-    with self.argument_context('snapshot', resource_type=ResourceType.MGMT_COMPUTE, operation_group='snapshots') as c:
+    with self.argument_context('snapshot', operation_group='snapshots') as c:
         c.argument('snapshot_name', existing_snapshot_name, id_part='name', completer=get_resource_name_completion_list('Microsoft.Compute/snapshots'))
         c.argument('name', arg_type=name_arg_type)
         c.argument('sku', arg_type=snapshot_sku)
@@ -444,11 +444,9 @@ def load_arguments(self, _):
                    help='pre-existing storage account name or its blob uri to capture boot diagnostics. Its sku should be one of Standard_GRS, Standard_LRS and Standard_RAGRS')
         c.argument('accelerated_networking', resource_type=ResourceType.MGMT_NETWORK, min_api='2016-09-01', arg_type=get_three_state_flag(), arg_group='Network',
                    help="enable accelerated networking. Unless specified, CLI will enable it based on machine image and size")
-        if self.supported_api_version(min_api='2019-03-01', resource_type=ResourceType.MGMT_COMPUTE):
-            VirtualMachineEvictionPolicyTypes = self.get_models('VirtualMachineEvictionPolicyTypes', resource_type=ResourceType.MGMT_COMPUTE)
-            c.argument('eviction_policy', resource_type=ResourceType.MGMT_COMPUTE, min_api='2019-03-01',
-                       arg_type=get_enum_type(VirtualMachineEvictionPolicyTypes, default=None),
-                       help="The eviction policy for the Spot priority virtual machine. Default eviction policy is Deallocate for a Spot priority virtual machine")
+        VirtualMachineEvictionPolicyTypes = self.get_models('VirtualMachineEvictionPolicyTypes')
+        c.argument('eviction_policy', min_api='2019-03-01', arg_type=get_enum_type(VirtualMachineEvictionPolicyTypes, default=None),
+                   help="The eviction policy for the Spot priority virtual machine. Default eviction policy is Deallocate for a Spot priority virtual machine")
         c.argument('enable_agent', arg_type=get_three_state_flag(), min_api='2018-06-01',
                    help='Indicates whether virtual machine agent should be provisioned on the virtual machine. When this property is not specified, default behavior is to set it to true. This will ensure that VM Agent is installed on the VM so that extensions can be added to the VM later')
         c.argument('enable_auto_update', arg_type=get_three_state_flag(), min_api='2020-06-01',
@@ -733,7 +731,7 @@ def load_arguments(self, _):
         c.argument('force_update_os_disk_for_ephemeral', options_list=['--force-update-os-disk-for-ephemeral', '--update-os-disk'], arg_type=get_three_state_flag(), min_api='2024-03-01', help='Force update ephemeral OS disk for a virtual machine scale set VM.')
 
     with self.argument_context('vmss create', operation_group='virtual_machine_scale_sets') as c:
-        VirtualMachineEvictionPolicyTypes = self.get_models('VirtualMachineEvictionPolicyTypes', resource_type=ResourceType.MGMT_COMPUTE)
+        VirtualMachineEvictionPolicyTypes = self.get_models('VirtualMachineEvictionPolicyTypes')
 
         c.argument('name', name_arg_type)
         c.argument('nat_backend_port', default=None, help='Backend port to open with NAT rules. Defaults to 22 on Linux and 3389 on Windows.')
@@ -746,9 +744,9 @@ def load_arguments(self, _):
         c.argument('health_probe', help='Probe name from the existing load balancer, mainly used for rolling upgrade or automatic repairs')
         c.argument('vm_sku', help='Size of VMs in the scale set. Default to "Standard_D2s_v5". See https://azure.microsoft.com/pricing/details/virtual-machines/ for size info.')
         c.argument('nsg', help='Name or ID of an existing Network Security Group.', arg_group='Network')
-        c.argument('eviction_policy', resource_type=ResourceType.MGMT_COMPUTE, min_api='2017-12-01', arg_type=get_enum_type(VirtualMachineEvictionPolicyTypes, default=None),
+        c.argument('eviction_policy', arg_type=get_enum_type(VirtualMachineEvictionPolicyTypes, default=None),
                    help="The eviction policy for virtual machines in a Spot priority scale set. Default eviction policy is Deallocate for a Spot priority scale set")
-        c.argument('application_security_groups', resource_type=ResourceType.MGMT_COMPUTE, min_api='2018-06-01', nargs='+', options_list=['--asgs'], help='Space-separated list of existing application security groups to associate with the VM.', arg_group='Network', validator=validate_asg_names_or_ids)
+        c.argument('application_security_groups', nargs='+', options_list=['--asgs'], help='Space-separated list of existing application security groups to associate with the VM.', arg_group='Network', validator=validate_asg_names_or_ids)
         c.argument('computer_name_prefix', help='Computer name prefix for all of the virtual machines in the scale set. Computer name prefixes must be 1 to 15 characters long')
         c.argument('orchestration_mode', help='Choose how virtual machines are managed by the scale set. In Uniform mode, you define a virtual machine model and Azure will generate identical instances based on that model. In Flexible mode, you manually create and add a virtual machine of any configuration to the scale set or generate identical instances based on virtual machine model defined for the scale set.',
                    arg_type=get_enum_type(['Uniform', 'Flexible']), default='Flexible', min_api='2020-12-01')
@@ -1286,11 +1284,11 @@ def load_arguments(self, _):
 
     for scope in ['vm create', 'vm encryption enable']:
         with self.argument_context(scope) as c:
-            c.argument('encryption_identity', help='Resource Id of the user managed identity which can be used for Azure disk encryption', resource_type=ResourceType.MGMT_COMPUTE, min_api='2023-09-01')
+            c.argument('encryption_identity', help='Resource Id of the user managed identity which can be used for Azure disk encryption')
 
     for scope in ['vmss create', 'vmss encryption enable']:
         with self.argument_context(scope) as c:
-            c.argument('encryption_identity', help='Resource Id of the user managed identity which can be used for Azure disk encryption', resource_type=ResourceType.MGMT_COMPUTE, min_api='2023-09-01')
+            c.argument('encryption_identity', help='Resource Id of the user managed identity which can be used for Azure disk encryption')
 
     for scope in ['vm extension', 'vmss extension']:
         with self.argument_context(scope) as c:
@@ -1327,8 +1325,7 @@ def load_arguments(self, _):
     for scope in ['vm create', 'vm update', 'vmss create', 'vmss update']:
         with self.argument_context(scope) as c:
             c.argument('license_type', license_type)
-            c.argument('priority', resource_type=ResourceType.MGMT_COMPUTE, min_api='2019-03-01',
-                       arg_type=get_enum_type(self.get_models('VirtualMachinePriorityTypes'), default=None),
+            c.argument('priority', arg_type=get_enum_type(self.get_models('VirtualMachinePriorityTypes'), default=None),
                        help="Priority. Use 'Spot' to run short-lived workloads in a cost-effective way. 'Low' enum will be deprecated in the future. Please use 'Spot' to deploy Azure spot VM and/or VMSS. Default to Regular.")
             c.argument('max_price', min_api='2019-03-01', type=float, is_preview=True,
                        help='The maximum price (in US Dollars) you are willing to pay for a Spot VM/VMSS. -1 indicates that the Spot VM/VMSS should not be evicted for price reasons')
@@ -1351,8 +1348,7 @@ def load_arguments(self, _):
         c.argument('user_data', help='UserData for the VM. It can be passed in as file or string. If empty string is passed in, the existing value will be deleted.', completer=FilesCompleter(), type=file_type, min_api='2021-03-01')
 
     with self.argument_context('vmss create') as c:
-        c.argument('priority', resource_type=ResourceType.MGMT_COMPUTE, min_api='2017-12-01',
-                   arg_type=get_enum_type(self.get_models('VirtualMachinePriorityTypes'), default=None),
+        c.argument('priority', arg_type=get_enum_type(self.get_models('VirtualMachinePriorityTypes'), default=None),
                    help="Priority. Use 'Spot' to run short-lived workloads in a cost-effective way. 'Low' enum will be deprecated in the future. Please use 'Spot' to deploy Azure spot VM and/or VMSS. Default to Regular.")
 
     with self.argument_context('sig') as c:
@@ -1395,11 +1391,11 @@ def load_arguments(self, _):
                    help='Gallery image version in semantic version pattern. The allowed characters are digit and period. Digits must be within the range of a 32-bit integer, e.g. `<MajorVersion>.<MinorVersion>.<Patch>`')
 
     for scope in ['sig image-version create', 'sig image-version undelete']:
-        with self.argument_context(scope, resource_type=ResourceType.MGMT_COMPUTE, operation_group='gallery_image_versions') as c:
+        with self.argument_context(scope, operation_group='gallery_image_versions') as c:
             c.argument('gallery_image_version', options_list=['--gallery-image-version', '-e'],
                        help='Gallery image version in semantic version pattern. The allowed characters are digit and period. Digits must be within the range of a 32-bit integer, e.g. `<MajorVersion>.<MinorVersion>.<Patch>`')
 
-    with self.argument_context('sig image-version create', resource_type=ResourceType.MGMT_COMPUTE, operation_group='gallery_image_versions') as c:
+    with self.argument_context('sig image-version create', operation_group='gallery_image_versions') as c:
         c.argument('description', help='the description of the gallery image version')
         c.argument('managed_image', help='image name(if in the same resource group) or resource id')
         c.argument('os_snapshot', help='Name or ID of OS disk snapshot')
