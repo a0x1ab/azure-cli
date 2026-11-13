@@ -5,6 +5,8 @@
 
 # pylint: disable=line-too-long
 # pylint: disable=too-many-statements
+# pylint: disable=too-many-locals
+
 
 from azure.cli.core.commands.parameters import (get_three_state_flag,
                                                 resource_group_name_type)
@@ -64,6 +66,9 @@ iot_solution_iot_hubs_arg_type = CLIArgumentType(options_list=('--iot-hubs'), me
 regulatory_compliance_standard_name = CLIArgumentType(option_list=('--standard-name'), metave='STANDARDNAME', help='The compliance standard name')
 regulatory_compliance_control_name = CLIArgumentType(option_list=('--control-name'), metave='CONTROLNAME', help='The compliance control name')
 
+# Adaptive Application Controls
+adaptive_application_controls_group_name = CLIArgumentType(option_list=('--group_name'), metave='GROUPNAME', help='Name of an application control VM/server group')
+
 
 def load_arguments(self, _):
     for scope in ['alert',
@@ -88,7 +93,8 @@ def load_arguments(self, _):
                   'iot-recommendations',
                   'regulatory-compliance-standards',
                   'regulatory-compliance-controls',
-                  'regulatory-compliance-assessments']:
+                  'regulatory-compliance-assessments',
+                  'adaptive_application_controls']:
         with self.argument_context('security {}'.format(scope)) as c:
             c.argument(
                 'resource_group_name',
@@ -240,3 +246,9 @@ def load_arguments(self, _):
             c.argument(
                 'iot_solution_name',
                 arg_type=iot_solution_name_arg_type)
+
+    for scope in ['adaptive_application_controls']:
+        with self.argument_context('security {}'.format(scope)) as c:
+            c.argument(
+                'group_name',
+                arg_type=adaptive_application_controls_group_name)
