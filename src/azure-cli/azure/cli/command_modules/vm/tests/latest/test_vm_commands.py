@@ -5174,6 +5174,21 @@ class VMTrustedLaunchScenarioTest(ScenarioTest):
             self.check('securityProfile.UefiSettings.vTpmEnabled', True)
         ])
 
+    @unittest.skip('Service does not work')
+    @ResourceGroupPreparer(name_prefix='cli_test_disk_trusted_launch_')
+    def test_disk_trusted_launch_update(self):
+        self.cmd('disk create -g {rg} -n d1 --image-reference Canonical:UbuntuServer:18.04-LTS:latest --hyper-v-generation V2 --security-type TrustedLaunch', checks=[
+            self.check('securityProfile.securityType', 'TrustedLaunch')
+        ])
+
+
+class DiskHibernationScenarioTest(ScenarioTest):
+    @ResourceGroupPreparer(name_prefix='cli_test_disk_hibernation_')
+    def test_disk_hibernation(self):
+        self.cmd('disk create -g {rg} -n d1 --size-gb 10 --support-hibernation true', checks=[
+            self.check('supportsHibernation', True)
+        ])
+
 
 class VMCreateCountScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_vm_create_count_', location='eastus')
