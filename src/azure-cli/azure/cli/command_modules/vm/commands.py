@@ -304,7 +304,7 @@ def load_command_table(self, _):
         from .operations.vm import VMCapture
         self.command_table['vm capture'] = VMCapture(loader=self)
 
-    with self.command_group('vm', compute_vm_sdk, client_factory=cf_vm) as g:
+    with self.command_group('vm') as g:
         g.custom_command('install-patches', 'install_vm_patches', supports_no_wait=True, min_api='2020-12-01')
 
     with self.command_group('vm availability-set', compute_availset_profile) as g:
