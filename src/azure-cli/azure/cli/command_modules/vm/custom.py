@@ -5906,22 +5906,57 @@ def update_image_version(cmd, resource_group_name, gallery_name, gallery_image_n
 
 
 # region dedicated host
-def create_dedicated_host_group(cmd, client, host_group_name, resource_group_name, platform_fault_domain_count,
+def create_dedicated_host_group(cmd, host_group_name, resource_group_name, platform_fault_domain_count,
                                 automatic_placement=None, location=None, zones=None, tags=None, ultra_ssd_enabled=None):
-    DedicatedHostGroup = cmd.get_models('DedicatedHostGroup')
+    from .aaz.latest.vm.host.group import Create as VmHostGroupCreate
     location = location or _get_resource_group_location(cmd.cli_ctx, resource_group_name)
+    command_args = {
+        'host_group_name': host_group_name,
+        'resource_group': resource_group_name,
+        'location': location,
+        'platform_fault_domain_count': platform_fault_domain_count
+    }
 
-    host_group_params = DedicatedHostGroup(location=location, platform_fault_domain_count=platform_fault_domain_count,
-                                           support_automatic_placement=automatic_placement, zones=zones, tags=tags)
+    if tags is not None:
+        command_args['tags'] = tags or {}
+
+    if zones is not None:
+        command_args['zones'] = zones or []
+
     if ultra_ssd_enabled is not None:
-        additionalCapabilities = {'ultraSSDEnabled': ultra_ssd_enabled}
-        host_group_params.additional_capabilities = additionalCapabilities
+        command_args['additional_capabilities'] = {
+            'ultra_ssd_enabled': ultra_ssd_enabled
+        }
 
-    return client.create_or_update(resource_group_name, host_group_name, parameters=host_group_params)
+    if automatic_placement is not None:
+        command_args['support_automatic_placement'] = automatic_placement
+
+    return VmHostGroupCreate(cli_ctx=cmd.cli_ctx)(command_args=command_args)
 
 
-def get_dedicated_host_group_instance_view(client, host_group_name, resource_group_name):
-    return client.get(resource_group_name, host_group_name, expand="instanceView")
+def get_dedicated_host_group_instance_view(cmd, host_group_name, resource_group_name):
+    return get_dedicated_host_group(cmd, host_group_name, resource_group_name, 'instanceView')
+
+
+def get_dedicated_host_group(cmd, host_group_name, resource_group_name, expand=None):
+    from .operations.vm_host_group import VMHostGroupShow
+    command_args = {
+        'host_group_name': host_group_name,
+        'resource_group': resource_group_name,
+    }
+    if expand:
+        command_args['expand'] = expand
+    return VMHostGroupShow(cli_ctx=cmd.cli_ctx)(command_args=command_args)
+
+
+def update_dedicated_host_group(cmd, host_group_name, resource_group_name, **kwargs):
+    from .aaz.latest.vm.host.group import Create as VmHostGroupCreate
+    from .operations.vm_host_group import convert_show_result_to_snake_case
+    vm_host_group = kwargs['dedicated_host_group']
+    vm_host_group = convert_show_result_to_snake_case(vm_host_group)
+    vm_host_group['host_group_name'] = host_group_name
+    vm_host_group['resource_group'] = resource_group_name
+    return VmHostGroupCreate(cli_ctx=cmd.cli_ctx)(command_args=vm_host_group)
 
 
 def create_dedicated_host(cmd, client, host_group_name, host_name, resource_group_name, sku, platform_fault_domain=None,
@@ -5941,7 +5976,6 @@ def create_dedicated_host(cmd, client, host_group_name, host_name, resource_grou
 
 def get_dedicated_host_instance_view(client, host_group_name, host_name, resource_group_name):
     return client.get(resource_group_name, host_group_name, host_name, expand="instanceView")
-
 # endregion
 
 

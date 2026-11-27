@@ -9,7 +9,7 @@ from azure.cli.command_modules.vm._client_factory import (cf_vm,
                                                           cf_vmss, cf_images,
                                                           cf_galleries, cf_gallery_images, cf_gallery_image_versions,
                                                           cf_proximity_placement_groups,
-                                                          cf_dedicated_hosts, cf_dedicated_host_groups,
+                                                          cf_dedicated_hosts,
                                                           cf_log_analytics_data_plane,
                                                           cf_capacity_reservation_groups, cf_capacity_reservations,
                                                           cf_community_gallery)
@@ -141,11 +141,6 @@ def load_command_table(self, _):
     compute_dedicated_host_sdk = CliCommandType(
         operations_tmpl="azure.mgmt.compute.operations#DedicatedHostsOperations.{}",
         client_factory=cf_dedicated_hosts,
-    )
-
-    compute_dedicated_host_groups_sdk = CliCommandType(
-        operations_tmpl="azure.mgmt.compute.operations#DedicatedHostGroupsOperations.{}",
-        client_factory=cf_dedicated_host_groups,
     )
 
     image_builder_image_templates_sdk = CliCommandType(
@@ -392,11 +387,13 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_dedicated_host')
         g.generic_update_command('update', setter_name='begin_create_or_update')
 
-    with self.command_group('vm host group', compute_dedicated_host_groups_sdk, client_factory=cf_dedicated_host_groups,
-                            min_api='2019-03-01') as g:
-        g.custom_command('get-instance-view', 'get_dedicated_host_group_instance_view', min_api='2020-06-01')
+    with self.command_group('vm host group') as g:
+        g.custom_command('get-instance-view', 'get_dedicated_host_group_instance_view')
         g.custom_command('create', 'create_dedicated_host_group')
-        g.generic_update_command('update')
+        g.generic_update_command('update', getter_name='get_dedicated_host_group', setter_arg_name='dedicated_host_group', setter_name='update_dedicated_host_group', setter_type=compute_custom, command_type=compute_custom)
+
+        from .operations.vm_host_group import VMHostGroupShow
+        self.command_table['vm host group show'] = VMHostGroupShow(loader=self)
 
     with self.command_group('vmss') as g:
         g.custom_command('identity assign', 'assign_vmss_identity', validator=process_assign_identity_namespace)
