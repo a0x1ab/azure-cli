@@ -66,11 +66,17 @@ def _pack_source_code(source_location, tar_file_path, docker_file_path, docker_f
     original_docker_file_name = os.path.basename(docker_file_path.replace("\\", os.sep))
     ignore_list, ignore_list_size = _load_dockerignore_file(source_location, original_docker_file_name)
     common_vcs_ignore_list = {'.git', '.gitignore', '.bzr', 'bzrignore', '.hg', '.hgignore', '.svn'}
+    build_ignore_dirs = {'.venv'}
 
     def _ignore_check(tarinfo, parent_ignored, parent_matching_rule_index):
         # ignore common vcs dir or file
         if tarinfo.name in common_vcs_ignore_list:
             logger.warning("Excluding '%s' based on default ignore rules", tarinfo.name)
+            return True, parent_matching_rule_index
+
+        # Exclude performance-impacting directories that are typically not needed in build context
+        if tarinfo.isdir() and os.path.basename(tarinfo.name) in build_ignore_dirs:
+            logger.warning("Excluding '%s' directory for performance", os.path.basename(tarinfo.name))
             return True, parent_matching_rule_index
 
         if ignore_list is None:
